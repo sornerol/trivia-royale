@@ -1,23 +1,22 @@
 apply plugin: 'groovy'
 
 jar {
-   manifest {
-      attributes 'Main-Class': 'com.lorenjamison.alexa.triviaroyale.TriviaRoyaleStreamHandler'
-   }
+    manifest {
+        attributes 'Main-Class': 'com.lorenjamison.alexa.triviaroyale.TriviaRoyaleStreamHandler'
+    }
 
-   from {
-      sourceSets.main.runtimeClasspath
-              .filter { (it.isDirectory() && it.listFiles().length > 0) || it.isFile() }
-              .collect { it.isDirectory() ? it : zipTree(it) }
-
-   }
+    from {
+        sourceSets.main.runtimeClasspath
+                .filter { (it.isDirectory() && it.listFiles().length > 0) || it.isFile() }
+                .collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 repositories {
-   mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-   compile 'org.codehaus.groovy:groovy-all:2.4.5'
-   compile 'com.amazon.alexa:ask-sdk:2.20.2'
+    compile 'org.codehaus.groovy:groovy-all:2.4.5'
+    compile 'com.amazon.alexa:ask-sdk:2.20.2'
 }
