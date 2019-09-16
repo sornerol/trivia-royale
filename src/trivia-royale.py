@@ -13,7 +13,8 @@ from alexa.ask_sdk_core.response_helper import (
     get_rich_text_content)
 from alexa.ask_sdk_core.utils.request_util import get_user_id
 from alexa.ask_sdk_model import ui, Response
-from util import data
+
+from data import strings
 
 sb = SkillBuilder()
 
@@ -29,7 +30,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
         logger.info("In LaunchRequestHandler")
         # TODO: get userId and look up in DB
-        handler_input.response_builder.speak(data.WELCOME_MESSAGE)
+        handler_input.response_builder.speak(strings.WELCOME_MESSAGE)
         return handler_input.response_builder.response
 
 sb.add_request_handler(LaunchRequestHandler())
