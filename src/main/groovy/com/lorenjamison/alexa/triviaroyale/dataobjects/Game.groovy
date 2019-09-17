@@ -1,7 +1,7 @@
 package com.lorenjamison.alexa.triviaroyale.dataobjects
 
-@DynamoDbTable("players")
-class PlayerDataObject {
+
+class Game {
 
     void load() {
 

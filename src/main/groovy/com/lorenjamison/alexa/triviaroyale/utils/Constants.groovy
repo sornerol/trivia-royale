@@ -1,6 +1,6 @@
 package com.lorenjamison.alexa.triviaroyale.utils
 
-class Data {
+class Constants {
     static final SKILL_TITLE = "Trivia Royale"
 
     static final NEW_PLAYER_WELCOME_MESSAGE = "Welcome to Trivia Royale!"

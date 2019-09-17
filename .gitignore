@@ -1,2 +1,7 @@
-src/alexa
+build
+gradle
 .idea
+.gradle
+gradlew
+gradlew.bat
+

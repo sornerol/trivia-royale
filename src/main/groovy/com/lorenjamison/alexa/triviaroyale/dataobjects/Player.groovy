@@ -1,7 +1,11 @@
 package com.lorenjamison.alexa.triviaroyale.dataobjects
 
-@DynamoDbTable("quizzes")
-class QuizDataObject {
+
+class Player {
+
+    String id
+    String name
+    boolean isHousePlayer
 
     void load() {
 
