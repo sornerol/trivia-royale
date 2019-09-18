@@ -1,4 +1,4 @@
-package com.lorenjamison.alexa.triviaroyale.dataobjects
+package com.lorenjamison.alexa.triviaroyale.dataobject
 
 
 class Game {

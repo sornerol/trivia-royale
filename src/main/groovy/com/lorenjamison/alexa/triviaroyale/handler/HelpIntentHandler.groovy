@@ -1,18 +1,17 @@
-package com.lorenjamison.alexa.triviaroyale.handlers
+package com.lorenjamison.alexa.triviaroyale.handler
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 
-class SessionEndedRequestHandler implements RequestHandler{
+class HelpIntentHandler implements RequestHandler{
     @Override
     boolean canHandle(HandlerInput input) {
-        //TODO: Implement SessionEndedRequestHandler.canHandle
+        //TODO: Implement HelpIntentHandler.canHandle
     }
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        //TODO: Implement SessionEndedRequestHandler.handle
-
+        //TODO: Implement HelpIntentHandler.handle
     }
 }

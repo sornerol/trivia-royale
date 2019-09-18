@@ -1,4 +1,4 @@
-package com.lorenjamison.alexa.triviaroyale.utils
+package com.lorenjamison.alexa.triviaroyale.util
 
 class Constants {
     static final SKILL_TITLE = "Trivia Royale"
