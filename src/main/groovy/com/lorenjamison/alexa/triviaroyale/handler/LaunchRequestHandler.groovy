@@ -8,6 +8,7 @@ import com.amazon.ask.response.ResponseBuilder
 import com.lorenjamison.alexa.triviaroyale.dataobject.Player
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
 import com.lorenjamison.alexa.triviaroyale.util.Constants
+import com.lorenjamison.alexa.triviaroyale.util.GameState
 
 import static com.amazon.ask.request.Predicates.requestType
 
@@ -25,7 +26,7 @@ class LaunchRequestHandler implements RequestHandler{
         Player player = new Player(AlexaSdkHelper.getUserId(input))
 
         if(player.name == null) {
-            sessionAttributes.put("GameState", "STATE_SETUP")
+            sessionAttributes.put("GameState", GameState.NEW_PLAYER_INIT)
             response.with {
                 withSpeech(Constants.NEW_PLAYER_WELCOME_MESSAGE)
                 withReprompt(Constants.HELP_MESSAGE)
@@ -33,7 +34,7 @@ class LaunchRequestHandler implements RequestHandler{
                 withShouldEndSession(false)
             }
         } else {
-            sessionAttributes.put("GameState", "STATE_NEWGAME")
+            sessionAttributes.put("GameState", GameState.NEW_GAME)
             response.with {
                 withSpeech(Constants.EXISTING_PLAYER_WELCOME_MESSAGE)
                 withReprompt(Constants.HELP_MESSAGE)
