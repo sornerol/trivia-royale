@@ -24,23 +24,21 @@ class LaunchRequestHandler implements RequestHandler{
         ResponseBuilder response = input.getResponseBuilder()
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
         Player player = new Player(AlexaSdkHelper.getUserId(input))
+        String responseMessage
 
         if(player.name == null) {
             sessionAttributes.put("GameState", GameState.NEW_PLAYER_INIT)
-            response.with {
-                withSpeech(Constants.NEW_PLAYER_WELCOME_MESSAGE)
-                withReprompt(Constants.HELP_MESSAGE)
-                withSimpleCard(Constants.SKILL_TITLE, Constants.NEW_PLAYER_WELCOME_MESSAGE)
-                withShouldEndSession(false)
-            }
+            responseMessage = Constants.NEW_PLAYER_WELCOME_MESSAGE
         } else {
             sessionAttributes.put("GameState", GameState.NEW_GAME)
-            response.with {
-                withSpeech(Constants.EXISTING_PLAYER_WELCOME_MESSAGE)
-                withReprompt(Constants.HELP_MESSAGE)
-                withSimpleCard(Constants.SKILL_TITLE, Constants.EXISTING_PLAYER_WELCOME_MESSAGE)
-                withShouldEndSession(false)
-            }
+            responseMessage = "${Constants.EXISTING_PLAYER_WELCOME_MESSAGE} $Constants.STARTING_NEW_GAME_MESSAGE"
+        }
+
+        response.with {
+            withSpeech(responseMessage)
+            withReprompt(responseMessage)
+            withSimpleCard(Constants.SKILL_TITLE, responseMessage)
+            withShouldEndSession(false)
         }
 
         return response.build()
