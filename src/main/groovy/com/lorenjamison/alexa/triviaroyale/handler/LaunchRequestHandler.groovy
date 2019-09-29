@@ -31,7 +31,7 @@ class LaunchRequestHandler implements RequestHandler{
             responseMessage = Constants.NEW_PLAYER_WELCOME_MESSAGE
         } else {
             sessionAttributes.put("GameState", GameState.NEW_GAME)
-            responseMessage = "${Constants.EXISTING_PLAYER_WELCOME_MESSAGE} $Constants.CHOOSE_CATEGORY_MESSAGE"
+            responseMessage = "${Constants.EXISTING_PLAYER_WELCOME_MESSAGE} ${Constants.CHOOSE_CATEGORY_MESSAGE}"
             //TODO: Get list of categories available to the player
         }
 
