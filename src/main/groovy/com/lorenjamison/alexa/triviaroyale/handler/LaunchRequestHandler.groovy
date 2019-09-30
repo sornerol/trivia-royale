@@ -5,9 +5,11 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.LaunchRequest
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
+import com.lorenjamison.alexa.triviaroyale.dataobject.Category
 import com.lorenjamison.alexa.triviaroyale.dataobject.Player
+import com.lorenjamison.alexa.triviaroyale.service.CategoryService
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
-import com.lorenjamison.alexa.triviaroyale.util.Constants
+import com.lorenjamison.alexa.triviaroyale.util.Messages
 import com.lorenjamison.alexa.triviaroyale.util.GameState
 
 import static com.amazon.ask.request.Predicates.requestType
@@ -25,20 +27,25 @@ class LaunchRequestHandler implements RequestHandler{
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
         Player player = new Player(AlexaSdkHelper.getUserId(input))
         String responseMessage
+        String repromptMessage
 
         if(player.name == null) {
             sessionAttributes.put("GameState", GameState.NEW_PLAYER_INIT)
-            responseMessage = Constants.NEW_PLAYER_WELCOME_MESSAGE
+            responseMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE
+            repromptMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE
         } else {
             sessionAttributes.put("GameState", GameState.NEW_GAME)
-            responseMessage = "${Constants.EXISTING_PLAYER_WELCOME_MESSAGE} ${Constants.CHOOSE_CATEGORY_MESSAGE}"
-            //TODO: Get list of categories available to the player
+            String availableCategories = Messages.getAvailableCategoryListMessage(player)
+            responseMessage = "${Messages.EXISTING_PLAYER_WELCOME_MESSAGE} " +
+                    "${Messages.CHOOSE_CATEGORY_MESSAGE} " +
+                    "${availableCategories}"
+            repromptMessage = "${Messages.CHOOSE_CATEGORY_MESSAGE} ${availableCategories}"
         }
 
         response.with {
             withSpeech(responseMessage)
-            withReprompt(responseMessage)
-            withSimpleCard(Constants.SKILL_TITLE, responseMessage)
+            withReprompt(repromptMessage)
+            withSimpleCard(Messages.SKILL_TITLE, responseMessage)
             withShouldEndSession(false)
         }
 

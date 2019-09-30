@@ -1,6 +1,10 @@
 package com.lorenjamison.alexa.triviaroyale.util
 
-class Constants {
+import com.lorenjamison.alexa.triviaroyale.dataobject.Category
+import com.lorenjamison.alexa.triviaroyale.dataobject.Player
+import com.lorenjamison.alexa.triviaroyale.service.CategoryService
+
+class Messages {
     static final int NUMBER_OF_PLAYERS = 10
     static final int NUMBER_OF_QUESTIONS = 10
     static final int STARTING_HEALTH = 100
@@ -22,4 +26,15 @@ class Constants {
     static final CHOOSE_CATEGORY_MESSAGE = "To get started, tell me which category you want to play."
 
     static final STARTING_NEW_GAME_MESSAGE = "Okay. Hold on while I find some opponents."
+
+    static String getAvailableCategoryListMessage(Player player) {
+        List<Category> availableCategories = CategoryService.getCategoriesAvailableForPlayer(player)
+        String categoryListMessage = "You can choose from these categories. "
+        for(int i = 0; i < availableCategories.size(); i++) {
+            if(i + 1 >= availableCategories.size()) {
+                categoryListMessage += "or "
+            }
+            categoryListMessage += "${availableCategories[i].name}. "
+        }
+    }
 }

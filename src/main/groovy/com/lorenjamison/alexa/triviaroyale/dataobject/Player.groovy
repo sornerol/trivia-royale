@@ -4,14 +4,15 @@ import com.lorenjamison.alexa.triviaroyale.dataobject.updater.PlayerUpdater
 
 
 class Player {
-    String id
+    long id
+    String alexaId
     String name
     boolean isHousePlayer
     Date lastModified
     PlayerUpdater playerUpdater
 
-    Player(String id) {
-        this.playerUpdater = new PlayerUpdater(id)
+    Player(String alexaId) {
+        this.playerUpdater = new PlayerUpdater(alexaId)
         this.load()
     }
 

@@ -1,10 +1,10 @@
 package com.lorenjamison.alexa.triviaroyale.service
 
+import com.lorenjamison.alexa.triviaroyale.dataobject.Category
 import com.lorenjamison.alexa.triviaroyale.dataobject.Player
 
 class CategoryService {
-
-    String getCategoriesAvailableForPlayer(Player player) {
+    static List<Category> getCategoriesAvailableForPlayer(Player player) {
         
     }
 }
