@@ -4,7 +4,7 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 
-class HelpIntentHandler implements RequestHandler{
+class HelpIntentHandler implements RequestHandler {
     @Override
     boolean canHandle(HandlerInput input) {
         //TODO: Implement HelpIntentHandler.canHandle

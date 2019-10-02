@@ -5,6 +5,6 @@ import com.lorenjamison.alexa.triviaroyale.dataobject.Player
 
 class CategoryService {
     static List<Category> getCategoriesAvailableForPlayer(Player player) {
-        
+
     }
 }

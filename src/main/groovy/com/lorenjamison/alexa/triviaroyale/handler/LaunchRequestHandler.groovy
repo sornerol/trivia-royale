@@ -9,12 +9,13 @@ import com.lorenjamison.alexa.triviaroyale.dataobject.Category
 import com.lorenjamison.alexa.triviaroyale.dataobject.Player
 import com.lorenjamison.alexa.triviaroyale.service.CategoryService
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
+import com.lorenjamison.alexa.triviaroyale.util.Constants
 import com.lorenjamison.alexa.triviaroyale.util.Messages
 import com.lorenjamison.alexa.triviaroyale.util.GameState
 
 import static com.amazon.ask.request.Predicates.requestType
 
-class LaunchRequestHandler implements RequestHandler{
+class LaunchRequestHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
@@ -29,7 +30,7 @@ class LaunchRequestHandler implements RequestHandler{
         String responseMessage
         String repromptMessage
 
-        if(player.name == null) {
+        if (player.name == null) {
             sessionAttributes.put("GameState", GameState.NEW_PLAYER_INIT)
             responseMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE
             repromptMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE
@@ -45,7 +46,7 @@ class LaunchRequestHandler implements RequestHandler{
         response.with {
             withSpeech(responseMessage)
             withReprompt(repromptMessage)
-            withSimpleCard(Messages.SKILL_TITLE, responseMessage)
+            withSimpleCard(Constants.SKILL_TITLE, responseMessage)
             withShouldEndSession(false)
         }
 
