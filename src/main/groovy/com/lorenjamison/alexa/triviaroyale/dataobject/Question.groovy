@@ -1,7 +1,9 @@
 package com.lorenjamison.alexa.triviaroyale.dataobject
 
+import com.lorenjamison.alexa.triviaroyale.dataobject.base.QuestionBase
 
-class Question {
+
+class Question extends QuestionBase{
 
     void load() {
 

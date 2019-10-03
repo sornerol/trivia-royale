@@ -1,8 +1,9 @@
 package com.lorenjamison.alexa.triviaroyale.dataobject
 
-class Category {
-    int id
-    String name
+import com.lorenjamison.alexa.triviaroyale.dataobject.base.CategoryBase
+
+class Category extends CategoryBase{
+
 
     void load() {
 
