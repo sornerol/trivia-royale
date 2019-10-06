@@ -3,6 +3,8 @@ package com.lorenjamison.alexa.triviaroyale
 import com.amazon.ask.Skill
 import com.amazon.ask.Skills
 import com.amazon.ask.SkillStreamHandler
+import com.amazon.ask.dispatcher.request.handler.impl.ConnectionsRequestHandler
+import com.lorenjamison.alexa.triviaroyale.handler.CreatePlayerIntentHandler
 import com.lorenjamison.alexa.triviaroyale.handler.HearRulesIntentHandler
 import com.lorenjamison.alexa.triviaroyale.handler.LaunchRequestHandler
 
@@ -16,7 +18,8 @@ class TriviaRoyaleStreamHandler extends SkillStreamHandler {
                         new LaunchRequestHandler(),
                         new HearRulesIntentHandler(),
                         new CancelAndStopIntentHandler(),
-                        new SessionEndedRequestHandler())
+                        new SessionEndedRequestHandler(),
+                        new CreatePlayerIntentHandler())
                 .build()
     }
 

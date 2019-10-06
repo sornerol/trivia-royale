@@ -26,7 +26,6 @@ class HearRulesIntentHandler implements RequestHandler {
     Optional<Response> handle(HandlerInput input) {
         ResponseBuilder response = input.getResponseBuilder()
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
-        Player player = new Player(AlexaSdkHelper.getUserId(input))
         String responseMessage = Messages.RULES_MESSAGE
         String repromptMessage
 
