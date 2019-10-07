@@ -35,7 +35,8 @@ class LaunchRequestHandler implements RequestHandler {
             repromptMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE
         } else {
             sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_GAME)
-            String availableCategories = Messages.getAvailableCategoryListMessage(player)
+            sessionAttributes.put(SessionAttributes.PLAYER_ID, player.id)
+            String availableCategories = Messages.getAvailableCategoryListMessage(player.id)
             responseMessage = "${Messages.EXISTING_PLAYER_WELCOME_MESSAGE} " +
                     "${Messages.CHOOSE_CATEGORY_MESSAGE} " +
                     "${availableCategories}"

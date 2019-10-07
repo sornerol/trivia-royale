@@ -38,8 +38,9 @@ class CreatePlayerIntentHandler implements RequestHandler {
         Player newPlayer = new Player(newPlayerBase)
 
         sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_GAME)
+        sessionAttributes.put(SessionAttributes.PLAYER_ID, newPlayer.id)
         String responseMessage = Messages.CHOOSE_CATEGORY_MESSAGE
-        String availableCategories = CategoryService.getCategoriesAvailableForPlayer(newPlayer)
+        String availableCategories = CategoryService.getCategoriesAvailableForPlayer(newPlayer.id)
         responseMessage += availableCategories
         String repromptMessage = availableCategories
 

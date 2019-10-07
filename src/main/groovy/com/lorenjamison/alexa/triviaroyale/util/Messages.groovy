@@ -21,10 +21,12 @@ class Messages {
 
     static final CHOOSE_CATEGORY_MESSAGE = "A new round of Trivia Royale is about to start. Which category do you want to play? "
 
+    static final INVALID_CATEGORY_SELECTION_MESSAGE = "Sorry, that's not a valid category. "
+
     static final STARTING_NEW_GAME_MESSAGE = "Okay. Hold on while I find some opponents."
 
-    static String getAvailableCategoryListMessage(Player player) {
-        List<Category> availableCategories = CategoryService.getCategoriesAvailableForPlayer(player)
+    static String getAvailableCategoryListMessage(long playerId) {
+        List<Category> availableCategories = CategoryService.getCategoriesAvailableForPlayer(playerId)
         String categoryListMessage = "You can choose from these categories. "
         for (int i = 0; i < availableCategories.size(); i++) {
             if (i + 1 >= availableCategories.size()) {
