@@ -53,7 +53,7 @@ class NewGameIntentHandler implements RequestHandler {
         response.build()
     }
 
-
+    //TODO: This probably belongs in AlexaSdkHelper since it's used for multiple RequestHandlers with different slots.
     private String getRequestedCategory(IntentRequest intentRequest) {
         Map<String, Slot> slots = intentRequest.intent.slots
         slots[CATEGORY_SLOT_KEY].value
