@@ -24,7 +24,6 @@ class HearRulesIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        ResponseBuilder response = input.getResponseBuilder()
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
         String responseMessage = Messages.RULES_MESSAGE
         String repromptMessage
@@ -37,12 +36,7 @@ class HearRulesIntentHandler implements RequestHandler {
             //TODO - Prompt player on how to continue
         }
 
-        response.with {
-            withSpeech(responseMessage)
-            withReprompt(repromptMessage)
-            withSimpleCard(Constants.SKILL_TITLE, responseMessage)
-            withShouldEndSession(false)
-        }
+        response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
 
         return response.build()
     }

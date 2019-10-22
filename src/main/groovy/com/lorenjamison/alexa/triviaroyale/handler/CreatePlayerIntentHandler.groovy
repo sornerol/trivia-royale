@@ -25,7 +25,6 @@ class CreatePlayerIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        ResponseBuilder response = input.getResponseBuilder()
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
         PlayerBase newPlayerBase = new PlayerBase()
         newPlayerBase.with {
@@ -37,18 +36,10 @@ class CreatePlayerIntentHandler implements RequestHandler {
 
         sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_GAME)
         sessionAttributes.put(SessionAttributes.PLAYER_ID, newPlayer.id)
-        String responseMessage = Messages.CHOOSE_CATEGORY_MESSAGE
-        String availableCategories = CategoryService.getCategoriesAvailableForPlayer(newPlayer.id)
-        responseMessage += availableCategories
-        String repromptMessage = availableCategories
+        String responseMessage = "Thank you. ${Messages.ASK_TO_START_NEW_GAME_MESSAGE}"
+        String repromptMessage = Messages.ASK_TO_START_NEW_GAME_MESSAGE
 
-        response.with {
-            withSpeech(responseMessage)
-            withReprompt(repromptMessage)
-            withSimpleCard(Constants.SKILL_TITLE, responseMessage)
-            withShouldEndSession(false)
-        }
-
+        response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
         response.build()
     }
 }

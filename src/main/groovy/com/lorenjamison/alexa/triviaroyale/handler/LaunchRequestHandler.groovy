@@ -23,7 +23,6 @@ class LaunchRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        ResponseBuilder response = input.getResponseBuilder()
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
         Player player = new Player(AlexaSdkHelper.getUserId(input))
         String responseMessage
@@ -36,19 +35,12 @@ class LaunchRequestHandler implements RequestHandler {
         } else {
             sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_GAME)
             sessionAttributes.put(SessionAttributes.PLAYER_ID, player.id)
-            String availableCategories = Messages.getAvailableCategoryListMessage(player.id)
-            responseMessage = "${Messages.EXISTING_PLAYER_WELCOME_MESSAGE} " +
-                    "${Messages.CHOOSE_CATEGORY_MESSAGE} " +
-                    "${availableCategories}"
-            repromptMessage = "${Messages.CHOOSE_CATEGORY_MESSAGE} ${availableCategories}"
-        }
 
-        response.with {
-            withSpeech(responseMessage)
-            withReprompt(repromptMessage)
-            withSimpleCard(Constants.SKILL_TITLE, responseMessage)
-            withShouldEndSession(false)
+            responseMessage = "${Messages.EXISTING_PLAYER_WELCOME_MESSAGE} " +
+                    "${Messages.ASK_TO_START_NEW_GAME_MESSAGE} "
+            repromptMessage = Messages.ASK_TO_START_NEW_GAME_MESSAGE
         }
+        response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
 
         return response.build()
     }

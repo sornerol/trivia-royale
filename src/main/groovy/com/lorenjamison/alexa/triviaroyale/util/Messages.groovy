@@ -19,7 +19,7 @@ class Messages {
 
     static final EXISTING_PLAYER_WELCOME_MESSAGE = "Welcome back to Trivia Royale! "
 
-    static final CHOOSE_CATEGORY_MESSAGE = "A new round of Trivia Royale is about to start. Which category do you want to play? "
+    static final ASK_TO_START_NEW_GAME_MESSAGE = "A new round of Trivia Royale is about to start. Would you like to play?"
 
     static final INVALID_CATEGORY_SELECTION_MESSAGE = "Sorry, that's not a valid category. "
 

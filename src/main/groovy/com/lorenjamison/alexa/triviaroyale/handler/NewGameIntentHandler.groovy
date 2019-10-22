@@ -25,7 +25,6 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        ResponseBuilder response = input.getResponseBuilder()
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
         String responseMessage
         String repromptMessage
@@ -41,12 +40,8 @@ class NewGameIntentHandler implements RequestHandler {
             //TODO: Set up new game for selected category
         }
 
-        response.with {
-            withSpeech(responseMessage)
-            withReprompt(repromptMessage)
-            withSimpleCard(Constants.SKILL_TITLE, responseMessage)
-            withShouldEndSession(false)
-        }
+        response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
+
         response.build()
     }
 }

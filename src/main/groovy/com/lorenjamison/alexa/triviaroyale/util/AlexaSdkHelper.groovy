@@ -3,6 +3,7 @@ package com.lorenjamison.alexa.triviaroyale.util
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Slot
+import com.amazon.ask.response.ResponseBuilder
 
 class AlexaSdkHelper {
     //TODO: Not sure if this is the best place for these constants to live
@@ -17,5 +18,19 @@ class AlexaSdkHelper {
         IntentRequest request = (IntentRequest) input.requestEnvelope.request
         Map<String, Slot> slots = request.intent.slots
         slots[key].value
+    }
+
+    static ResponseBuilder responseWithSimpleCard(HandlerInput input,
+                                                  String responseMessage,
+                                                  String repromptMessage) {
+        ResponseBuilder response = input.getResponseBuilder()
+        response.with {
+            withSpeech(responseMessage)
+            withReprompt(repromptMessage)
+            withSimpleCard(Constants.SKILL_TITLE, responseMessage)
+            withShouldEndSession(false)
+        }
+
+        response
     }
 }
