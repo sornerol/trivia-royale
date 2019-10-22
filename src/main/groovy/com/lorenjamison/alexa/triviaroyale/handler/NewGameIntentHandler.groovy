@@ -25,23 +25,14 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
+        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage
         String repromptMessage
         long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
-        String requestedCategory = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.CATEGORY_SLOT_KEY)
 
-        if (!CategoryService.isCategoryAvailableForPlayer(requestedCategory, playerId)) {
-            String availableCategoriesMessage = CategoryService.getCategoriesAvailableForPlayer(playerId)
+        //TODO: create new game
 
-            responseMessage = Messages.INVALID_CATEGORY_SELECTION_MESSAGE + availableCategoriesMessage
-            repromptMessage = availableCategoriesMessage
-        } else {
-            //TODO: Set up new game for selected category
-        }
-
-        response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
-
+        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
         response.build()
     }
 }

@@ -21,13 +21,11 @@ class RepeatIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        String responseMessage
-        String repromptMessage
+        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
+        String responseMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
+        String repromptMessage = responseMessage
 
-        Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
-        //TODO: Implement handle
-
-        response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
+        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
         response.build()
     }
 }

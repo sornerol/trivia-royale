@@ -4,40 +4,29 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
-import com.lorenjamison.alexa.triviaroyale.dataobject.Player
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
-import com.lorenjamison.alexa.triviaroyale.util.Constants
-import com.lorenjamison.alexa.triviaroyale.util.GameState
 import com.lorenjamison.alexa.triviaroyale.util.Messages
 import com.lorenjamison.alexa.triviaroyale.util.SessionAttributes
 
 import static com.amazon.ask.request.Predicates.intentName
-import static com.amazon.ask.request.Predicates.sessionAttribute
 
 class HearRulesIntentHandler implements RequestHandler {
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(intentName("AMAZON.HelpIntent")) ||
-                input.matches(intentName("AMAZON.YesIntent") &
-                        sessionAttribute(SessionAttributes.GAME_STATE, GameState.NEW_PLAYER_HEAR_RULES))
+        input.matches(intentName("AMAZON.HelpIntent"))
     }
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
+        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage = Messages.RULES_MESSAGE
         String repromptMessage
 
-        if (sessionAttributes[SessionAttributes.GAME_STATE] == GameState.NEW_PLAYER_HEAR_RULES) {
-            sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_PLAYER_SETUP)
-            responseMessage += Messages.REQUEST_NAME_MESSAGE
-            repromptMessage = Messages.REQUEST_NAME_MESSAGE
-        } else {
-            //TODO - Prompt player on how to continue
-        }
+        String nextActionMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
+        responseMessage += nextActionMessage
+        repromptMessage = nextActionMessage
 
-        response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
-
-        return response.build()
+        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
+        response.build()
     }
 }

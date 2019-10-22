@@ -23,25 +23,26 @@ class LaunchRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes()
+        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         Player player = new Player(AlexaSdkHelper.getUserId(input))
         String responseMessage
         String repromptMessage
 
         if (player.name == null) {
-            sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_PLAYER_HEAR_RULES)
-            responseMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE
-            repromptMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE
+            sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_PLAYER_SETUP)
+            responseMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE + Messages.RULES_MESSAGE + Messages.ASK_FOR_NAME_MESSAGE
+            repromptMessage = Messages.ASK_FOR_NAME_MESSAGE
         } else {
             sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_GAME)
             sessionAttributes.put(SessionAttributes.PLAYER_ID, player.id)
 
             responseMessage = "${Messages.EXISTING_PLAYER_WELCOME_MESSAGE} " +
-                    "${Messages.ASK_TO_START_NEW_GAME_MESSAGE} "
+                    "${Messages.ASK_TO_START_NEW_GAME_MESSAGE}"
             repromptMessage = Messages.ASK_TO_START_NEW_GAME_MESSAGE
         }
-        response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
 
-        return response.build()
+        sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
+        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
+        response.build()
     }
 }
