@@ -2,13 +2,13 @@ package com.lorenjamison.alexa.triviaroyale.handler
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
-import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Response
-import com.amazon.ask.model.Slot
 import com.amazon.ask.response.ResponseBuilder
+
 import com.lorenjamison.alexa.triviaroyale.dataobject.Category
 import com.lorenjamison.alexa.triviaroyale.dataobject.Player
 import com.lorenjamison.alexa.triviaroyale.service.CategoryService
+import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
 import com.lorenjamison.alexa.triviaroyale.util.Constants
 import com.lorenjamison.alexa.triviaroyale.util.GameState
 import com.lorenjamison.alexa.triviaroyale.util.Messages
@@ -18,8 +18,6 @@ import static com.amazon.ask.request.Predicates.intentName
 import static com.amazon.ask.request.Predicates.sessionAttribute
 
 class NewGameIntentHandler implements RequestHandler {
-    static final String CATEGORY_SLOT_KEY = "category"
-
     @Override
     boolean canHandle(HandlerInput input) {
         input.matches(intentName("NewGameIntent") & sessionAttribute(SessionAttributes.GAME_STATE, GameState.NEW_GAME))
@@ -32,7 +30,7 @@ class NewGameIntentHandler implements RequestHandler {
         String responseMessage
         String repromptMessage
         long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
-        String requestedCategory = getRequestedCategory((IntentRequest) input.requestEnvelope.request)
+        String requestedCategory = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.CATEGORY_SLOT_KEY)
 
         if (!CategoryService.isCategoryAvailableForPlayer(requestedCategory, playerId)) {
             String availableCategoriesMessage = CategoryService.getCategoriesAvailableForPlayer(playerId)
@@ -43,7 +41,6 @@ class NewGameIntentHandler implements RequestHandler {
             //TODO: Set up new game for selected category
         }
 
-
         response.with {
             withSpeech(responseMessage)
             withReprompt(repromptMessage)
@@ -51,11 +48,5 @@ class NewGameIntentHandler implements RequestHandler {
             withShouldEndSession(false)
         }
         response.build()
-    }
-
-    //TODO: This probably belongs in AlexaSdkHelper since it's used for multiple RequestHandlers with different slots.
-    private String getRequestedCategory(IntentRequest intentRequest) {
-        Map<String, Slot> slots = intentRequest.intent.slots
-        slots[CATEGORY_SLOT_KEY].value
     }
 }
