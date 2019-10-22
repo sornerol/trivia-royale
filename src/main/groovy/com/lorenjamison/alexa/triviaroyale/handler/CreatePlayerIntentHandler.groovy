@@ -33,6 +33,7 @@ class CreatePlayerIntentHandler implements RequestHandler {
             alexaId = AlexaSdkHelper.getUserId(input)
         }
         Player newPlayer = new Player(newPlayerBase)
+        newPlayer.save()
 
         sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_GAME)
         sessionAttributes.put(SessionAttributes.PLAYER_ID, newPlayer.id)
