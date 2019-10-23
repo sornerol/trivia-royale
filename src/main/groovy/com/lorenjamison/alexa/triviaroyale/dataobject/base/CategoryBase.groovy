@@ -1,6 +1,6 @@
 package com.lorenjamison.alexa.triviaroyale.dataobject.base
 
 class CategoryBase {
-    int id
+    long id
     String name
 }

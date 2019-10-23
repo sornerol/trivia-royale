@@ -48,11 +48,11 @@ class NewGameIntentHandler implements RequestHandler {
         long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
 
         Quiz newQuiz = QuizService.startNewQuiz(playerId)
-        sessionAttributes.put(SessionAttributes.QUIZ_ID, newQuiz.id)
+        sessionAttributes.put(SessionAttributes.QUIZ, newQuiz)
         sessionAttributes.put(SessionAttributes.QUESTION_NUMBER, 1)
         sessionAttributes.put(SessionAttributes.CURRENT_HEALTH, Constants.STARTING_HEALTH)
 
-        String question = QuestionService.getQuizQuestion(newQuiz.id, (int) sessionAttributes[SessionAttributes.QUESTION_NUMBER])
+        String question = QuestionService.getQuizQuestion(newQuiz, (int) sessionAttributes[SessionAttributes.QUESTION_NUMBER])
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, question)
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, question, question)
         response.build()
