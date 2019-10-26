@@ -17,6 +17,8 @@ class AnswerQuestionIntentHandler implements RequestHandler{
 
     @Override
     Optional<Response> handle(HandlerInput input) {
+        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
+        long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
 
     }
 

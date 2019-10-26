@@ -2,24 +2,14 @@ package com.lorenjamison.alexa.triviaroyale.handler
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
-import com.amazon.ask.model.Directive
 import com.amazon.ask.model.Response
-import com.amazon.ask.model.dialog.DelegateDirective
-import com.amazon.ask.model.interfaces.audioplayer.AudioItem
-import com.amazon.ask.model.interfaces.audioplayer.PlayDirective
 import com.amazon.ask.model.services.directive.DirectiveServiceClient
 import com.amazon.ask.model.services.directive.SendDirectiveRequest
 import com.amazon.ask.model.services.directive.SpeakDirective
 import com.amazon.ask.response.ResponseBuilder
-
-import com.lorenjamison.alexa.triviaroyale.dataobject.Category
-import com.lorenjamison.alexa.triviaroyale.dataobject.Player
-import com.lorenjamison.alexa.triviaroyale.dataobject.Question
-import com.lorenjamison.alexa.triviaroyale.dataobject.Quiz
-import com.lorenjamison.alexa.triviaroyale.dataobject.base.QuestionBase
-import com.lorenjamison.alexa.triviaroyale.service.CategoryService
+import com.lorenjamison.alexa.triviaroyale.dataobject.Game
+import com.lorenjamison.alexa.triviaroyale.service.GameService
 import com.lorenjamison.alexa.triviaroyale.service.QuestionService
-import com.lorenjamison.alexa.triviaroyale.service.QuizService
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
 import com.lorenjamison.alexa.triviaroyale.util.Constants
 import com.lorenjamison.alexa.triviaroyale.util.GameState
@@ -47,17 +37,16 @@ class NewGameIntentHandler implements RequestHandler {
 
         long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
 
-        Quiz newQuiz = QuizService.startNewQuiz(playerId)
-        LinkedHashMap<Long, Integer> opponents = new LinkedHashMap<Long, Integer>()
-        newQuiz.opponentList.each {
-            opponent -> opponents.put(opponent, Constants.STARTING_HEALTH)
+        Game newGame = GameService.startNewGame(playerId)
+        LinkedHashMap<Long, Integer> players = new LinkedHashMap<Long, Integer>()
+        newGame.playerList.each {
+            player -> players.put(player, Constants.STARTING_HEALTH)
         }
 
-        sessionAttributes.put(SessionAttributes.OPPONENTS, opponents)
+        sessionAttributes.put(SessionAttributes.PLAYERS, players)
         sessionAttributes.put(SessionAttributes.QUESTION_NUMBER, 1)
-        sessionAttributes.put(SessionAttributes.CURRENT_HEALTH, Constants.STARTING_HEALTH)
 
-        String question = QuestionService.getQuizQuestion(newQuiz, (int) sessionAttributes[SessionAttributes.QUESTION_NUMBER])
+        String question = QuestionService.getQuizQuestion(newGame.quizId, (int) sessionAttributes[SessionAttributes.QUESTION_NUMBER])
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, question)
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, question, question)
         response.build()

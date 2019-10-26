@@ -4,7 +4,7 @@ import com.lorenjamison.alexa.triviaroyale.dataobject.Question
 import com.lorenjamison.alexa.triviaroyale.dataobject.Quiz
 
 class QuestionService {
-    static String getQuizQuestion(Quiz quiz, int questionNumber) {
+    static String getQuizQuestion(long quizId, int questionNumber) {
 
     }
 }
