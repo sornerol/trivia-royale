@@ -9,7 +9,7 @@ class QuizService {
 
     }
 
-    static Quiz buildQuiz(Category category) {
+    private static Quiz buildQuiz(Category category) {
 
     }
 }

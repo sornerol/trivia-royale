@@ -48,7 +48,12 @@ class NewGameIntentHandler implements RequestHandler {
         long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
 
         Quiz newQuiz = QuizService.startNewQuiz(playerId)
-        sessionAttributes.put(SessionAttributes.QUIZ, newQuiz)
+        LinkedHashMap<Long, Integer> opponents = new LinkedHashMap<Long, Integer>()
+        newQuiz.opponentList.each {
+            opponent -> opponents.put(opponent, Constants.STARTING_HEALTH)
+        }
+
+        sessionAttributes.put(SessionAttributes.OPPONENTS, opponents)
         sessionAttributes.put(SessionAttributes.QUESTION_NUMBER, 1)
         sessionAttributes.put(SessionAttributes.CURRENT_HEALTH, Constants.STARTING_HEALTH)
 
