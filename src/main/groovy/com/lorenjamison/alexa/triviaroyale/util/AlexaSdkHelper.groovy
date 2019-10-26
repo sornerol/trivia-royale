@@ -8,6 +8,7 @@ import com.amazon.ask.response.ResponseBuilder
 class AlexaSdkHelper {
     //TODO: Not sure if this is the best place for these constants to live
     static final String NAME_SLOT_KEY = "name"
+    static final String ANSWER_SLOT_KEY = "answer"
     static final String CATEGORY_SLOT_KEY = "category"
 
     static String getUserId(HandlerInput input) {
