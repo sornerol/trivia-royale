@@ -26,7 +26,7 @@ class AnswerQuestionIntentHandler implements RequestHandler{
         String playerAnswer = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
 
         boolean isCorrectAnswer = AnswerService.checkAnswer(gameId, questionNumber, playerAnswer)
-        
+
     }
 
 }

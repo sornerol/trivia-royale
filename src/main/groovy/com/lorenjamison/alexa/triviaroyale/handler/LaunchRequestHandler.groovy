@@ -7,7 +7,6 @@ import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
 import com.lorenjamison.alexa.triviaroyale.dataobject.Player
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
-import com.lorenjamison.alexa.triviaroyale.util.Constants
 import com.lorenjamison.alexa.triviaroyale.util.Messages
 import com.lorenjamison.alexa.triviaroyale.util.GameState
 import com.lorenjamison.alexa.triviaroyale.util.SessionAttributes
@@ -30,15 +29,15 @@ class LaunchRequestHandler implements RequestHandler {
 
         if (player.name == null) {
             sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_PLAYER_SETUP)
-            responseMessage = Messages.NEW_PLAYER_WELCOME_MESSAGE + Messages.RULES_MESSAGE + Messages.ASK_FOR_NAME_MESSAGE
-            repromptMessage = Messages.ASK_FOR_NAME_MESSAGE
+            responseMessage = Messages.WELCOME_NEW_PLAYER + Messages.RULES + Messages.ASK_FOR_NAME
+            repromptMessage = Messages.ASK_FOR_NAME
         } else {
             sessionAttributes.put(SessionAttributes.GAME_STATE, GameState.NEW_GAME)
             sessionAttributes.put(SessionAttributes.PLAYER_ID, player.id)
 
-            responseMessage = "${Messages.EXISTING_PLAYER_WELCOME_MESSAGE} " +
-                    "${Messages.ASK_TO_START_NEW_GAME_MESSAGE}"
-            repromptMessage = Messages.ASK_TO_START_NEW_GAME_MESSAGE
+            responseMessage = "${Messages.WELCOME_EXISTING_PLAYER} " +
+                    "${Messages.ASK_TO_START_NEW_GAME}"
+            repromptMessage = Messages.ASK_TO_START_NEW_GAME
         }
 
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)

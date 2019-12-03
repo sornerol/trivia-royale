@@ -30,7 +30,7 @@ class NewGameIntentHandler implements RequestHandler {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
         DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
-        SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME_MESSAGE).build()
+        SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
         //TODO: add audio clip
         SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
         directiveServiceClient.enqueue(sendDirectiveRequest)

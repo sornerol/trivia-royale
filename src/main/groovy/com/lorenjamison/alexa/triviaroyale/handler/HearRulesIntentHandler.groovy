@@ -19,7 +19,7 @@ class HearRulesIntentHandler implements RequestHandler {
     @Override
     Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        String responseMessage = Messages.RULES_MESSAGE
+        String responseMessage = Messages.RULES
         String repromptMessage
 
         String nextActionMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
