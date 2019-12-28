@@ -12,7 +12,6 @@ import com.lorenjamison.alexa.triviaroyale.data.Session
 import com.lorenjamison.alexa.triviaroyale.service.SessionService
 import com.lorenjamison.alexa.triviaroyale.service.QuestionService
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
-import com.lorenjamison.alexa.triviaroyale.util.Constants
 import com.lorenjamison.alexa.triviaroyale.util.GameState
 import com.lorenjamison.alexa.triviaroyale.util.Messages
 import com.lorenjamison.alexa.triviaroyale.util.SessionAttributes
@@ -39,13 +38,8 @@ class NewGameIntentHandler implements RequestHandler {
         directiveServiceClient.enqueue(sendDirectiveRequest)
 
         long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
-
         Session newGame = SessionService.startNewSession(playerId)
-
-        sessionAttributes.put(SessionAttributes.GAME_ID, newGame.id)
-        sessionAttributes.put(SessionAttributes.PLAYERS_HEALTH, newGame.playersHealth)
-        sessionAttributes.put(SessionAttributes.QUESTION_NUMBER, FIRST_QUESTION)
-
+        sessionAttributes = SessionService.updateSessionAttributesWithSession(sessionAttributes, newGame)
         Question question = QuestionService.getQuizQuestion(newGame.quizId, FIRST_QUESTION)
 
         int correctAnswerIndex = QuestionService.chooseRandomCorrectAnswerIndex(question)
