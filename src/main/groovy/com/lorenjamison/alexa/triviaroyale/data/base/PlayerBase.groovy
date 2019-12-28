@@ -1,4 +1,4 @@
-package com.lorenjamison.alexa.triviaroyale.dataobject.base
+package com.lorenjamison.alexa.triviaroyale.data.base
 
 class PlayerBase {
     long id

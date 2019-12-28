@@ -1,10 +1,15 @@
 package com.lorenjamison.alexa.triviaroyale.service
 
-import com.lorenjamison.alexa.triviaroyale.dataobject.Question
-import com.lorenjamison.alexa.triviaroyale.dataobject.Quiz
+import com.lorenjamison.alexa.triviaroyale.data.Question
+import com.lorenjamison.alexa.triviaroyale.data.Quiz
 
 class QuestionService {
-    static String getQuizQuestion(long quizId, int questionNumber) {
+    static Question getQuizQuestion(long quizId, int questionNumber) {
 
+    }
+
+    static int chooseRandomCorrectAnswerIndex(Question question) {
+        Random random = new Random(System.currentTimeMillis())
+        random.nextInt(question.otherAnswers.size())
     }
 }

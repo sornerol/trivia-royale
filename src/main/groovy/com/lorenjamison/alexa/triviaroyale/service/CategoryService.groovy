@@ -1,7 +1,7 @@
 package com.lorenjamison.alexa.triviaroyale.service
 
-import com.lorenjamison.alexa.triviaroyale.dataobject.Category
-import com.lorenjamison.alexa.triviaroyale.dataobject.Player
+import com.lorenjamison.alexa.triviaroyale.data.Category
+import com.lorenjamison.alexa.triviaroyale.data.Player
 
 class CategoryService {
     static List<Category> getCategoriesAvailableForPlayer(long playerId) {

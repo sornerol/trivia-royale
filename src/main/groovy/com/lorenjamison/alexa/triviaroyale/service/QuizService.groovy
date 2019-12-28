@@ -1,8 +1,8 @@
 package com.lorenjamison.alexa.triviaroyale.service
 
-import com.lorenjamison.alexa.triviaroyale.dataobject.Category
-import com.lorenjamison.alexa.triviaroyale.dataobject.Player
-import com.lorenjamison.alexa.triviaroyale.dataobject.Quiz
+import com.lorenjamison.alexa.triviaroyale.data.Category
+import com.lorenjamison.alexa.triviaroyale.data.Player
+import com.lorenjamison.alexa.triviaroyale.data.Quiz
 
 class QuizService {
     static Quiz startNewQuiz(long playerId) {

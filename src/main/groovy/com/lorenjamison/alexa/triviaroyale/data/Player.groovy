@@ -1,6 +1,6 @@
-package com.lorenjamison.alexa.triviaroyale.dataobject
+package com.lorenjamison.alexa.triviaroyale.data
 
-import com.lorenjamison.alexa.triviaroyale.dataobject.base.PlayerBase
+import com.lorenjamison.alexa.triviaroyale.data.base.PlayerBase
 
 
 class Player extends PlayerBase {

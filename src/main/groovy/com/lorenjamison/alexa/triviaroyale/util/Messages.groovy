@@ -1,7 +1,8 @@
 package com.lorenjamison.alexa.triviaroyale.util
 
-import com.lorenjamison.alexa.triviaroyale.dataobject.Category
-import com.lorenjamison.alexa.triviaroyale.dataobject.Player
+import com.lorenjamison.alexa.triviaroyale.data.Category
+import com.lorenjamison.alexa.triviaroyale.data.Player
+import com.lorenjamison.alexa.triviaroyale.data.Question
 import com.lorenjamison.alexa.triviaroyale.service.CategoryService
 
 class Messages {
@@ -35,5 +36,9 @@ class Messages {
             categoryListMessage += "${availableCategories[i].name}. "
         }
         categoryListMessage
+    }
+
+    static String buildQuestionMessage(Question question, int correctAnswerIndex) {
+
     }
 }

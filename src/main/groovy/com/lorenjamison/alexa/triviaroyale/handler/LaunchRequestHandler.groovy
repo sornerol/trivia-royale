@@ -5,7 +5,7 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.LaunchRequest
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
-import com.lorenjamison.alexa.triviaroyale.dataobject.Player
+import com.lorenjamison.alexa.triviaroyale.data.Player
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
 import com.lorenjamison.alexa.triviaroyale.util.Messages
 import com.lorenjamison.alexa.triviaroyale.util.GameState

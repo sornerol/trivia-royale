@@ -4,6 +4,7 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.lorenjamison.alexa.triviaroyale.service.AnswerService
+import com.lorenjamison.alexa.triviaroyale.service.HealthService
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
 import com.lorenjamison.alexa.triviaroyale.util.GameState
 import com.lorenjamison.alexa.triviaroyale.util.SessionAttributes
@@ -20,13 +21,10 @@ class AnswerQuestionIntentHandler implements RequestHandler{
     @Override
     Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
-        long gameId = (long) sessionAttributes[SessionAttributes.GAME_ID]
-        int questionNumber = (int) sessionAttributes[SessionAttributes.QUESTION_NUMBER]
         String playerAnswer = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
 
-        boolean isCorrectAnswer = AnswerService.checkAnswer(gameId, questionNumber, playerAnswer)
-
+        boolean wasAnswerCorrect = AnswerService.checkAnswer(playerAnswer, sessionAttributes)
+        sessionAttributes = HealthService.adjustHealth(wasAnswerCorrect, sessionAttributes)
     }
 
 }
