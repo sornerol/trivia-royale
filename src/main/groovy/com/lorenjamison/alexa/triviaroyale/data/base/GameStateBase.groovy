@@ -2,7 +2,7 @@ package com.lorenjamison.alexa.triviaroyale.data.base
 
 import com.lorenjamison.alexa.triviaroyale.data.enums.SessionStatus
 
-class SessionBase {
+class GameStateBase {
     long id
     SessionStatus status
     long quizId

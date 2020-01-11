@@ -8,8 +8,7 @@ import com.amazon.ask.model.services.directive.SendDirectiveRequest
 import com.amazon.ask.model.services.directive.SpeakDirective
 import com.amazon.ask.response.ResponseBuilder
 import com.lorenjamison.alexa.triviaroyale.data.Question
-import com.lorenjamison.alexa.triviaroyale.data.Session
-import com.lorenjamison.alexa.triviaroyale.service.SessionService
+import com.lorenjamison.alexa.triviaroyale.service.GameStateService
 import com.lorenjamison.alexa.triviaroyale.service.QuestionService
 import com.lorenjamison.alexa.triviaroyale.util.AlexaSdkHelper
 import com.lorenjamison.alexa.triviaroyale.util.GameState
@@ -31,20 +30,26 @@ class NewGameIntentHandler implements RequestHandler {
     Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
+        /*
+        If we're having to create a brand new quiz (because there aren't any unplayed quizzes for the player)
+        we'll need a bit of a delay to build the new quiz. We'll play an audio clip here as we're setting up the game
+        to let the player know we're working.
+         */
         DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
         SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
         //TODO: add audio clip
         SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
         directiveServiceClient.enqueue(sendDirectiveRequest)
 
-        long playerId = (long) sessionAttributes[SessionAttributes.PLAYER_ID]
-        Session newGame = SessionService.startNewSession(playerId)
-        sessionAttributes = SessionService.updateSessionAttributesWithSession(sessionAttributes, newGame)
+        long playerId = sessionAttributes[SessionAttributes.PLAYER_ID] as long
+        com.lorenjamison.alexa.triviaroyale.data.GameState newGame = GameStateService.startNewGame(playerId)
+        sessionAttributes = GameStateService.updateSessionAttributesWithGameState(sessionAttributes, newGame)
         Question question = QuestionService.getQuizQuestion(newGame.quizId, FIRST_QUESTION)
 
         int correctAnswerIndex = QuestionService.chooseRandomCorrectAnswerIndex(question)
         sessionAttributes.put(SessionAttributes.CORRECT_ANSWER_INDEX, correctAnswerIndex)
         sessionAttributes.put(SessionAttributes.CORRECT_ANSWER_TEXT, question.correctAnswer)
+
         String questionString = Messages.buildQuestionMessage(question, correctAnswerIndex)
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, questionString)
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, questionString, questionString)

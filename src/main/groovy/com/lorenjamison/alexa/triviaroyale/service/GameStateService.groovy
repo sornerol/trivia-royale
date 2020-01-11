@@ -1,20 +1,20 @@
 package com.lorenjamison.alexa.triviaroyale.service
 
-import com.lorenjamison.alexa.triviaroyale.data.Session
+import com.lorenjamison.alexa.triviaroyale.data.GameState
 import com.lorenjamison.alexa.triviaroyale.data.enums.SessionStatus
 import com.lorenjamison.alexa.triviaroyale.util.SessionAttributes
 
-class SessionService {
-    static Session startNewSession(long playerId) {
+class GameStateService {
+    static GameState startNewGame(long playerId) {
 
     }
 
-    static Session getActiveSession(long playerId) {
+    static GameState getActiveGame(long playerId) {
 
     }
 
-    static Session getSessionFromAlexaSessionAttributes(Map<String, Object> sessionAttributes) {
-        Session session = new Session()
+    static GameState getSessionFromAlexaSessionAttributes(Map<String, Object> sessionAttributes) {
+        GameState session = new GameState()
         session.with {
             id = sessionAttributes[SessionAttributes.SESSION_ID] as long
             status = SessionStatus.ACTIVE   //we don't need to store the session status since all incoming sessions are active
@@ -26,13 +26,13 @@ class SessionService {
         session
     }
 
-    static Map<String, Object> updateSessionAttributesWithSession(Map<String, Object> sessionAttributes, Session session) {
+    static Map<String, Object> updateSessionAttributesWithGameState(Map<String, Object> sessionAttributes, GameState gameState) {
         sessionAttributes.with {
-            put(SessionAttributes.SESSION_ID, session.id)
-            put(SessionAttributes.QUIZ_ID, session.quizId)
-            put(SessionAttributes.QUESTION_NUMBER, session.currentQuestionIndex)
-            put(SessionAttributes.PLAYER_ID, session.playerId)
-            put(SessionAttributes.PLAYERS_HEALTH, session.playersHealth)
+            put(SessionAttributes.SESSION_ID, gameState.id)
+            put(SessionAttributes.QUIZ_ID, gameState.quizId)
+            put(SessionAttributes.QUESTION_NUMBER, gameState.currentQuestionIndex)
+            put(SessionAttributes.PLAYER_ID, gameState.playerId)
+            put(SessionAttributes.PLAYERS_HEALTH, gameState.playersHealth)
         }
         sessionAttributes
     }
