@@ -18,7 +18,7 @@ import static com.amazon.ask.request.Predicates.sessionAttribute
 class CreatePlayerIntentHandler implements RequestHandler {
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(intentName("NewPlayerIntent") & sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_PLAYER_SETUP))
+        input.matches(intentName('NewPlayerIntent') & sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_PLAYER_SETUP))
     }
 
     @Override
@@ -26,16 +26,14 @@ class CreatePlayerIntentHandler implements RequestHandler {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         PlayerBase newPlayerBase = new PlayerBase()
         newPlayerBase.with {
-            isHousePlayer = false
             name = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.NAME_SLOT_KEY)
             alexaId = AlexaSdkHelper.getUserId(input)
         }
-        Player newPlayer = new Player(newPlayerBase)
-        newPlayer.save()
+        Player newPlayer = Player.createNewPlayer(newPlayerBase)
 
         sessionAttributes.put(SessionAttributes.GAME_STATE, AppState.NEW_GAME)
-        sessionAttributes.put(SessionAttributes.PLAYER_ID, newPlayer.id)
-        String responseMessage = "Thank you. ${Messages.ASK_TO_START_NEW_GAME}"
+        sessionAttributes.put(SessionAttributes.PLAYER_ID, newPlayer.alexaId)
+        String responseMessage = 'Thank you. ' + Messages.ASK_TO_START_NEW_GAME
         String repromptMessage = Messages.ASK_TO_START_NEW_GAME
 
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)

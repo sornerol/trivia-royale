@@ -1,17 +1,10 @@
 package com.lorenjamison.triviaroyale.data
 
-
 import com.lorenjamison.triviaroyale.data.base.PlayerBase
 
-
-class Player extends PlayerBase {
+class Player extends PlayerBase implements DataObject {
 
     PlayerBase playerUpdater
-
-    Player(PlayerBase playerUpdater) {
-        this.playerUpdater = playerUpdater
-        this.load()
-    }
 
     Player(String alexaId) {
         this.playerUpdater = new PlayerBase()
@@ -19,16 +12,20 @@ class Player extends PlayerBase {
         this.load()
     }
 
-    Player(long id) {
-        this.playerUpdater = new PlayerBase()
-        playerUpdater.id = id
-        this.load()
+    static Player createNewPlayer(PlayerBase newPlayerBase) {
+        Player newPlayer = new Player()
+        newPlayer.playerUpdater = newPlayerBase
+        newPlayer.save()
+
+        newPlayer
     }
 
+    @Override
     void load() {
 
     }
 
+    @Override
     void save() {
 
     }

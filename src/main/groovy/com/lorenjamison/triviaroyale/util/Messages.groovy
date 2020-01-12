@@ -1,8 +1,6 @@
 package com.lorenjamison.triviaroyale.util
 
-import com.lorenjamison.triviaroyale.data.Category
 import com.lorenjamison.triviaroyale.data.Question
-import com.lorenjamison.triviaroyale.service.CategoryService
 
 class Messages {
     static final String WELCOME_NEW_PLAYER = "Welcome to Trivia Royale! "
@@ -21,21 +19,7 @@ class Messages {
 
     static final String ASK_TO_START_NEW_GAME = "A new round of Trivia Royale is about to start. Would you like to play?"
 
-    static final String INVALID_CATEGORY_SELECTION = "Sorry, that's not a valid category. "
-
     static final String STARTING_NEW_GAME = "Okay. Hold on while I find some opponents."
-
-    static String getAvailableCategoryListMessage(long playerId) {
-        List<Category> availableCategories = CategoryService.getCategoriesAvailableForPlayer(playerId)
-        String categoryListMessage = "You can choose from these categories. "
-        for (int i = 0; i < availableCategories.size(); i++) {
-            if (i + 1 >= availableCategories.size()) {
-                categoryListMessage += "or "
-            }
-            categoryListMessage += "${availableCategories[i].name}. "
-        }
-        categoryListMessage
-    }
 
     static String buildQuestionMessage(Question question, int correctAnswerIndex) {
 

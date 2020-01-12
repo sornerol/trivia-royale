@@ -1,15 +1,15 @@
 package com.lorenjamison.triviaroyale.data
 
-
 import com.lorenjamison.triviaroyale.data.base.QuestionBase
 
+class Question extends QuestionBase implements DataObject {
 
-class Question extends QuestionBase{
-
+    @Override
     void load() {
 
     }
 
+    @Override
     void save() {
 
     }
