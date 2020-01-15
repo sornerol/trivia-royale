@@ -24,8 +24,7 @@ class PlayerTest extends Specification {
         println 'Table description: ' + createTableResult.tableDescription
 
         Player testPlayer = new Player()
-        testPlayer.alexaId = 'PLAYER#' + PLAYER_ID
-        testPlayer.sk = 'METADATA'
+        testPlayer.alexaId = PLAYER_ID
         testPlayer.name = PLAYER_NAME
         testPlayer.quizCompletion = [:]
         testPlayer.quizCompletion.put('General', '0')
@@ -33,12 +32,12 @@ class PlayerTest extends Specification {
         when:
         println testPlayer.toString()
         mapper.save(testPlayer)
-        Player testPlayerRetrieved = mapper.load(Player.class, 'PLAYER#' + PLAYER_ID, 'METADATA')
+        Player testPlayerRetrieved = mapper.load(Player.class, PLAYER_ID, 'METADATA')
         dynamoDB.shutdown()
         dbService = null
 
         then:
-        testPlayerRetrieved.alexaId == 'PLAYER#' + PLAYER_ID
+        testPlayerRetrieved.alexaId == PLAYER_ID
         testPlayerRetrieved.name == PLAYER_NAME
         testPlayerRetrieved.quizCompletion['General'] == '0'
     }

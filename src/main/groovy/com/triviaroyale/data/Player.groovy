@@ -7,20 +7,22 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
 
 @DynamoDBTable(tableName = 'TriviaRoyale')
 class Player {
-    @DynamoDBHashKey(attributeName = 'hk')
-    String alexaId
+    private String alexaId
 
+    //Our table requires a range (sort) key, but we don't really have a need for sorting players.
     @DynamoDBRangeKey(attributeName = 'sk')
-    String sk
-
+    String sk = 'METADATA'
     @DynamoDBAttribute(attributeName = 'name')
     String name
-
     @DynamoDBAttribute(attributeName = 'quizCompletion')
     LinkedHashMap<String, String> quizCompletion
 
+    @DynamoDBHashKey(attributeName = 'hk')
+    String getAlexaId() { return alexaId - 'PLAYER#' }
+    void setAlexaId(String alexaId) { this.alexaId = 'PLAYER#' + alexaId }
+
     @Override
     String toString() {
-        return "Alexa ID: ${alexaId - 'PLAYER#'}  Name: $name  Quiz Completion: ${quizCompletion.toString()}"
+        return "Alexa ID: ${getAlexaId()}  Name: $name  Quiz Completion: ${quizCompletion.toString()}"
     }
 }
