@@ -7,12 +7,20 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
 
 @DynamoDBTable(tableName = 'TriviaRoyale')
 class Player {
-    @DynamoDBHashKey
+    @DynamoDBHashKey(attributeName = 'hk')
     String alexaId
 
-    @DynamoDBRangeKey
-    String name = 'METADATA'
+    @DynamoDBRangeKey(attributeName = 'sk')
+    String sk
+
+    @DynamoDBAttribute(attributeName = 'name')
+    String name
 
     @DynamoDBAttribute(attributeName = 'quizCompletion')
     LinkedHashMap<String, String> quizCompletion
+
+    @Override
+    String toString() {
+        return "Alexa ID: ${alexaId - 'PLAYER#'}  Name: $name  Quiz Completion: ${quizCompletion.toString()}"
+    }
 }

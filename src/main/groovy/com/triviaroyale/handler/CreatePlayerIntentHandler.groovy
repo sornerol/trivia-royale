@@ -23,21 +23,21 @@ class CreatePlayerIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        PlayerBase newPlayerBase = new PlayerBase()
-        newPlayerBase.with {
-            name = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.NAME_SLOT_KEY)
-            alexaId = AlexaSdkHelper.getUserId(input)
-        }
-        Player newPlayer = Player.createNewPlayer(newPlayerBase)
-
-        sessionAttributes.put(SessionAttributes.GAME_STATE, AppState.NEW_GAME)
-        sessionAttributes.put(SessionAttributes.PLAYER_ID, newPlayer.alexaId)
-        String responseMessage = 'Thank you. ' + Messages.ASK_TO_START_NEW_GAME
-        String repromptMessage = Messages.ASK_TO_START_NEW_GAME
-
-        sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
-        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
-        response.build()
+//        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
+//        PlayerBase newPlayerBase = new PlayerBase()
+//        newPlayerBase.with {
+//            name = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.NAME_SLOT_KEY)
+//            alexaId = AlexaSdkHelper.getUserId(input)
+//        }
+//        Player newPlayer = Player.createNewPlayer(newPlayerBase)
+//
+//        sessionAttributes.put(SessionAttributes.GAME_STATE, AppState.NEW_GAME)
+//        sessionAttributes.put(SessionAttributes.PLAYER_ID, newPlayer.alexaId)
+//        String responseMessage = 'Thank you. ' + Messages.ASK_TO_START_NEW_GAME
+//        String repromptMessage = Messages.ASK_TO_START_NEW_GAME
+//
+//        sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
+//        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
+//        response.build()
     }
 }
