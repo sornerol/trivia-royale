@@ -6,11 +6,30 @@ import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded
 import com.amazonaws.services.dynamodbv2.model.CreateTableResult
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.testing.service.DynamoDbService
+import spock.lang.Shared
 import spock.lang.Specification
 
 class PlayerTest extends Specification {
     public static final String PLAYER_ID = 'testPlayer'
     public static final String PLAYER_NAME = 'Test'
+
+    @Shared
+    AmazonDynamoDB dynamoDB
+    @Shared
+    DynamoDbService dbService
+    @Shared
+    DynamoDBMapper mapper
+
+    def setupSpec() {
+        dynamoDB = DynamoDBEmbedded.create().amazonDynamoDB()
+        dbService = new DynamoDbService(dynamoDB)
+        mapper = new DynamoDBMapper(dynamoDB)
+    }
+
+    def cleanupSpec() {
+        dynamoDB.shutdown()
+        dbService = null
+    }
 
     def "Create New Player"() {
         setup:
@@ -18,7 +37,7 @@ class PlayerTest extends Specification {
         DynamoDbService dbService = new DynamoDbService(dynamoDB)
         DynamoDBMapper mapper = new DynamoDBMapper(dynamoDB)
 
-        CreateTableResult createTableResult = dbService.createTable(DynamoDBConstants.TABLE_NAME,
+        dbService.createTable(DynamoDBConstants.TABLE_NAME,
                 DynamoDBConstants.HASH_KEY,
                 DynamoDBConstants.RANGE_KEY)
 
@@ -31,8 +50,6 @@ class PlayerTest extends Specification {
         when:
         mapper.save(testPlayer)
         Player testPlayerRetrieved = mapper.load(Player.class, PLAYER_ID, 'METADATA')
-        dynamoDB.shutdown()
-        dbService = null
 
         then:
         testPlayerRetrieved.alexaId == PLAYER_ID
