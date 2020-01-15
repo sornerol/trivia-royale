@@ -40,6 +40,6 @@ class PlayerTest extends Specification {
         then:
         testPlayerRetrieved.alexaId == 'PLAYER#' + PLAYER_ID
         testPlayerRetrieved.name == PLAYER_NAME
-//        testPlayerRetrieved.quizCompletion['General'] == '0'
+        testPlayerRetrieved.quizCompletion['General'] == '0'
     }
 }
