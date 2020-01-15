@@ -12,8 +12,10 @@ class Player {
     //Our table requires a range (sort) key, but we don't really have a need for sorting players.
     @DynamoDBRangeKey(attributeName = 'sk')
     String sk = 'METADATA'
+
     @DynamoDBAttribute(attributeName = 'name')
     String name
+
     @DynamoDBAttribute(attributeName = 'quizCompletion')
     LinkedHashMap<String, String> quizCompletion
 
@@ -23,6 +25,6 @@ class Player {
 
     @Override
     String toString() {
-        return "Alexa ID: ${getAlexaId()}  Name: $name  Quiz Completion: ${quizCompletion.toString()}"
+        return "Alexa ID: ${getAlexaId()}.  Name: $name.  Quiz Completion: ${quizCompletion.toString()}."
     }
 }

@@ -21,7 +21,6 @@ class PlayerTest extends Specification {
         CreateTableResult createTableResult = dbService.createTable(TestingContstants.TABLE_NAME,
                 TestingContstants.HASH_KEY,
                 TestingContstants.RANGE_KEY)
-        println 'Table description: ' + createTableResult.tableDescription
 
         Player testPlayer = new Player()
         testPlayer.alexaId = PLAYER_ID
@@ -30,7 +29,6 @@ class PlayerTest extends Specification {
         testPlayer.quizCompletion.put('General', '0')
 
         when:
-        println testPlayer.toString()
         mapper.save(testPlayer)
         Player testPlayerRetrieved = mapper.load(Player.class, PLAYER_ID, 'METADATA')
         dynamoDB.shutdown()

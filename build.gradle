@@ -47,6 +47,4 @@ dependencies {
     testCompile "com.amazonaws:DynamoDBLocal:$DYNAMODB_VERSION"
     testCompile "org.junit.jupiter:junit-jupiter-api:$JUNIT_VERSION"
     testCompile "org.spockframework:spock-core:$SPOCK_VERSION"
-//    testCompile "com.almworks.sqlite4java:sqlite4java:1.0.392"
-
 }
