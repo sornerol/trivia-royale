@@ -1,7 +1,7 @@
 package com.triviaroyale.data
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
-import com.triviaroyale.data.enums.SessionStatus
+import com.triviaroyale.data.util.SessionStatus
 
 @DynamoDBTable(tableName = 'TriviaRoyale')
 class GameState {

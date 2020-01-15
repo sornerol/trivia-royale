@@ -1,4 +1,4 @@
-package com.triviaroyale.data.enums
+package com.triviaroyale.data.util
 
 enum SessionStatus {
     ACTIVE,

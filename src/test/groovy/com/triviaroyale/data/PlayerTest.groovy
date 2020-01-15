@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded
 import com.amazonaws.services.dynamodbv2.model.CreateTableResult
-import com.triviaroyale.testing.TestingContstants
+import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.testing.service.DynamoDbService
 import spock.lang.Specification
 
@@ -18,9 +18,9 @@ class PlayerTest extends Specification {
         DynamoDbService dbService = new DynamoDbService(dynamoDB)
         DynamoDBMapper mapper = new DynamoDBMapper(dynamoDB)
 
-        CreateTableResult createTableResult = dbService.createTable(TestingContstants.TABLE_NAME,
-                TestingContstants.HASH_KEY,
-                TestingContstants.RANGE_KEY)
+        CreateTableResult createTableResult = dbService.createTable(DynamoDBConstants.TABLE_NAME,
+                DynamoDBConstants.HASH_KEY,
+                DynamoDBConstants.RANGE_KEY)
 
         Player testPlayer = new Player()
         testPlayer.alexaId = PLAYER_ID

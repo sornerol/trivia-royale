@@ -1,7 +1,7 @@
 package com.triviaroyale.service
 
 import com.triviaroyale.data.GameState
-import com.triviaroyale.data.enums.SessionStatus
+import com.triviaroyale.data.util.SessionStatus
 import com.triviaroyale.util.SessionAttributes
 
 class GameStateService {
