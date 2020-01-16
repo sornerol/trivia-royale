@@ -1,7 +1,7 @@
 package com.triviaroyale.service
 
 import com.triviaroyale.data.GameState
-import com.triviaroyale.data.util.SessionStatus
+
 import com.triviaroyale.util.SessionAttributes
 
 class GameStateService {
@@ -17,7 +17,7 @@ class GameStateService {
         GameState session = new GameState()
         session.with {
             id = sessionAttributes[SessionAttributes.SESSION_ID] as long
-            status = SessionStatus.ACTIVE   //we don't need to store the session status since all incoming sessions are active
+            status = 'ACTIVE'  //we don't need to store the session status since all incoming sessions are active
             quizId = sessionAttributes[SessionAttributes.QUIZ_ID] as long
             currentQuestionIndex = sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int
             playerId = sessionAttributes[SessionAttributes.PLAYER_ID] as long

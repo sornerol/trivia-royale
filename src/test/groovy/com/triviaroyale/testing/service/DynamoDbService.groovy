@@ -2,8 +2,10 @@ package com.triviaroyale.testing.service
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.model.*
+import com.triviaroyale.data.util.DynamoDBConstants
 
 class DynamoDbService {
+    public static final String SESSION_STATUS = 'sessionStatus'
     AmazonDynamoDB dynamoDB
 
     DynamoDbService(AmazonDynamoDB dynamoDB) {
@@ -11,20 +13,30 @@ class DynamoDbService {
         this.dynamoDB = dynamoDB
     }
 
-    CreateTableResult createTable(String tableName, String hashKeyName, String rangeKeyName) {
+    CreateTableResult buildTestEnvironment() {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>()
-        attributeDefinitions.add(new AttributeDefinition(hashKeyName, ScalarAttributeType.S))
-        attributeDefinitions.add(new AttributeDefinition(rangeKeyName, ScalarAttributeType.S))
+        attributeDefinitions.add(new AttributeDefinition(DynamoDBConstants.HASH_KEY, ScalarAttributeType.S))
+        attributeDefinitions.add(new AttributeDefinition(DynamoDBConstants.RANGE_KEY, ScalarAttributeType.S))
+        attributeDefinitions.add(new AttributeDefinition(SESSION_STATUS, ScalarAttributeType.S))
 
         List<KeySchemaElement> keySchemaElements = new ArrayList<KeySchemaElement>()
-        keySchemaElements.add(new KeySchemaElement(hashKeyName, KeyType.HASH))
-        keySchemaElements.add(new KeySchemaElement(rangeKeyName, KeyType.RANGE))
+        keySchemaElements.add(new KeySchemaElement(DynamoDBConstants.HASH_KEY, KeyType.HASH))
+        keySchemaElements.add(new KeySchemaElement(DynamoDBConstants.RANGE_KEY, KeyType.RANGE))
+
+
+        List<LocalSecondaryIndex> localSecondaryIndexes = new ArrayList<LocalSecondaryIndex>()
+        Projection projection = new Projection()
+        projection.projectionType = ProjectionType.ALL
+        localSecondaryIndexes.add(new LocalSecondaryIndex().withIndexName(SESSION_STATUS).withProjection(projection).withKeySchema(
+                new KeySchemaElement(DynamoDBConstants.HASH_KEY, KeyType.HASH),
+                new KeySchemaElement(SESSION_STATUS, KeyType.RANGE)))
 
         ProvisionedThroughput provisionedThroughput = new ProvisionedThroughput(1000L, 1000L)
         CreateTableRequest request = new CreateTableRequest()
-                .withTableName(tableName)
+                .withTableName(DynamoDBConstants.TABLE_NAME)
                 .withAttributeDefinitions(attributeDefinitions)
                 .withKeySchema(keySchemaElements)
+                .withLocalSecondaryIndexes(localSecondaryIndexes)
                 .withProvisionedThroughput(provisionedThroughput)
 
         dynamoDB.createTable(request)
