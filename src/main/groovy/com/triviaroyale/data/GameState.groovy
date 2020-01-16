@@ -1,14 +1,39 @@
 package com.triviaroyale.data
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
-import com.triviaroyale.data.util.SessionStatus
+import com.triviaroyale.data.util.DynamoDBConstants
+import com.triviaroyale.util.Constants
 
-@DynamoDBTable(tableName = 'TriviaRoyale')
+@DynamoDBTable(tableName = DynamoDBConstants.TABLE_NAME)
 class GameState {
-    long id
-    SessionStatus status
-    long quizId
+    @DynamoDBHashKey(attributeName = DynamoDBConstants.HASH_KEY)
+    String playerId
+
+    @DynamoDBRangeKey(attributeName = DynamoDBConstants.RANGE_KEY)
+    String sessionId
+
+    @DynamoDBAttribute(attributeName = 'sessionStatus')
+    String status
+
+    @DynamoDBAttribute
+    String quizId
+
+    @DynamoDBAttribute
     int currentQuestionIndex
-    long playerId
-    LinkedHashMap<Long, Integer> playersHealth
+
+    @DynamoDBAttribute
+    LinkedHashMap<String, Integer> playersHealth
+
+    @Override
+    String toString() {
+        return "Session ID: $sessionId.  " +
+                "Player ID: $playerId.  " +
+                "Status: $status.\n" +
+                "Quiz ID: $quizId. " +
+                "Current question: $currentQuestionIndex of $Constants.NUMBER_OF_QUESTIONS.\n" +
+                "Players' health: ${playersHealth.toString()}"
+    }
 }

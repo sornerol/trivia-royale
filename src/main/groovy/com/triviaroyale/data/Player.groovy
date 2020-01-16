@@ -8,9 +8,8 @@ import com.triviaroyale.data.util.DynamoDBConstants
 
 @DynamoDBTable(tableName = DynamoDBConstants.TABLE_NAME)
 class Player {
-    public static final String PLAYER_HASH_PREFIX = 'PLAYER#'
-
-    private String alexaId
+    @DynamoDBHashKey(attributeName = DynamoDBConstants.HASH_KEY)
+    String alexaId
 
     //Our table requires a range (sort) key, but we don't really have a need for sorting players.
     @DynamoDBRangeKey(attributeName = DynamoDBConstants.RANGE_KEY)
@@ -22,12 +21,8 @@ class Player {
     @DynamoDBAttribute(attributeName = 'quizCompletion')
     LinkedHashMap<String, String> quizCompletion
 
-    @DynamoDBHashKey(attributeName = DynamoDBConstants.HASH_KEY)
-    String getAlexaId() { return alexaId - PLAYER_HASH_PREFIX }
-    void setAlexaId(String alexaId) { this.alexaId = PLAYER_HASH_PREFIX + alexaId }
-
     @Override
     String toString() {
-        return "Alexa ID: ${getAlexaId()}.  Name: $name.  Quiz Completion: ${quizCompletion.toString()}."
+        return "Alexa ID: $alexaId.  Name: $name.  Quiz Completion: ${quizCompletion.toString()}."
     }
 }
