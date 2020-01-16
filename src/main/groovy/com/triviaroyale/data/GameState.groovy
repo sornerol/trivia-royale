@@ -15,7 +15,7 @@ class GameState {
     @DynamoDBRangeKey(attributeName = DynamoDBConstants.RANGE_KEY)
     String sessionId
 
-    @DynamoDBAttribute(attributeName = 'sessionStatus')
+    @DynamoDBAttribute(attributeName = DynamoDBConstants.SESSION_STATUS_KEY)
     String status
 
     @DynamoDBAttribute
