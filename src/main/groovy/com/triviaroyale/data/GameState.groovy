@@ -27,6 +27,8 @@ class GameState {
     @DynamoDBAttribute
     LinkedHashMap<String, Integer> playersHealth
 
+    //TODO: We need to store right/wrong for each question for the player and maybe the player's opponents
+
     @Override
     String toString() {
         return "Session ID: $sessionId.  " +
