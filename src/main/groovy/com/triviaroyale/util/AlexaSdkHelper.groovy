@@ -4,15 +4,18 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Slot
 import com.amazon.ask.response.ResponseBuilder
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class AlexaSdkHelper {
+
     //TODO: Not sure if this is the best place for these constants to live
-    static final String NAME_SLOT_KEY = "name"
-    static final String ANSWER_SLOT_KEY = "answer"
-    static final String CATEGORY_SLOT_KEY = "category"
+    static final String NAME_SLOT_KEY = 'name'
+    static final String ANSWER_SLOT_KEY = 'answer'
+    static final String CATEGORY_SLOT_KEY = 'category'
 
     static String getUserId(HandlerInput input) {
-        return input.requestEnvelope.context.system.user.userId
+        input.requestEnvelope.context.system.user.userId
     }
 
     static String getSlotValue(HandlerInput input, String key) {
@@ -24,7 +27,7 @@ class AlexaSdkHelper {
     static ResponseBuilder responseWithSimpleCard(HandlerInput input,
                                                   String responseMessage,
                                                   String repromptMessage) {
-        ResponseBuilder responseBuilder = input.getResponseBuilder()
+        ResponseBuilder responseBuilder = input.responseBuilder()
         responseBuilder = responseBuilder
                 .withSpeech(responseMessage)
                 .withReprompt(repromptMessage)
@@ -32,4 +35,5 @@ class AlexaSdkHelper {
                 .withShouldEndSession(false)
         responseBuilder
     }
+
 }

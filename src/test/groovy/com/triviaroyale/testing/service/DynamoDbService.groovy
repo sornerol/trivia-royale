@@ -3,8 +3,11 @@ package com.triviaroyale.testing.service
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.model.*
 import com.triviaroyale.data.util.DynamoDBConstants
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class DynamoDbService {
+
     public static final String SESSION_STATUS = 'sessionStatus'
     AmazonDynamoDB dynamoDB
 
@@ -23,7 +26,6 @@ class DynamoDbService {
         keySchemaElements.add(new KeySchemaElement(DynamoDBConstants.HASH_KEY, KeyType.HASH))
         keySchemaElements.add(new KeySchemaElement(DynamoDBConstants.RANGE_KEY, KeyType.RANGE))
 
-
         List<LocalSecondaryIndex> localSecondaryIndexes = new ArrayList<LocalSecondaryIndex>()
         Projection projection = new Projection()
         projection.projectionType = ProjectionType.ALL
@@ -41,4 +43,5 @@ class DynamoDbService {
 
         dynamoDB.createTable(request)
     }
+
 }
