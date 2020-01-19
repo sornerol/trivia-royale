@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded
 import com.triviaroyale.data.util.DynamoDBConstants
-import com.triviaroyale.testing.service.DynamoDbService
+import com.triviaroyale.testing.service.DynamoDBService
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -12,13 +12,13 @@ class PlayerTest extends Specification {
     @Shared
     AmazonDynamoDB dynamoDB
     @Shared
-    DynamoDbService dbService
+    DynamoDBService dbService
     @Shared
     DynamoDBMapper mapper
 
     def setupSpec() {
         dynamoDB = DynamoDBEmbedded.create().amazonDynamoDB()
-        dbService = new DynamoDbService(dynamoDB)
+        dbService = new DynamoDBService(dynamoDB)
         dbService.buildTestEnvironment()
         mapper = new DynamoDBMapper(dynamoDB)
     }

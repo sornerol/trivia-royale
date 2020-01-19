@@ -6,12 +6,12 @@ import com.triviaroyale.data.util.DynamoDBConstants
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class DynamoDbService {
+class DynamoDBService {
 
     public static final String SESSION_STATUS = 'sessionStatus'
     AmazonDynamoDB dynamoDB
 
-    DynamoDbService(AmazonDynamoDB dynamoDB) {
+    DynamoDBService(AmazonDynamoDB dynamoDB) {
         if (dynamoDB == null) throw new Exception('dynamoDB cannot be null')
         this.dynamoDB = dynamoDB
     }

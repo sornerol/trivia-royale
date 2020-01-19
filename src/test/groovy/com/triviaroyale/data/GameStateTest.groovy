@@ -7,23 +7,21 @@ import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
-import com.triviaroyale.testing.service.DynamoDbService
+import com.triviaroyale.testing.service.DynamoDBService
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.nio.ByteBuffer
 
 class GameStateTest extends Specification {
     @Shared
     AmazonDynamoDB dynamoDB
     @Shared
-    DynamoDbService dbService
+    DynamoDBService dbService
     @Shared
     DynamoDBMapper mapper
 
     def setupSpec() {
         dynamoDB = DynamoDBEmbedded.create().amazonDynamoDB()
-        dbService = new DynamoDbService(dynamoDB)
+        dbService = new DynamoDBService(dynamoDB)
         dbService.buildTestEnvironment()
         mapper = new DynamoDBMapper(dynamoDB)
     }

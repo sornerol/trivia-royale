@@ -27,7 +27,7 @@ class AlexaSdkHelper {
     static ResponseBuilder responseWithSimpleCard(HandlerInput input,
                                                   String responseMessage,
                                                   String repromptMessage) {
-        ResponseBuilder responseBuilder = input.responseBuilder()
+        ResponseBuilder responseBuilder = input.responseBuilder
         responseBuilder = responseBuilder
                 .withSpeech(responseMessage)
                 .withReprompt(repromptMessage)
