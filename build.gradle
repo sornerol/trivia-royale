@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'codenarc'
 
 def GROOVY_VERSION = '2.5.8'
 def ALEXA_SDK_VERSION = '2.27.1'
@@ -16,6 +17,18 @@ jar {
                 .filter { (it.isDirectory() && it.listFiles().length > 0) || it.isFile() }
                 .collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+codenarc {
+    toolVersion = '1.4'
+}
+
+codenarcMain {
+    configFile = rootProject.file('src/config/codenarc.groovy')
+}
+
+codenarcTest {
+    configFile = rootProject.file('src/config/codenarc.groovy')
 }
 
 repositories {
