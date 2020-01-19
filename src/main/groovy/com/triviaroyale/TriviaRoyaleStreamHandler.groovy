@@ -11,8 +11,11 @@ import com.triviaroyale.handler.HearRulesIntentHandler
 import com.triviaroyale.handler.LaunchRequestHandler
 import com.triviaroyale.handler.RepeatIntentHandler
 import com.triviaroyale.handler.SessionEndedRequestHandler
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class TriviaRoyaleStreamHandler extends SkillStreamHandler {
+
     private static Skill getSkill() {
         Skills.standard()
                 .addRequestHandlers(
@@ -28,6 +31,7 @@ class TriviaRoyaleStreamHandler extends SkillStreamHandler {
     }
 
     TriviaRoyaleStreamHandler() {
-        super(getSkill())
+        super(skill)
     }
+
 }
