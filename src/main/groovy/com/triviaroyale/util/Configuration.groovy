@@ -1,20 +1,21 @@
 package com.triviaroyale.util
 
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 
 @CompileStatic
+@Slf4j
 class Configuration {
 
     public static final String TEST_PROPERTY = 'test.property'
 
-    static Properties loadFromClasspath()
-    {
+    static Properties loadFromClasspath() {
         Properties properties = new Properties()
         try {
-            InputStream input = Configuration.class.classLoader.getResourceAsStream('config.properties')
+            InputStream input = Configuration.classLoader.getResourceAsStream('config.properties')
             properties.load(input)
-        } catch (Exception e) {
-            e.printStackTrace()
+        } catch (IOException e) {
+            log.error('Could not find configuration file.')
             throw e
         }
 
