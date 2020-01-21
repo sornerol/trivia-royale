@@ -1,17 +1,16 @@
 package com.triviaroyale.data
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey
+import com.amazonaws.services.dynamodbv2.datamodeling.*
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperFieldModel.DynamoDBAttributeType
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTyped
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.util.Constants
+import groovy.transform.CompileStatic
 
+@CompileStatic
 @DynamoDBTable(tableName = DynamoDBConstants.TABLE_NAME)
 class GameState {
+
     @DynamoDBHashKey(attributeName = DynamoDBConstants.HASH_KEY)
     String playerId
 
@@ -35,11 +34,12 @@ class GameState {
 
     @Override
     String toString() {
-        return "Session ID: $sessionId.  " +
+        "Session ID: $sessionId.  " +
                 "Player ID: $playerId.  " +
                 "Status: $status.\n" +
                 "Quiz ID: $quizId. " +
                 "Current question: $currentQuestionIndex of $Constants.NUMBER_OF_QUESTIONS.\n" +
                 "Players' health: ${playersHealth.toString()}"
     }
+
 }
