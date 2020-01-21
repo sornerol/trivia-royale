@@ -24,11 +24,11 @@ codenarc {
 }
 
 codenarcMain {
-    configFile = rootProject.file('src/config/codenarc.groovy')
+    configFile = rootProject.file('src/main/config/codenarc.groovy')
 }
 
 codenarcTest {
-    configFile = rootProject.file('src/config/codenarc.groovy')
+    configFile = rootProject.file('src/main/config/codenarc.groovy')
 }
 
 repositories {
