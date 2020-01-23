@@ -9,6 +9,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 class PlayerTest extends Specification {
+
     @Shared
     AmazonDynamoDB dynamoDB
     @Shared
@@ -48,4 +49,5 @@ class PlayerTest extends Specification {
         testPlayerRetrieved.name == testPlayer.name
         testPlayerRetrieved.quizCompletion['General'] == '0'
     }
+
 }
