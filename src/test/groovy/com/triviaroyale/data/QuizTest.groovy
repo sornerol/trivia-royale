@@ -27,21 +27,21 @@ class QuizTest extends Specification {
         dbService = null
     }
 
-    def 'Create new quiz'() {
-        setup:
-        when:
-        then:
-    }
-
-    def 'Search for next unplayed quiz'() {
-        setup:
-        when:
-        then:
-    }
-
-    def 'Update player pool for quiz'() {
-        setup:
-        when:
-        then:
-    }
+//    def 'Create new quiz'() {
+//        setup:
+//        when:
+//        then:
+//    }
+//
+//    def 'Search for next unplayed quiz'() {
+//        setup:
+//        when:
+//        then:
+//    }
+//
+//    def 'Update player pool for quiz'() {
+//        setup:
+//        when:
+//        then:
+//    }
 }

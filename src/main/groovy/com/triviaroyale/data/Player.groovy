@@ -5,9 +5,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
 import com.triviaroyale.data.util.DynamoDBConstants
+import groovy.transform.CompileStatic
 
+@CompileStatic
 @DynamoDBTable(tableName = DynamoDBConstants.TABLE_NAME)
 class Player {
+
     @DynamoDBHashKey(attributeName = DynamoDBConstants.HASH_KEY)
     String alexaId
 
@@ -19,10 +22,11 @@ class Player {
     String name
 
     @DynamoDBAttribute(attributeName = 'quizCompletion')
-    LinkedHashMap<String, String> quizCompletion
+    Map<String, String> quizCompletion
 
     @Override
     String toString() {
-        return "Alexa ID: $alexaId.  Name: $name.  Quiz Completion: ${quizCompletion.toString()}."
+        "Alexa ID: $alexaId.  Name: $name.  Quiz Completion: ${quizCompletion.toString()}."
     }
+
 }

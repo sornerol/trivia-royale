@@ -28,7 +28,7 @@ class GameState {
     int currentQuestionIndex
 
     @DynamoDBAttribute
-    LinkedHashMap<String, Integer> playersHealth
+    Map<String, Integer> playersHealth
 
     //TODO: We need to store right/wrong for each question for the player and maybe the player's opponents
 

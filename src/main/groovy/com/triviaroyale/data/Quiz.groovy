@@ -19,7 +19,7 @@ class Quiz {
     String uniqueId
 
     @DynamoDBAttribute
-    LinkedHashMap<String, List<Boolean>> playerPool
+    Map<String, List<Boolean>> playerPool
 
     @DynamoDBAttribute
     List<String> questionJson
