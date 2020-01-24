@@ -4,6 +4,7 @@ package com.triviaroyale.service
 import com.triviaroyale.data.Quiz
 
 class QuizService {
+
     static Quiz startNewQuiz(long playerId) {
 
     }
@@ -11,4 +12,5 @@ class QuizService {
     private static Quiz buildQuiz(Category category) {
 
     }
+
 }
