@@ -14,5 +14,6 @@ class DynamoDBConstants {
     public static final String PLAYER_PREFIX = 'PLAYER#'
     public static final String SESSION_PREFIX = 'SESSION#'
     public static final String QUIZ_PREFIX = 'QUIZ#'
+    public static final String METADATA = 'METADATA'
 
 }
