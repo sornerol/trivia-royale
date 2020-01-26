@@ -1,16 +1,15 @@
 package com.triviaroyale.service
 
-
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.triviaroyale.data.Quiz
+import com.triviaroyale.data.util.DynamoDBConstants
+import groovy.transform.CompileStatic
 
-class QuizService {
+@CompileStatic
+class QuizService extends DynamoDBAccess {
 
-    static Quiz startNewQuiz(long playerId) {
-
+    QuizService(AmazonDynamoDB dynamoDB) {
+        super(dynamoDB, DynamoDBConstants.QUIZ_PREFIX)
     }
-
-    private static Quiz buildQuiz(Category category) {
-
-    }
-
+    
 }
