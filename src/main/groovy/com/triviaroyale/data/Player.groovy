@@ -22,7 +22,7 @@ class Player {
     String name
 
     @DynamoDBAttribute(attributeName = 'quizCompletion')
-    Map<String, String> quizCompletion
+    Map<String, Long> quizCompletion
 
     @Override
     String toString() {
