@@ -1,39 +1,48 @@
 package com.triviaroyale.service
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.triviaroyale.data.GameState
-
+import com.triviaroyale.data.util.DynamoDBConstants
+import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.util.SessionAttributes
 
-class GameStateService {
-    static GameState startNewGame(long playerId) {
+class GameStateService extends DynamoDBAccess {
+
+    GameStateService(AmazonDynamoDB dynamoDB) {
+        super(dynamoDB)
+    }
+    
+    GameState loadActiveGameState(String alexaId) {
 
     }
 
-    static GameState getActiveGame(long playerId) {
+    void saveGameState(GameState gameState) {
 
     }
 
     static GameState getSessionFromAlexaSessionAttributes(Map<String, Object> sessionAttributes) {
         GameState session = new GameState()
         session.with {
-            id = sessionAttributes[SessionAttributes.SESSION_ID] as long
-            status = 'ACTIVE'  //we don't need to store the session status since all incoming sessions are active
-            quizId = sessionAttributes[SessionAttributes.QUIZ_ID] as long
+            playerId = sessionAttributes[SessionAttributes.PLAYER_ID] as String
+            sessionId = sessionAttributes[SessionAttributes.SESSION_ID] as String
+            status = GameStateStatus.ACTIVE  //we don't need to store the session status since all incoming sessions are active
+            quizId = sessionAttributes[SessionAttributes.QUIZ_ID] as String
             currentQuestionIndex = sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int
-            playerId = sessionAttributes[SessionAttributes.PLAYER_ID] as long
-            playersHealth = sessionAttributes[SessionAttributes.PLAYERS_HEALTH] as LinkedHashMap<Long, Integer>
+            playersHealth = sessionAttributes[SessionAttributes.PLAYERS_HEALTH] as LinkedHashMap<String, Integer>
         }
         session
     }
 
     static Map<String, Object> updateSessionAttributesWithGameState(Map<String, Object> sessionAttributes, GameState gameState) {
         sessionAttributes.with {
-            put(SessionAttributes.SESSION_ID, gameState.id)
+            //We don't store GameState.status since all sessions using this method should be 'ACTIVE'
+            put(SessionAttributes.PLAYER_ID, gameState.playerId)
+            put(SessionAttributes.SESSION_ID, gameState.sessionId)
             put(SessionAttributes.QUIZ_ID, gameState.quizId)
             put(SessionAttributes.QUESTION_NUMBER, gameState.currentQuestionIndex)
-            put(SessionAttributes.PLAYER_ID, gameState.playerId)
             put(SessionAttributes.PLAYERS_HEALTH, gameState.playersHealth)
         }
         sessionAttributes
     }
+
 }
