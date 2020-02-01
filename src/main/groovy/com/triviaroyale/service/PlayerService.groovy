@@ -13,7 +13,8 @@ class PlayerService extends DynamoDBAccess {
     }
 
     Player loadPlayer(String alexaId) {
-        Player player = mapper.load(Player, alexaId, DynamoDBConstants.METADATA)
+        String hashKey = DynamoDBConstants.PLAYER_PREFIX + alexaId
+        Player player = mapper.load(Player, hashKey, DynamoDBConstants.METADATA)
         player.alexaId = player.alexaId - DynamoDBConstants.PLAYER_PREFIX
         player
     }
