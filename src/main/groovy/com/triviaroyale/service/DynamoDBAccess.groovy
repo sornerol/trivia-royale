@@ -8,12 +8,10 @@ import groovy.transform.CompileStatic
 class DynamoDBAccess {
 
     final AmazonDynamoDB dynamoDB
-    final String partitionKeyPrefix
     DynamoDBMapper mapper
 
-    protected DynamoDBAccess(AmazonDynamoDB dynamoDB, String partitionKeyPrefix) {
+    protected DynamoDBAccess(AmazonDynamoDB dynamoDB) {
         this.dynamoDB = dynamoDB
-        this.partitionKeyPrefix = partitionKeyPrefix
         this.mapper = new DynamoDBMapper(this.dynamoDB)
     }
 
