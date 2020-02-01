@@ -9,7 +9,7 @@ import groovy.transform.CompileStatic
 class PlayerService extends DynamoDBAccess {
 
     PlayerService(AmazonDynamoDB dynamoDB) {
-        super(dynamoDB, DynamoDBConstants.PLAYER_PREFIX)
+        super(dynamoDB)
     }
 
     Player loadPlayer(String alexaId) {
