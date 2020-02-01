@@ -1,6 +1,8 @@
 package com.triviaroyale.service
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
@@ -8,16 +10,31 @@ import com.triviaroyale.util.SessionAttributes
 
 class GameStateService extends DynamoDBAccess {
 
+    public static final String STATUS_ATTRIBUTE = ':status'
+    public static final String HASH_KEY_ATTRIBUTE = ':hk'
+    public static final String SESSION_STATUS_INDEX = 'sessionStatus'
+
     GameStateService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
     }
-    
-    GameState loadActiveGameState(String alexaId) {
 
+    GameState loadActiveGameState(String alexaId) {
+        Map<String, AttributeValue> attributeValues = new HashMap<String, AttributeValue>()
+        attributeValues.put(STATUS_ATTRIBUTE, new AttributeValue().withS(GameStateStatus.ACTIVE as String))
+        attributeValues.put(HASH_KEY_ATTRIBUTE, new AttributeValue().withS(alexaId))
+        String keyConditionExpression = "$DynamoDBConstants.HASH_KEY = $HASH_KEY_ATTRIBUTE and $SESSION_STATUS_INDEX = $STATUS_ATTRIBUTE"
+        DynamoDBQueryExpression<GameState> queryExpression = new DynamoDBQueryExpression<GameState>()
+                .withIndexName(SESSION_STATUS_INDEX)
+                .withKeyConditionExpression(keyConditionExpression)
+                .withExpressionAttributeValues(attributeValues)
+
+        mapper.query(GameState, queryExpression)[0] as GameState
     }
 
     void saveGameState(GameState gameState) {
-
+        gameState.playerId = DynamoDBConstants.PLAYER_PREFIX + gameState.playerId
+        gameState.sessionId = DynamoDBConstants.SESSION_PREFIX + gameState.sessionId
+        mapper.save(gameState)
     }
 
     static GameState getSessionFromAlexaSessionAttributes(Map<String, Object> sessionAttributes) {
