@@ -1,16 +1,16 @@
 package com.triviaroyale.service
 
+import com.amazonaws.services.s3.AmazonS3
 import com.triviaroyale.data.Question
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class QuestionService {
 
-    static Question getQuizQuestion(long quizId, int questionNumber) {
+    final AmazonS3 s3
 
-    }
-
-    static int chooseRandomCorrectAnswerIndex(Question question) {
-        Random random = new Random(System.currentTimeMillis())
-        random.nextInt(question.otherAnswers.size())
+    QuestionService(AmazonS3 s3) {
+        this.s3 = s3
     }
 
 }
