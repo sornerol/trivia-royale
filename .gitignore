@@ -5,4 +5,3 @@ gradle
 gradlew
 gradlew.bat
 out
-src/main/resources/config.properties
