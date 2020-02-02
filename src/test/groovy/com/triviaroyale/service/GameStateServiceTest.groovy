@@ -15,7 +15,7 @@ class GameStateServiceTest extends Specification {
     DynamoDBService dbService
     @Shared
     DynamoDBMapper mapper
-    
+
     def setupSpec() {
         dynamoDB = DynamoDBEmbedded.create().amazonDynamoDB()
         dbService = new DynamoDBService(dynamoDB)

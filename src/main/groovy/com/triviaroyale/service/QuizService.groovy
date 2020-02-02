@@ -9,7 +9,7 @@ import groovy.transform.CompileStatic
 class QuizService extends DynamoDBAccess {
 
     QuizService(AmazonDynamoDB dynamoDB) {
-        super(dynamoDB, DynamoDBConstants.QUIZ_PREFIX)
+        super(dynamoDB)
     }
     
 }

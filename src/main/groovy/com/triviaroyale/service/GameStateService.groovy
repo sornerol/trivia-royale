@@ -7,7 +7,9 @@ import com.triviaroyale.data.GameState
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.util.SessionAttributes
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class GameStateService extends DynamoDBAccess {
 
     public static final String STATUS_ATTRIBUTE = ':status'
@@ -42,7 +44,8 @@ class GameStateService extends DynamoDBAccess {
         session.with {
             playerId = sessionAttributes[SessionAttributes.PLAYER_ID] as String
             sessionId = sessionAttributes[SessionAttributes.SESSION_ID] as String
-            status = GameStateStatus.ACTIVE  //we don't need to store the session status since all incoming sessions are active
+            status = GameStateStatus.ACTIVE
+            //we don't need to store the session status since all incoming sessions are active
             quizId = sessionAttributes[SessionAttributes.QUIZ_ID] as String
             currentQuestionIndex = sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int
             playersHealth = sessionAttributes[SessionAttributes.PLAYERS_HEALTH] as LinkedHashMap<String, Integer>
