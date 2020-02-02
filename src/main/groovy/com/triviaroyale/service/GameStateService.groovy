@@ -20,25 +20,6 @@ class GameStateService extends DynamoDBAccess {
         super(dynamoDB)
     }
 
-    GameState loadActiveGameState(String alexaId) {
-        Map<String, AttributeValue> attributeValues = new HashMap<String, AttributeValue>()
-        attributeValues.put(STATUS_ATTRIBUTE, new AttributeValue().withS(GameStateStatus.ACTIVE as String))
-        attributeValues.put(HASH_KEY_ATTRIBUTE, new AttributeValue().withS(alexaId))
-        String keyConditionExpression = "$DynamoDBConstants.HASH_KEY = $HASH_KEY_ATTRIBUTE and $SESSION_STATUS_INDEX = $STATUS_ATTRIBUTE"
-        DynamoDBQueryExpression<GameState> queryExpression = new DynamoDBQueryExpression<GameState>()
-                .withIndexName(SESSION_STATUS_INDEX)
-                .withKeyConditionExpression(keyConditionExpression)
-                .withExpressionAttributeValues(attributeValues)
-
-        mapper.query(GameState, queryExpression)[0] as GameState
-    }
-
-    void saveGameState(GameState gameState) {
-        gameState.playerId = DynamoDBConstants.PLAYER_PREFIX + gameState.playerId
-        gameState.sessionId = DynamoDBConstants.SESSION_PREFIX + gameState.sessionId
-        mapper.save(gameState)
-    }
-
     static GameState getSessionFromAlexaSessionAttributes(Map<String, Object> sessionAttributes) {
         GameState session = new GameState()
         session.with {
@@ -53,7 +34,8 @@ class GameStateService extends DynamoDBAccess {
         session
     }
 
-    static Map<String, Object> updateSessionAttributesWithGameState(Map<String, Object> sessionAttributes, GameState gameState) {
+    static Map<String, Object> updateSessionAttributesWithGameState(Map<String, Object> sessionAttributes,
+                                                                    GameState gameState) {
         sessionAttributes.with {
             //We don't store GameState.status since all sessions using this method should be 'ACTIVE'
             put(SessionAttributes.PLAYER_ID, gameState.playerId)
@@ -63,6 +45,26 @@ class GameStateService extends DynamoDBAccess {
             put(SessionAttributes.PLAYERS_HEALTH, gameState.playersHealth)
         }
         sessionAttributes
+    }
+
+    GameState loadActiveGameState(String alexaId) {
+        Map<String, AttributeValue> attributeValues = [:]
+        attributeValues.put(STATUS_ATTRIBUTE, new AttributeValue().withS(GameStateStatus.ACTIVE as String))
+        attributeValues.put(HASH_KEY_ATTRIBUTE, new AttributeValue().withS(alexaId))
+        String keyConditionExpression = "$DynamoDBConstants.HASH_KEY = $HASH_KEY_ATTRIBUTE " +
+                "and $SESSION_STATUS_INDEX = $STATUS_ATTRIBUTE"
+        DynamoDBQueryExpression<GameState> queryExpression = new DynamoDBQueryExpression<GameState>()
+                .withIndexName(SESSION_STATUS_INDEX)
+                .withKeyConditionExpression(keyConditionExpression)
+                .withExpressionAttributeValues(attributeValues)
+
+        mapper.query(GameState, queryExpression)[0] as GameState
+    }
+
+    void saveGameState(GameState gameState) {
+        gameState.playerId = DynamoDBConstants.PLAYER_PREFIX + gameState.playerId
+        gameState.sessionId = DynamoDBConstants.SESSION_PREFIX + gameState.sessionId
+        mapper.save(gameState)
     }
 
 }

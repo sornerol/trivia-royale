@@ -11,5 +11,5 @@ class QuizService extends DynamoDBAccess {
     QuizService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
     }
-    
+
 }
