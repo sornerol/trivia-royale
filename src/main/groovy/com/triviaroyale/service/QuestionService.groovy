@@ -18,10 +18,18 @@ class QuestionService {
     }
 
     List<Question> fetchRandomQuestionsForCategory(int numberOfQuestions, String category) {
-
+        List<Question> questionList = []
+        Stack<String> questionPool = fetchQuestionPoolForCategory(category)
+        Collections.shuffle(questionPool)
+        for (int i = 0; i < numberOfQuestions; i++) {
+            String nextQuestionKey = questionPool.pop()
+            String nextQuestionJson = s3.getObjectAsString(bucket, nextQuestionKey)
+            questionList.add(Question.fromJson(nextQuestionKey))
+        }
+        questionList
     }
 
-    private List<String> fetchQuestionPoolForCategory(String category) {
+    private Stack<String> fetchQuestionPoolForCategory(String category) {
 
     }
 
