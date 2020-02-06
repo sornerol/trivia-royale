@@ -24,7 +24,7 @@ class QuestionService {
         for (int i = 0; i < numberOfQuestions; i++) {
             String nextQuestionKey = questionPool.pop()
             String nextQuestionJson = s3.getObjectAsString(bucket, nextQuestionKey)
-            questionList.add(Question.fromJson(nextQuestionKey))
+            questionList.add(Question.fromJson(nextQuestionJson))
         }
         questionList
     }
