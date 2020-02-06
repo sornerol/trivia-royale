@@ -7,10 +7,26 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class QuestionService {
 
-    final AmazonS3 s3
+    public static final String GENERAL_CATEGORY = 'GENERAL'
 
-    QuestionService(AmazonS3 s3) {
+    final AmazonS3 s3
+    final String bucket
+
+    QuestionService(AmazonS3 s3, String bucket) {
         this.s3 = s3
+        this.bucket = bucket
+    }
+
+    List<Question> fetchRandomQuestionsForCategory(int numberOfQuestions, String category) {
+
+    }
+
+    private List<String> fetchQuestionPoolForCategory(String category) {
+
+    }
+
+    private String fetchQuestionFromS3(String objectId) {
+
     }
 
 }
