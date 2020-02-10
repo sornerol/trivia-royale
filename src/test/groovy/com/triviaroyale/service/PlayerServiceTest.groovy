@@ -20,12 +20,16 @@ class PlayerServiceTest extends Specification {
     DynamoDBService dbService
     @Shared
     DynamoDBMapper mapper
+    @Shared
+    PlayerService sut
+
 
     def setupSpec() {
         dynamoDB = DynamoDBEmbedded.create().amazonDynamoDB()
         dbService = new DynamoDBService(dynamoDB)
         dbService.buildTestEnvironment()
         mapper = new DynamoDBMapper(dynamoDB)
+        sut = new PlayerService(dynamoDB)
     }
 
     def cleanupSpec() {
@@ -34,7 +38,6 @@ class PlayerServiceTest extends Specification {
 
     def "LoadPlayer"() {
         setup:
-        PlayerService sut = new PlayerService(dynamoDB)
         Player testPlayer = new Player()
         String playerId = PLAYER_ID_BASE + '1'
         testPlayer.with {
@@ -55,7 +58,6 @@ class PlayerServiceTest extends Specification {
 
     def "SavePlayer"() {
         setup:
-        PlayerService sut = new PlayerService(dynamoDB)
         Player testPlayer = new Player()
         String playerId = PLAYER_ID_BASE + '2'
         testPlayer.with {
