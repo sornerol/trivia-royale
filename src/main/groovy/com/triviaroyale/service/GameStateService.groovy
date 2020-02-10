@@ -50,7 +50,7 @@ class GameStateService extends DynamoDBAccess {
     GameState loadActiveGameState(String alexaId) {
         Map<String, AttributeValue> attributeValues = [:]
         attributeValues.put(STATUS_ATTRIBUTE, new AttributeValue().withS(GameStateStatus.ACTIVE as String))
-        attributeValues.put(HASH_KEY_ATTRIBUTE, new AttributeValue().withS(alexaId))
+        attributeValues.put(HASH_KEY_ATTRIBUTE, new AttributeValue().withS(DynamoDBConstants.PLAYER_PREFIX + alexaId))
         String keyConditionExpression = "$DynamoDBConstants.HASH_KEY = $HASH_KEY_ATTRIBUTE " +
                 "and $SESSION_STATUS_INDEX = $STATUS_ATTRIBUTE"
         DynamoDBQueryExpression<GameState> queryExpression = new DynamoDBQueryExpression<GameState>()
@@ -58,7 +58,13 @@ class GameStateService extends DynamoDBAccess {
                 .withKeyConditionExpression(keyConditionExpression)
                 .withExpressionAttributeValues(attributeValues)
 
-        mapper.query(GameState, queryExpression)[0] as GameState
+        GameState retrievedGameState = mapper.query(GameState, queryExpression)[0] as GameState
+        if (retrievedGameState) {
+            retrievedGameState.playerId = retrievedGameState.playerId - DynamoDBConstants.PLAYER_PREFIX
+            retrievedGameState.sessionId = retrievedGameState.sessionId - DynamoDBConstants.SESSION_PREFIX
+        }
+
+        retrievedGameState
     }
 
     void saveGameState(GameState gameState) {
