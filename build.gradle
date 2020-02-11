@@ -6,6 +6,7 @@ def ALEXA_SDK_VERSION = '2.27.1'
 def DYNAMODB_VERSION = '1.11.477'
 def JUNIT_VERSION = '5.5.2'
 def SPOCK_VERSION = '1.2-groovy-2.5'
+def S3_MOCK_VERSION = '0.2.5'
 
 jar {
     manifest {
@@ -60,4 +61,5 @@ dependencies {
     testCompile "com.amazonaws:DynamoDBLocal:$DYNAMODB_VERSION"
     testCompile "org.junit.jupiter:junit-jupiter-api:$JUNIT_VERSION"
     testCompile "org.spockframework:spock-core:$SPOCK_VERSION"
+    testCompile "io.findify:s3mock_2.12:$S3_MOCK_VERSION"
 }
