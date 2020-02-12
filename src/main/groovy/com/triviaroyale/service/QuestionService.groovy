@@ -29,11 +29,11 @@ class QuestionService {
         questionList
     }
 
-    private Stack<String> fetchQuestionPoolForCategory(String category) {
+    protected Stack<String> fetchQuestionPoolForCategory(String category) {
 
     }
 
-    private String fetchQuestionFromS3(String objectId) {
+    protected String fetchQuestionFromS3(String objectId) {
 
     }
 
