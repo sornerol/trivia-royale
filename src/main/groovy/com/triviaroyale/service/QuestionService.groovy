@@ -31,7 +31,7 @@ class QuestionService {
     }
 
     protected Stack<String> fetchQuestionPoolForCategory(String category) {
-        Stack<String> questionPool = new Stack<String>()
+        Stack<String> questionPool = [] as Stack
 
         if (category == GENERAL_CATEGORY) {
             String manifest = s3.getObjectAsString(bucket, MANIFEST_FILE)
@@ -39,9 +39,9 @@ class QuestionService {
                 questionPool.addAll(fetchQuestionPoolForCategory(subCategory))
             }
         } else {
-            String manifest = s3.getObjectAsString(bucket, category + '/' + MANIFEST_FILE)
-            manifest.eachLine {question ->
-                questionPool.add(category + '/' + question)
+            String manifest = s3.getObjectAsString(bucket, "$category/$MANIFEST_FILE")
+            manifest.eachLine { question ->
+                questionPool.add("$category/$question".toString())
             }
         }
         questionPool
