@@ -16,7 +16,6 @@ class AmazonAWSResourceHelper {
     public static final String REGION_KEY = 'aws.region'
 
     static AmazonDynamoDB openDynamoDBClient() {
-
         Properties properties = Configuration.loadFromClasspath()
         BasicAWSCredentials credentials = new BasicAWSCredentials(properties[ACCESS_KEY_PROPERTY] as String,
                 properties[SECRET_KEY_PROPERTY] as String)
