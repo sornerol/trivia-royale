@@ -1,39 +1,42 @@
 package com.triviaroyale.handler
 
+import static com.amazon.ask.request.Predicates.requestType
+
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.LaunchRequest
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.triviaroyale.data.Player
-import com.triviaroyale.util.AlexaSdkHelper
-import com.triviaroyale.util.Messages
-import com.triviaroyale.util.AppState
-import com.triviaroyale.util.SessionAttributes
+import com.triviaroyale.service.PlayerService
+import com.triviaroyale.util.*
+import groovy.transform.CompileStatic
 
-import static com.amazon.ask.request.Predicates.requestType
-
+@CompileStatic
 class LaunchRequestHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(requestType(LaunchRequest.class))
+        input.matches(requestType(LaunchRequest))
     }
 
     @Override
     Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        Player player = new Player(AlexaSdkHelper.getUserId(input))
+        AmazonDynamoDB dynamoDB = AmazonAWSResourceHelper.openDynamoDBClient()
+        PlayerService playerService = new PlayerService(dynamoDB)
+
+        Player player = playerService.loadPlayer(AlexaSdkHelper.getUserId(input))
         String responseMessage
         String repromptMessage
 
-        if (player.name == null) {
+        if (player == null) {
             sessionAttributes.put(SessionAttributes.GAME_STATE, AppState.NEW_PLAYER_SETUP)
             responseMessage = Messages.WELCOME_NEW_PLAYER + Messages.RULES + Messages.ASK_FOR_NAME
             repromptMessage = Messages.ASK_FOR_NAME
         } else {
             sessionAttributes.put(SessionAttributes.GAME_STATE, AppState.NEW_GAME)
-            sessionAttributes.put(SessionAttributes.PLAYER_ID, player.id)
 
             responseMessage = "${Messages.WELCOME_EXISTING_PLAYER} " +
                     "${Messages.ASK_TO_START_NEW_GAME}"
@@ -44,4 +47,5 @@ class LaunchRequestHandler implements RequestHandler {
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
         response.build()
     }
+
 }
