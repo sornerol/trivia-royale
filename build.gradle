@@ -48,6 +48,14 @@ task copyNativeDeps(type: Copy) {
     into 'build/libs'
 }
 
+task buildZip(type: Zip) {
+    from compileGroovy
+    from processResources
+    into('lib') {
+        from configurations.runtimeClasspath
+    }
+}
+
 test {
     dependsOn copyNativeDeps
     systemProperty 'java.library.path', 'build/libs'
