@@ -7,8 +7,6 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class Configuration {
 
-    public static final String TEST_PROPERTY = 'test.property'
-
     static Properties loadFromClasspath() {
         Properties properties = new Properties()
         try {
