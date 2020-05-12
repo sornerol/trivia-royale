@@ -5,7 +5,6 @@ build:
   stage: build
   script:
     - gradle clean buildZip
-    -
 
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
