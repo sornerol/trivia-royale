@@ -13,4 +13,5 @@ build:
   artifacts:
     paths:
       - build/distributions/trivia-royale.zip
+    expose_as: trivia-royale.zip
     expire_in: 1 week
