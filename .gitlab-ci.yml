@@ -13,7 +13,7 @@ codenarc:
 
   artifacts:
     paths:
-      - build/reports/codenarc/main.html
+      - build/reports/codenarc/*.html
     expire_in: 1 week
 
 build:
