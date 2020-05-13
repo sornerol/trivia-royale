@@ -12,8 +12,7 @@ import spock.lang.Specification
 
 class QuestionServiceTest extends Specification {
 
-    //TODO: The path needs to be genericized to work in a CD build environment
-    public static final String S3_MOCK_PATH = '/home/loren/trivia-royale-s3'
+    public static final String S3_MOCK_PATH = 'test-data/trivia-royale-s3'
     public static final int S3_MOCK_PORT = 8001
     public static final String ENDPOINT = 'http://localhost'
     public static final String REGION = 'us-west-2'
