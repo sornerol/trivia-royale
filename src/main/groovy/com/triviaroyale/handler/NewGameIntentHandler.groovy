@@ -19,7 +19,11 @@ import com.triviaroyale.util.SessionAttributes
 import static com.amazon.ask.request.Predicates.intentName
 import static com.amazon.ask.request.Predicates.sessionAttribute
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class NewGameIntentHandler implements RequestHandler {
+
     public static final int FIRST_QUESTION = 1
 
     @Override
@@ -56,4 +60,5 @@ class NewGameIntentHandler implements RequestHandler {
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, questionString, questionString)
         response.build()
     }
+
 }
