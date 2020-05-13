@@ -15,6 +15,7 @@ codenarc:
     paths:
       - build/reports/codenarc/*.html
     expire_in: 1 week
+    when: always
 
 build:
   stage: build
