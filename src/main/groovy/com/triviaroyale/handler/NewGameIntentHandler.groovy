@@ -1,5 +1,8 @@
 package com.triviaroyale.handler
 
+import static com.amazon.ask.request.Predicates.intentName
+import static com.amazon.ask.request.Predicates.sessionAttribute
+
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
@@ -15,10 +18,6 @@ import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
-
-import static com.amazon.ask.request.Predicates.intentName
-import static com.amazon.ask.request.Predicates.sessionAttribute
-
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -28,7 +27,7 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(intentName("NewGameIntent") & sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_GAME))
+        input.matches(intentName('NewGameIntent') & sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_GAME))
     }
 
     @Override
