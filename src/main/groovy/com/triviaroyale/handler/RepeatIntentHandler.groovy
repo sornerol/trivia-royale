@@ -17,9 +17,10 @@ class RepeatIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(intentName('AMAZON.RepeatIntent')
-                & (sessionAttribute(SessionAttributes.GAME_STATE, AppState.IN_GAME)
-                || sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_GAME)))
+        input.matches(
+                intentName('AMAZON.RepeatIntent')) && (sessionAttribute(SessionAttributes.GAME_STATE,
+                AppState.IN_GAME) || sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_GAME)
+        )
     }
 
     @Override
