@@ -52,6 +52,11 @@ class GameStateServiceTest extends Specification {
                     '112234': 80,
                     '112235': 70,
             ]
+            playersPerformance = [
+                    '112233': [true, false, true, false, true],
+                    '112234': [false, false, false, false, false],
+                    '112235': [true, true, true, true, true],
+            ]
         }
         mapper.save(testGameState)
         when:
@@ -63,6 +68,7 @@ class GameStateServiceTest extends Specification {
         testLoadedGameState.sessionId == testSessionId
         testLoadedGameState.currentQuestionIndex == currentQuestion
         testLoadedGameState.playersHealth.containsKey('112235')
+        testLoadedGameState.playersPerformance['112235'] == [true, true, true, true, true]
         !testNonExistingGameState
 
     }
@@ -86,6 +92,11 @@ class GameStateServiceTest extends Specification {
                     '112234': 80,
                     '112235': 70,
             ]
+            playersPerformance = [
+                    '112233': [true, false, true, false, true],
+                    '112234': [false, false, false, false, false],
+                    '112235': [true, true, true, true, true],
+            ]
         }
 
         when:
@@ -97,6 +108,7 @@ class GameStateServiceTest extends Specification {
         testGameStateRetrieved.playerId == hashKey
         testGameStateRetrieved.sessionId == rangeKey
         testGameStateRetrieved.playersHealth.containsKey('112234')
+        testGameStateRetrieved.playersPerformance['112234'] == [false, false, false, false, false]
     }
 
 }
