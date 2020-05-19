@@ -6,8 +6,7 @@ import static com.amazon.ask.request.Predicates.sessionAttribute
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
-import com.triviaroyale.service.AnswerService
-import com.triviaroyale.service.HealthService
+
 import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.SessionAttributes

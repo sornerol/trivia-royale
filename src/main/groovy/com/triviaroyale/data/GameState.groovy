@@ -30,7 +30,8 @@ class GameState {
     @DynamoDBAttribute
     Map<String, Integer> playersHealth
 
-    //TODO: We need to store right/wrong for each question for the player and maybe the player's opponents
+    @DynamoDBAttribute
+    Map<String, List<Boolean>> playersPerformance
 
     @Override
     String toString() {
@@ -39,7 +40,8 @@ class GameState {
                 "Status: $status.\n" +
                 "Quiz ID: $quizId. " +
                 "Current question: $currentQuestionIndex of $Constants.NUMBER_OF_QUESTIONS.\n" +
-                "Players' health: ${playersHealth.toString()}"
+                "Players' health: ${playersHealth.toString()}\n" +
+                "Players' performance: ${playersPerformance.toString()}"
     }
 
 }
