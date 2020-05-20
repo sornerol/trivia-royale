@@ -51,12 +51,12 @@ class QuestionServiceTest extends Specification {
 
     def "FetchRandomQuestionsForCategory"() {
         setup:
-        List<Question> questions
+        List<String> questions
         when:
         questions = sut.fetchRandomQuestionsForCategory(10, QuestionService.GENERAL_CATEGORY)
         then:
         questions.size() == 10
-        println(questions[0].toJson())
+        println(questions[0])
     }
 
 }
