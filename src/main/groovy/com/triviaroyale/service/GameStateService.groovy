@@ -34,8 +34,8 @@ class GameStateService extends DynamoDBAccess {
         session
     }
 
-    static Map<String, Object> updateSessionAttributesWithGameState(Map<String, Object> sessionAttributes,
-                                                                    GameState gameState) {
+    static Map<String, Object> updateGameStateSessionAttributes(Map<String, Object> sessionAttributes,
+                                                                GameState gameState) {
         sessionAttributes.with {
             //We don't store GameState.status since all sessions using this method should be 'ACTIVE'
             put(SessionAttributes.PLAYER_ID, gameState.playerId)
