@@ -38,6 +38,7 @@ class CreatePlayerIntentHandler implements RequestHandler {
         PlayerService playerService = new PlayerService(dynamoDB)
         playerService.savePlayer(player)
 
+        sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
         sessionAttributes.put(SessionAttributes.GAME_STATE, AppState.NEW_GAME)
 
         String responseMessage = 'Thank you. ' + Messages.ASK_TO_START_NEW_GAME

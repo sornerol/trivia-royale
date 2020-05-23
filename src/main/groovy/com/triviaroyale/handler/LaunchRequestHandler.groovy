@@ -36,6 +36,7 @@ class LaunchRequestHandler implements RequestHandler {
             responseMessage = Messages.WELCOME_NEW_PLAYER + Messages.RULES + Messages.ASK_FOR_NAME
             repromptMessage = Messages.ASK_FOR_NAME
         } else {
+            sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
             sessionAttributes.put(SessionAttributes.GAME_STATE, AppState.NEW_GAME)
 
             responseMessage = "${Messages.WELCOME_EXISTING_PLAYER} " +
