@@ -1,7 +1,6 @@
 package com.triviaroyale.service
 
 import com.amazonaws.services.s3.AmazonS3
-import com.triviaroyale.data.Question
 import groovy.transform.CompileStatic
 
 @CompileStatic
