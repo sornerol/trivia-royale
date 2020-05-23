@@ -23,10 +23,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
     @Override
     Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        String playerAnswer = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
 
-        boolean wasAnswerCorrect = AnswerService.checkAnswer(playerAnswer, sessionAttributes)
-        sessionAttributes = HealthService.adjustHealth(wasAnswerCorrect, sessionAttributes)
     }
 
 }
