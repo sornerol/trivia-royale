@@ -45,6 +45,8 @@ class CreatePlayerIntentHandler implements RequestHandler {
         String repromptMessage = Messages.ASK_TO_START_NEW_GAME
 
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
+
+        input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
         response.build()
     }

@@ -45,6 +45,8 @@ class LaunchRequestHandler implements RequestHandler {
         }
 
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
+
+        input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
         response.build()
     }
