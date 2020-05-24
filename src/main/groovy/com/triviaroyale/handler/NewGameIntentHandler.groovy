@@ -10,14 +10,17 @@ import com.amazon.ask.model.services.directive.DirectiveServiceClient
 import com.amazon.ask.model.services.directive.SendDirectiveRequest
 import com.amazon.ask.model.services.directive.SpeakDirective
 import com.amazon.ask.response.ResponseBuilder
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import com.amazonaws.services.s3.AmazonS3
 import com.triviaroyale.data.GameState
-import com.triviaroyale.data.Question
+import com.triviaroyale.data.Player
+import com.triviaroyale.data.Quiz
+import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.service.GameStateService
+import com.triviaroyale.service.PlayerService
 import com.triviaroyale.service.QuestionService
-import com.triviaroyale.util.AlexaSdkHelper
-import com.triviaroyale.util.AppState
-import com.triviaroyale.util.Messages
-import com.triviaroyale.util.SessionAttributes
+import com.triviaroyale.service.QuizService
+import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -34,28 +37,52 @@ class NewGameIntentHandler implements RequestHandler {
     Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
-        /*
-        If we're having to create a brand new quiz (because there aren't any unplayed quizzes for the player)
-        we'll need a bit of a delay to build the new quiz. We'll play an audio clip here as we're setting up the game
-        to let the player know we're working.
-         */
+        //Play audio clip and let player know we're setting things up.
         DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
         SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
         //TODO: add audio clip
         SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
         directiveServiceClient.enqueue(sendDirectiveRequest)
 
-        long playerId = sessionAttributes[SessionAttributes.PLAYER_ID] as long
-        GameState newGame = GameStateService.startNewGame(playerId)
-        sessionAttributes = GameStateService.updateSessionAttributesWithGameState(sessionAttributes, newGame)
-        Question question = QuestionService.getQuizQuestion(newGame.quizId, FIRST_QUESTION)
+        GameState newGame = new GameState()
+        AmazonDynamoDB dynamoDB = AmazonAWSResourceHelper.openDynamoDBClient()
+        QuizService quizService = new QuizService(dynamoDB)
+        Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
+        Quiz quiz = quizService.loadNextAvailableQuizForPlayer(player)
+        List<Tuple2<String, List<Boolean>>> opponents =
+                QuizService.getRandomPlayersForQuiz(quiz, Constants.NUMBER_OF_PLAYERS - 1)
 
-        int correctAnswerIndex = QuestionService.chooseRandomCorrectAnswerIndex(question)
-        sessionAttributes.put(SessionAttributes.CORRECT_ANSWER_INDEX, correctAnswerIndex)
-        sessionAttributes.put(SessionAttributes.CORRECT_ANSWER_TEXT, question.correctAnswer)
+        if (quiz == null) {
+            AmazonS3 s3 = AmazonAWSResourceHelper.openS3Client()
+            QuestionService questionService = new QuestionService(s3, Constants.S3_QUESTION_BUCKET)
+            List<String> newQuizQuestions =
+                    questionService.fetchRandomQuestionsForCategory(Constants.NUMBER_OF_QUESTIONS)
+            quiz = quizService.generateNewQuiz(newQuizQuestions, player.alexaId)
+        }
 
-        String questionString = Messages.buildQuestionMessage(question, correctAnswerIndex)
-        sessionAttributes.put(SessionAttributes.LAST_RESPONSE, questionString)
+        newGame.with {
+            playerId = AlexaSdkHelper.getUserId(input)
+            sessionId = System.currentTimeMillis().toString()
+            status = GameStateStatus.ACTIVE
+            quizId = QuizService.getQuizIdAsString(quiz)
+            questions = quiz.questionJson
+            currentQuestionIndex = 0
+            playersHealth = [:]
+            playersPerformance = [:]
+            playersHealth.put(playerId, Constants.STARTING_HEALTH)
+            playersPerformance.put(playerId, [])
+        }
+
+        opponents.each { opponent ->
+            newGame.playersHealth.put(opponent.first, Constants.STARTING_HEALTH)
+            newGame.playersPerformance.put(opponent.first, opponent.second)
+        }
+
+        GameStateService gameStateService = new GameStateService(dynamoDB)
+        gameStateService.saveGameState(newGame)
+        sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, newGame)
+
+        input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, questionString, questionString)
         response.build()
     }
