@@ -2,6 +2,7 @@ package com.triviaroyale.service
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.triviaroyale.data.GameState
+import com.triviaroyale.data.Player
 import com.triviaroyale.data.Quiz
 import com.triviaroyale.util.Constants
 import groovy.transform.CompileStatic
@@ -29,7 +30,7 @@ class QuizService extends DynamoDBAccess {
         selectedPlayers
     }
 
-    Quiz loadNextAvailableQuizForPlayer(String playerId, String category = Constants.GENERAL_CATEGORY) {
+    Quiz loadNextAvailableQuizForPlayer(Player player, String category = Constants.GENERAL_CATEGORY) {
 
     }
 
