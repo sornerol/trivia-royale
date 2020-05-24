@@ -25,6 +25,9 @@ class GameState {
     String quizId
 
     @DynamoDBAttribute
+    List<String> questions
+
+    @DynamoDBAttribute
     int currentQuestionIndex
 
     @DynamoDBAttribute
