@@ -19,7 +19,7 @@ class QuestionService {
 
     List<String> fetchRandomQuestionsForCategory(int numberOfQuestions, String category = Constants.GENERAL_CATEGORY) {
         List<String> questionList = []
-        Stack<String> questionPool = fetchQuestionPoolForCategory(category)
+        List<String> questionPool = fetchQuestionPoolForCategory(category)
         Collections.shuffle(questionPool)
         for (int i = 0; i < numberOfQuestions; i++) {
             String nextQuestionKey = questionPool.pop()
@@ -29,8 +29,8 @@ class QuestionService {
         questionList
     }
 
-    protected Stack<String> fetchQuestionPoolForCategory(String category) {
-        Stack<String> questionPool = [] as Stack
+    protected List<String> fetchQuestionPoolForCategory(String category) {
+        List<String> questionPool = []
 
         if (category == Constants.GENERAL_CATEGORY) {
             String manifest = s3.getObjectAsString(bucket, MANIFEST_FILE)
