@@ -41,7 +41,8 @@ class GameState {
         "Session ID: $sessionId.  " +
                 "Player ID: $playerId.  " +
                 "Status: $status.\n" +
-                "Quiz ID: $quizId. " +
+                "Quiz ID: $quizId.\n" +
+                "Questions: ${questions.toString()}\n"
                 "Current question: $currentQuestionIndex of $Constants.NUMBER_OF_QUESTIONS.\n" +
                 "Players' health: ${playersHealth.toString()}\n" +
                 "Players' performance: ${playersPerformance.toString()}"
