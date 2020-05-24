@@ -25,11 +25,12 @@ class GameStateService extends DynamoDBAccess {
         session.with {
             playerId = sessionAttributes[SessionAttributes.PLAYER_ID] as String
             sessionId = sessionAttributes[SessionAttributes.SESSION_ID] as String
-            status = GameStateStatus.ACTIVE
-            //we don't need to store the session status since all incoming sessions are active
+            status = sessionAttributes[SessionAttributes.GAME_STATE] as GameStateStatus
             quizId = sessionAttributes[SessionAttributes.QUIZ_ID] as String
+            questions = sessionAttributes[SessionAttributes.QUESTION_LIST] as List<String>
             currentQuestionIndex = sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int
-            playersHealth = sessionAttributes[SessionAttributes.PLAYERS_HEALTH] as LinkedHashMap<String, Integer>
+            playersHealth = sessionAttributes[SessionAttributes.PLAYERS_HEALTH] as Map<String, Integer>
+            playersPerformance = sessionAttributes[SessionAttributes.PLAYERS_PERFORMANCE] as Map<String, List<Boolean>>
         }
         session
     }
@@ -37,13 +38,16 @@ class GameStateService extends DynamoDBAccess {
     static Map<String, Object> updateGameStateSessionAttributes(Map<String, Object> sessionAttributes,
                                                                 GameState gameState) {
         sessionAttributes.with {
-            //We don't store GameState.status since all sessions using this method should be 'ACTIVE'
             put(SessionAttributes.PLAYER_ID, gameState.playerId)
             put(SessionAttributes.SESSION_ID, gameState.sessionId)
+            put(SessionAttributes.GAME_STATE, gameState.status)
             put(SessionAttributes.QUIZ_ID, gameState.quizId)
+            put(SessionAttributes.QUESTION_LIST, gameState.questions)
             put(SessionAttributes.QUESTION_NUMBER, gameState.currentQuestionIndex)
             put(SessionAttributes.PLAYERS_HEALTH, gameState.playersHealth)
+            put(SessionAttributes.PLAYERS_PERFORMANCE, gameState.playersPerformance)
         }
+
         sessionAttributes
     }
 
