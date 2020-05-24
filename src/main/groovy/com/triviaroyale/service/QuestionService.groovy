@@ -1,12 +1,12 @@
 package com.triviaroyale.service
 
 import com.amazonaws.services.s3.AmazonS3
+import com.triviaroyale.util.Constants
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class QuestionService {
 
-    public static final String GENERAL_CATEGORY = 'GENERAL'
     public static final String MANIFEST_FILE = 'MANIFEST'
 
     final AmazonS3 s3
@@ -17,7 +17,7 @@ class QuestionService {
         this.bucket = bucket
     }
 
-    List<String> fetchRandomQuestionsForCategory(int numberOfQuestions, String category) {
+    List<String> fetchRandomQuestionsForCategory(int numberOfQuestions, String category = Constants.GENERAL_CATEGORY) {
         List<String> questionList = []
         Stack<String> questionPool = fetchQuestionPoolForCategory(category)
         Collections.shuffle(questionPool)
@@ -32,7 +32,7 @@ class QuestionService {
     protected Stack<String> fetchQuestionPoolForCategory(String category) {
         Stack<String> questionPool = [] as Stack
 
-        if (category == GENERAL_CATEGORY) {
+        if (category == Constants.GENERAL_CATEGORY) {
             String manifest = s3.getObjectAsString(bucket, MANIFEST_FILE)
             manifest.eachLine { subCategory ->
                 questionPool.addAll(fetchQuestionPoolForCategory(subCategory))
