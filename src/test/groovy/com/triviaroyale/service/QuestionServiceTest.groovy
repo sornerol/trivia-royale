@@ -6,6 +6,7 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.triviaroyale.data.Question
+import com.triviaroyale.util.Constants
 import io.findify.s3mock.S3Mock
 import spock.lang.Shared
 import spock.lang.Specification
@@ -43,7 +44,7 @@ class QuestionServiceTest extends Specification {
         setup:
         Stack<String> questionPool
         when:
-        questionPool = sut.fetchQuestionPoolForCategory(QuestionService.GENERAL_CATEGORY)
+        questionPool = sut.fetchQuestionPoolForCategory(Constants.GENERAL_CATEGORY)
         then:
         questionPool.size() == 20
         println(questionPool.toListString())
@@ -53,7 +54,7 @@ class QuestionServiceTest extends Specification {
         setup:
         List<String> questions
         when:
-        questions = sut.fetchRandomQuestionsForCategory(10, QuestionService.GENERAL_CATEGORY)
+        questions = sut.fetchRandomQuestionsForCategory(10, Constants.GENERAL_CATEGORY)
         then:
         questions.size() == 10
         println(questions[0])
