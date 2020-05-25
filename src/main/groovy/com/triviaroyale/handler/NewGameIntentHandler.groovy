@@ -42,7 +42,6 @@ class NewGameIntentHandler implements RequestHandler {
         SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
         directiveServiceClient.enqueue(sendDirectiveRequest)
 
-        GameState newGame = new GameState()
         AmazonDynamoDB dynamoDB = AmazonAWSResourceHelper.openDynamoDBClient()
         QuizService quizService = new QuizService(dynamoDB)
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
@@ -55,21 +54,11 @@ class NewGameIntentHandler implements RequestHandler {
                     questionService.fetchRandomQuestionsForCategory(Constants.NUMBER_OF_QUESTIONS)
             quiz = quizService.generateNewQuiz(newQuizQuestions, player.alexaId)
         }
+
+        GameState newGame = initializeGameState(quiz, player)
+
         List<Tuple2<String, List<Boolean>>> opponents =
                 QuizService.getRandomPlayersForQuiz(quiz, Constants.NUMBER_OF_PLAYERS - 1)
-
-        newGame.with {
-            playerId = player.alexaId
-            sessionId = System.currentTimeMillis().toString()
-            status = GameStateStatus.ACTIVE
-            quizId = QuizService.getQuizIdAsString(quiz)
-            questions = quiz.questionJson
-            currentQuestionIndex = 0
-            playersHealth = [:]
-            playersPerformance = [:]
-            playersHealth.put(player.alexaId, Constants.STARTING_HEALTH)
-            playersPerformance.put(player.alexaId, [])
-        }
 
         newGame = GameStateService.initializePlayers(newGame, opponents)
 
@@ -83,6 +72,24 @@ class NewGameIntentHandler implements RequestHandler {
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseText, repropmptText)
         response.build()
+    }
+
+    private static GameState initializeGameState(Quiz quiz, Player player) {
+        GameState newGame = new GameState()
+        newGame.with {
+            playerId = player.alexaId
+            sessionId = System.currentTimeMillis().toString()
+            status = GameStateStatus.ACTIVE
+            quizId = QuizService.getQuizIdAsString(quiz)
+            questions = quiz.questionJson
+            currentQuestionIndex = 0
+            playersHealth = [:]
+            playersPerformance = [:]
+            playersHealth.put(player.alexaId, Constants.STARTING_HEALTH)
+            playersPerformance.put(player.alexaId, [])
+        }
+
+        newGame
     }
 
 }
