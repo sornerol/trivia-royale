@@ -47,8 +47,6 @@ class NewGameIntentHandler implements RequestHandler {
         QuizService quizService = new QuizService(dynamoDB)
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
         Quiz quiz = quizService.loadNextAvailableQuizForPlayer(player)
-        List<Tuple2<String, List<Boolean>>> opponents =
-                QuizService.getRandomPlayersForQuiz(quiz, Constants.NUMBER_OF_PLAYERS - 1)
 
         if (quiz == null) {
             AmazonS3 s3 = AmazonAWSResourceHelper.openS3Client()
@@ -57,9 +55,11 @@ class NewGameIntentHandler implements RequestHandler {
                     questionService.fetchRandomQuestionsForCategory(Constants.NUMBER_OF_QUESTIONS)
             quiz = quizService.generateNewQuiz(newQuizQuestions, player.alexaId)
         }
+        List<Tuple2<String, List<Boolean>>> opponents =
+                QuizService.getRandomPlayersForQuiz(quiz, Constants.NUMBER_OF_PLAYERS - 1)
 
         newGame.with {
-            playerId = AlexaSdkHelper.getUserId(input)
+            playerId = player.alexaId
             sessionId = System.currentTimeMillis().toString()
             status = GameStateStatus.ACTIVE
             quizId = QuizService.getQuizIdAsString(quiz)
@@ -67,21 +67,21 @@ class NewGameIntentHandler implements RequestHandler {
             currentQuestionIndex = 0
             playersHealth = [:]
             playersPerformance = [:]
-            playersHealth.put(playerId, Constants.STARTING_HEALTH)
-            playersPerformance.put(playerId, [])
+            playersHealth.put(player.alexaId, Constants.STARTING_HEALTH)
+            playersPerformance.put(player.alexaId, [])
         }
 
-        opponents.each { opponent ->
-            newGame.playersHealth.put(opponent.first, Constants.STARTING_HEALTH)
-            newGame.playersPerformance.put(opponent.first, opponent.second)
-        }
+        newGame = GameStateService.initializePlayers(newGame, opponents)
 
         GameStateService gameStateService = new GameStateService(dynamoDB)
         gameStateService.saveGameState(newGame)
         sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, newGame)
-
+        sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
         input.attributesManager.sessionAttributes = sessionAttributes
-        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, questionString, questionString)
+
+        String responseText = 'Question 1. ' + sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
+        String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
+        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseText, repropmptText)
         response.build()
     }
 

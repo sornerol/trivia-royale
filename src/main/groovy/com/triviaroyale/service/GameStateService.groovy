@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
+import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 
@@ -49,6 +50,15 @@ class GameStateService extends DynamoDBAccess {
         }
 
         sessionAttributes
+    }
+
+    static GameState initializePlayers(GameState gameState, List<Tuple2<String, List<Boolean>>> opponents) {
+        opponents.each { opponent ->
+            gameState.playersHealth.put(opponent.first, Constants.STARTING_HEALTH)
+            gameState.playersPerformance.put(opponent.first, opponent.second)
+        }
+
+        gameState
     }
 
     GameState loadActiveGameState(String alexaId) {

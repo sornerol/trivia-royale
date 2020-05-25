@@ -3,12 +3,18 @@ package com.triviaroyale.service
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
+import com.triviaroyale.data.Question
 import com.triviaroyale.data.Quiz
 import com.triviaroyale.util.Constants
+import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+
+import java.security.SecureRandom
 
 @CompileStatic
 class QuizService extends DynamoDBAccess {
+
+    public static final String QUESTION_SEPARATOR = '. '
 
     QuizService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
@@ -30,6 +36,20 @@ class QuizService extends DynamoDBAccess {
         selectedPlayers
     }
 
+    static Map<String, Object> updateSessionAttributesWithCurrentQuestion(Map<String, Object> sessionAttributes) {
+        List<String> questionList = sessionAttributes[SessionAttributes.QUESTION_LIST] as List<String>
+        Question currentQuestion = Question.fromJson(
+                questionList[sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int])
+        SecureRandom random = new SecureRandom()
+        int correctAnswerIndex = random.nextInt(currentQuestion.otherAnswers.size() + 1)
+        String questionText = generateQuestionText(currentQuestion, correctAnswerIndex)
+
+        sessionAttributes.put(SessionAttributes.LAST_RESPONSE, questionText)
+        sessionAttributes.put(SessionAttributes.CORRECT_ANSWER_INDEX, correctAnswerIndex)
+
+        sessionAttributes
+    }
+
     Quiz loadNextAvailableQuizForPlayer(Player player, String category = Constants.GENERAL_CATEGORY) {
 
     }
@@ -40,6 +60,28 @@ class QuizService extends DynamoDBAccess {
 
     void addPerformanceToPool(GameState completedGame) {
 
+    }
+
+    protected static String generateQuestionText(Question question, int correctAnswerIndex) {
+        String questionText = question.questionText
+        int possibleAnswers = question.otherAnswers.size() + 1
+        List<String> answers = []
+        Collections.shuffle(question.otherAnswers)
+        String answerLetter = 'A'
+        for (int i = 0; i < possibleAnswers; i++) {
+            if (i == correctAnswerIndex) {
+                answers[i] = answerLetter + QUESTION_SEPARATOR + question.correctAnswer + QUESTION_SEPARATOR
+            } else {
+                answers[i] = answerLetter + QUESTION_SEPARATOR + question.otherAnswers.pop() + QUESTION_SEPARATOR
+            }
+            answerLetter++
+        }
+
+        answers.each {
+            answer -> questionText += answer
+        }
+
+        questionText
     }
 
 }
