@@ -27,8 +27,8 @@ codenarc {
 codenarcMain {
     configFile = rootProject.file('src/main/config/codenarc.groovy')
     //These values should be changed as violations are fixed.
-    maxPriority2Violations = 9
-    maxPriority3Violations = 13
+    maxPriority2Violations = 10
+    maxPriority3Violations = 10
 }
 
 codenarcTest {

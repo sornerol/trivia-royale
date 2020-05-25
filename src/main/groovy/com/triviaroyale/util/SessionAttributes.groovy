@@ -22,6 +22,5 @@ class SessionAttributes {
     public static final String QUESTION_LIST = 'questionList'
     public static final String QUESTION_NUMBER = 'questionNumber'
     public static final String CORRECT_ANSWER_INDEX = 'correctAnswerIndex'
-    public static final String CORRECT_ANSWER_TEXT = 'correctAnswerText'
 
 }

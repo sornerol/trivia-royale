@@ -26,8 +26,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class NewGameIntentHandler implements RequestHandler {
 
-    public static final int FIRST_QUESTION = 1
-
     @Override
     boolean canHandle(HandlerInput input) {
         input.matches(intentName('NewGameIntent') & sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_GAME))
