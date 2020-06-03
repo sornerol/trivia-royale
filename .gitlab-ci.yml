@@ -1,6 +1,5 @@
 variables:
-  - DEPLOY_PACKAGE_NAME=trivia-royale-$(date +%m%d%Y_%H%M%S)
-  - S3_DEPLOY_BUCKET=s3://trivaroyale-deploy
+  S3_DEPLOY_BUCKET: s3://trivaroyale-deploy
 
 stages:
   - test
@@ -26,6 +25,8 @@ build:
   script:
     - echo "*** $(date +%T) Building Trivia Royale ***"
     - gradle clean buildZip
+    - DEPLOY_PACKAGE_NAME=trivia-royale-$(date +%m%d%Y_%H%M%S)
+
     - mv build/distributions/trivia-royale.zip ./$DEPLOY_PACKAGE_NAME
 
     - echo "*** $(date +%T) Uploading deployment package to S3 ***"
