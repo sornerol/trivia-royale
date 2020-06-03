@@ -1,5 +1,7 @@
 package com.triviaroyale.handler
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+
 import static com.amazon.ask.request.Predicates.requestType
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
@@ -24,7 +26,7 @@ class LaunchRequestHandler implements RequestHandler {
     @Override
     Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        AmazonDynamoDB dynamoDB = AmazonAWSResourceHelper.openDynamoDBClient()
+        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
         PlayerService playerService = new PlayerService(dynamoDB)
 
         Player player = playerService.loadPlayer(AlexaSdkHelper.getUserId(input))

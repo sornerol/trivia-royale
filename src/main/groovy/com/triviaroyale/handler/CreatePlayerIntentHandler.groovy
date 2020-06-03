@@ -1,5 +1,7 @@
 package com.triviaroyale.handler
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+
 import static com.amazon.ask.request.Predicates.intentName
 import static com.amazon.ask.request.Predicates.sessionAttribute
 
@@ -33,7 +35,7 @@ class CreatePlayerIntentHandler implements RequestHandler {
             quizCompletion = [:]
         }
 
-        AmazonDynamoDB dynamoDB = AmazonAWSResourceHelper.openDynamoDBClient()
+        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
 
         PlayerService playerService = new PlayerService(dynamoDB)
         playerService.savePlayer(player)

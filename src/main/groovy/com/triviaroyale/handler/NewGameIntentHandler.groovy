@@ -1,5 +1,8 @@
 package com.triviaroyale.handler
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
+
 import static com.amazon.ask.request.Predicates.intentName
 import static com.amazon.ask.request.Predicates.sessionAttribute
 
@@ -42,13 +45,13 @@ class NewGameIntentHandler implements RequestHandler {
         SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
         directiveServiceClient.enqueue(sendDirectiveRequest)
 
-        AmazonDynamoDB dynamoDB = AmazonAWSResourceHelper.openDynamoDBClient()
+        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
         QuizService quizService = new QuizService(dynamoDB)
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
         Quiz quiz = quizService.loadNextAvailableQuizForPlayer(player)
 
         if (quiz == null) {
-            AmazonS3 s3 = AmazonAWSResourceHelper.openS3Client()
+            AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient()
             QuestionService questionService = new QuestionService(s3, Constants.S3_QUESTION_BUCKET)
             List<String> newQuizQuestions =
                     questionService.fetchRandomQuestionsForCategory(Constants.NUMBER_OF_QUESTIONS)
