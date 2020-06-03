@@ -1,8 +1,5 @@
 package com.triviaroyale.handler
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
-
 import static com.amazon.ask.request.Predicates.intentName
 import static com.amazon.ask.request.Predicates.sessionAttribute
 
@@ -14,7 +11,9 @@ import com.amazon.ask.model.services.directive.SendDirectiveRequest
 import com.amazon.ask.model.services.directive.SpeakDirective
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
 import com.triviaroyale.data.Quiz

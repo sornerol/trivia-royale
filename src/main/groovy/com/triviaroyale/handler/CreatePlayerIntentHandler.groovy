@@ -1,7 +1,5 @@
 package com.triviaroyale.handler
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
-
 import static com.amazon.ask.request.Predicates.intentName
 import static com.amazon.ask.request.Predicates.sessionAttribute
 
@@ -10,9 +8,13 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.Player
 import com.triviaroyale.service.PlayerService
-import com.triviaroyale.util.*
+import com.triviaroyale.util.AlexaSdkHelper
+import com.triviaroyale.util.AppState
+import com.triviaroyale.util.Messages
+import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 
 @CompileStatic
