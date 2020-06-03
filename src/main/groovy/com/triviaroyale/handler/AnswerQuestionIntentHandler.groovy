@@ -30,6 +30,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
         AnswerValidationBean answerValidation = GameStateService.processPlayersAnswer(currentGameState,
                 sessionAttributes[SessionAttributes.CORRECT_ANSWER_INDEX] as int, playerAnswer)
 
+        return null
     }
 
 }

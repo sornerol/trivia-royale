@@ -1,3 +1,7 @@
+variables:
+  - DEPLOY_PACKAGE_NAME=trivia-royale-$(date +%m%d%Y_%H%M%S)
+  - S3_DEPLOY_BUCKET=s3://trivaroyale-deploy
+
 stages:
   - test
   - build
@@ -20,7 +24,14 @@ codenarc and tests:
 build:
   stage: build
   script:
+    - echo "*** $(date +%T) Building Trivia Royale ***"
     - gradle clean buildZip
+    - mv build/distributions/trivia-royale.zip ./$DEPLOY_PACKAGE_NAME
+
+    - echo "*** $(date +%T) Uploading deployment package to S3 ***"
+    - aws s3 cp $DEPLOY_PACKAGE_NAME $S3_DEPLOY_BUCKET/$DEPLOY_PACKAGE_NAME
+
+    - echo "*** $(date +%T) Building Trivia Royale ***"
 
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
@@ -28,5 +39,5 @@ build:
 
   artifacts:
     paths:
-      - build/distributions/trivia-royale.zip
+      - ./trivia-royale-$BUILD_TIME
     expire_in: 1 week

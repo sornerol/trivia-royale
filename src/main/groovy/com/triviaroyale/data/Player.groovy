@@ -24,9 +24,4 @@ class Player {
     @DynamoDBAttribute(attributeName = 'quizCompletion')
     Map<String, Long> quizCompletion
 
-    @Override
-    String toString() {
-        "Alexa ID: $alexaId.  Name: $name.  Quiz Completion: ${quizCompletion.toString()}."
-    }
-
 }

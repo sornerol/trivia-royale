@@ -102,13 +102,13 @@ class GameStateServiceTest extends Specification {
         when:
         sut.saveGameState(testGameState)
         GameState testGameStateRetrieved = mapper.load(GameState, hashKey, rangeKey)
-        println(testGameStateRetrieved.toString())
 
         then:
         testGameStateRetrieved.playerId == hashKey
         testGameStateRetrieved.sessionId == rangeKey
         testGameStateRetrieved.playersHealth.containsKey('112234')
         testGameStateRetrieved.playersPerformance['112234'] == [false, false, false, false, false]
+
     }
 
 }

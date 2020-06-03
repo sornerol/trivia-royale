@@ -5,7 +5,6 @@ import com.amazonaws.auth.AnonymousAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
-import com.triviaroyale.data.Question
 import com.triviaroyale.util.Constants
 import io.findify.s3mock.S3Mock
 import spock.lang.Shared
@@ -42,7 +41,7 @@ class QuestionServiceTest extends Specification {
 
     def "fetchQuestionPoolForCategory"() {
         setup:
-        Stack<String> questionPool
+        List<String> questionPool
         when:
         questionPool = sut.fetchQuestionPoolForCategory(Constants.GENERAL_CATEGORY)
         then:
