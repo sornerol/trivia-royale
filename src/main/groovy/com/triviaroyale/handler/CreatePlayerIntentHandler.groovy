@@ -19,7 +19,7 @@ class CreatePlayerIntentHandler implements RequestHandler {
     @Override
     boolean canHandle(HandlerInput input) {
         input.matches(intentName('NewPlayerIntent')
-                & sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_PLAYER_SETUP))
+                & sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_PLAYER_SETUP))
     }
 
     @Override
@@ -39,7 +39,7 @@ class CreatePlayerIntentHandler implements RequestHandler {
         playerService.savePlayer(player)
 
         sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
-        sessionAttributes.put(SessionAttributes.GAME_STATE, AppState.NEW_GAME)
+        sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
 
         String responseMessage = 'Thank you. ' + Messages.ASK_TO_START_NEW_GAME
         String repromptMessage = Messages.ASK_TO_START_NEW_GAME

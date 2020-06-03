@@ -6,6 +6,7 @@ import groovy.transform.CompileStatic
 enum GameStateStatus {
 
     ACTIVE,
+    GAME_OVER,
     COMPLETED,
     ABORTED
 

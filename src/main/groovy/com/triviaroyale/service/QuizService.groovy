@@ -15,6 +15,7 @@ import java.security.SecureRandom
 class QuizService extends DynamoDBAccess {
 
     public static final String QUESTION_SEPARATOR = '. '
+    public static final char FIRST_ANSWER_LETTER = 'A'
 
     QuizService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
@@ -67,7 +68,7 @@ class QuizService extends DynamoDBAccess {
         int possibleAnswers = question.otherAnswers.size() + 1
         List<String> answers = []
         Collections.shuffle(question.otherAnswers)
-        String answerLetter = 'A'
+        String answerLetter = FIRST_ANSWER_LETTER.toString()
         for (int i = 0; i < possibleAnswers; i++) {
             if (i == correctAnswerIndex) {
                 answers[i] = answerLetter + QUESTION_SEPARATOR + question.correctAnswer + QUESTION_SEPARATOR

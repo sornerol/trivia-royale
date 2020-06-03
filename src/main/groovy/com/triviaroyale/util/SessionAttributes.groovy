@@ -5,6 +5,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class SessionAttributes {
 
+    public static final String APP_STATE = 'appState'
     //Player information
     public static final String PLAYER_ID = 'playerId'
     public static final String PLAYER_NAME = 'playerName'

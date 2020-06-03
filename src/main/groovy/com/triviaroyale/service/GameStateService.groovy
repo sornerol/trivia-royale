@@ -4,8 +4,11 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.triviaroyale.data.GameState
+import com.triviaroyale.data.Question
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
+import com.triviaroyale.util.AnswerValidationBean
+import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
@@ -16,6 +19,19 @@ class GameStateService extends DynamoDBAccess {
     public static final String STATUS_ATTRIBUTE = ':status'
     public static final String HASH_KEY_ATTRIBUTE = ':hk'
     public static final String SESSION_STATUS_INDEX = 'sessionStatus'
+
+    public static final Map<Integer, String> PLACE = [
+            1:'first',
+            2:'second',
+            3:'third',
+            4:'fourth',
+            5:'fifth',
+            6:'sixth',
+            7:'seventh',
+            8:'eighth',
+            9:'ninth',
+            10:'tenth',
+    ]
 
     GameStateService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
@@ -61,6 +77,49 @@ class GameStateService extends DynamoDBAccess {
         gameState
     }
 
+    static AnswerValidationBean processPlayersAnswer(GameState gameState,
+                                                     int correctAnswerIndex,
+                                                     String playersAnswer) {
+
+        String questionJson = gameState.questions[gameState.currentQuestionIndex]
+        String correctAnswerLetter = QuizService.FIRST_ANSWER_LETTER + correctAnswerIndex
+        Question currentQuestion = Question.fromJson(questionJson)
+        Boolean isPlayerCorrect =
+                (playersAnswer == correctAnswerLetter || playersAnswer == currentQuestion.correctAnswer)
+        GameState newGameState = updatePlayersHealthAfterResponse(gameState, isPlayerCorrect)
+
+        AnswerValidationBean validation = new AnswerValidationBean()
+        validation.updatedAppState = AppState.IN_GAME
+        if (isPlayerCorrect) {
+            validation.validationMessage = 'Correct! '
+        } else {
+            validation.validationMessage = "Sorry, the correct answer was $currentQuestion.correctAnswer. "
+        }
+
+        newGameState.currentQuestionIndex++
+
+        if (!newGameState.playersHealth.containsKey(newGameState.playerId)) {
+            newGameState.status = GameStateStatus.GAME_OVER
+            validation.updatedAppState = AppState.NEW_GAME
+            int finalPlace = newGameState.playersHealth.size() + 1
+            validation.validationMessage +=
+                    "Uh-oh, you've been eliminated. You finished in ${PLACE[finalPlace]} place. "
+        } else if (newGameState.currentQuestionIndex >= Constants.NUMBER_OF_QUESTIONS) {
+            newGameState.status = GameStateStatus.COMPLETED
+            validation.updatedAppState = AppState.NEW_GAME
+            int finalPlace = determinePlayersCurrentPlace(newGameState)
+            validation.validationMessage +=
+                    "Congratulations, you completed the quiz. You finished in ${PLACE[finalPlace]} place. "
+        } else {
+            int currentPlace = determinePlayersCurrentPlace(newGameState)
+            validation.validationMessage += "You're currently in ${PLACE[currentPlace]}"
+        }
+
+        validation.updatedGameState = newGameState
+
+        validation
+    }
+
     GameState loadActiveGameState(String alexaId) {
         Map<String, AttributeValue> attributeValues = [:]
         attributeValues.put(STATUS_ATTRIBUTE, new AttributeValue().withS(GameStateStatus.ACTIVE as String))
@@ -85,6 +144,40 @@ class GameStateService extends DynamoDBAccess {
         gameState.playerId = DynamoDBConstants.PLAYER_PREFIX + gameState.playerId
         gameState.sessionId = DynamoDBConstants.SESSION_PREFIX + gameState.sessionId
         mapper.save(gameState)
+    }
+
+    protected static GameState updatePlayersHealthAfterResponse(GameState gameState, Boolean isPlayerCorrect) {
+        gameState.playersPerformance[gameState.playerId][gameState.currentQuestionIndex] = isPlayerCorrect
+        int playersWithRightAnswer = 0
+        int playersWithWrongAnswer = 0
+        gameState.playersHealth.each { player ->
+            gameState.playersPerformance[player.key][gameState.currentQuestionIndex] ?
+                    playersWithRightAnswer++ : playersWithWrongAnswer++
+        }
+
+        int rightAnswerHealthAdjustment = playersWithWrongAnswer * Constants.CORRECT_HEALTH_ADJUSTMENT
+        int wrongAnswerHealthAdjustment = playersWithRightAnswer * Constants.INCORRECT_HEALTH_ADJUSTMENT
+
+        gameState.playersHealth.each {
+            if (gameState.playersPerformance[it.key][gameState.currentQuestionIndex]) {
+                it.value += rightAnswerHealthAdjustment
+            } else {
+                it.value -= wrongAnswerHealthAdjustment
+            }
+        }
+
+        gameState.playersHealth = gameState.playersHealth.findAll {
+            it.value >= 0
+        }
+
+        gameState
+    }
+
+    protected static int determinePlayersCurrentPlace(GameState gameState) {
+        List<Integer> healthValues = gameState.playersHealth.values() as List<Integer>
+        int playersHealth = gameState.playersHealth[gameState.playerId]
+        Collections.sort(healthValues)
+        healthValues.indexOf(playersHealth) + 1
     }
 
 }

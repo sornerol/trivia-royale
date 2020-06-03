@@ -28,7 +28,7 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(intentName('NewGameIntent') & sessionAttribute(SessionAttributes.GAME_STATE, AppState.NEW_GAME))
+        input.matches(intentName('NewGameIntent') & sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME))
     }
 
     @Override
@@ -64,6 +64,7 @@ class NewGameIntentHandler implements RequestHandler {
 
         GameStateService gameStateService = new GameStateService(dynamoDB)
         gameStateService.saveGameState(newGame)
+        sessionAttributes[SessionAttributes.APP_STATE] = AppState.IN_GAME
         sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, newGame)
         sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
         input.attributesManager.sessionAttributes = sessionAttributes
