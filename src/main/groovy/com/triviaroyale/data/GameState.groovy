@@ -4,7 +4,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperFieldModel.DynamoDBAttributeType
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
-import com.triviaroyale.util.Constants
 import groovy.transform.CompileStatic
 
 @CompileStatic

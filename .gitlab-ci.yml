@@ -9,7 +9,7 @@ codenarc and tests:
   stage: test
   script:
     - gradle --stop
-    - gradle check
+    - gradle clean check
 
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'

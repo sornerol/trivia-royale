@@ -24,4 +24,8 @@ the leaderboard every week. The more you play, the more points you can earn."""
 
     public static final String STARTING_NEW_GAME = 'Okay. Hold on while I find some opponents.'
 
+    public static final String EXIT_SKILL =
+            '''Thank you for playing Trivia Royale. If you enjoyed playing, would you mind leaving a review in the
+Alexa Skills Store?'''
+
 }
