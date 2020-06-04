@@ -13,7 +13,9 @@ import com.triviaroyale.util.AnswerValidationBean
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 
+@Slf4j
 @CompileStatic
 class AnswerQuestionIntentHandler implements RequestHandler {
 
@@ -24,6 +26,8 @@ class AnswerQuestionIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
+        log.debug('START AnswerQuestionIntentHandler.handle()')
+
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String playerAnswer = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
         GameState currentGameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)

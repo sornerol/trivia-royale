@@ -24,7 +24,9 @@ import com.triviaroyale.service.QuestionService
 import com.triviaroyale.service.QuizService
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 
+@Slf4j
 @CompileStatic
 class NewGameIntentHandler implements RequestHandler {
 
@@ -36,6 +38,7 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
+        log.debug('START NewGameIntentHandler.handle()')
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
         //Play audio clip and let player know we're setting things up.

@@ -10,7 +10,9 @@ import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 
+@Slf4j
 @CompileStatic
 class HearRulesIntentHandler implements RequestHandler {
 
@@ -21,6 +23,8 @@ class HearRulesIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
+        log.debug('START HearRulesIntentHandler.handle()')
+
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage = Messages.RULES
         String repromptMessage

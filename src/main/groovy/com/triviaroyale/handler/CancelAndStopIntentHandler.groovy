@@ -12,7 +12,9 @@ import com.triviaroyale.util.Constants
 import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 
+@Slf4j
 @CompileStatic
 class CancelAndStopIntentHandler implements RequestHandler {
 
@@ -26,6 +28,8 @@ class CancelAndStopIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
+        log.debug('START CancelAndStopIntentHandler.handle()')
+
         ResponseBuilder responseBuilder = input.responseBuilder
         responseBuilder
                 .withSpeech(Messages.EXIT_SKILL)
