@@ -1,9 +1,8 @@
 variables:
-  S3_DEPLOY_BUCKET: s3://trivaroyale-deploy
-
 stages:
   - test
   - build
+  - deploy
 
 codenarc and tests:
   stage: test
@@ -26,12 +25,9 @@ build:
   script:
     - echo "*** $(date +%T) Building Trivia Royale ***"
     - gradle clean buildZip
-    - DEPLOY_PACKAGE_NAME=trivia-royale-$(date +%m%d%Y_%H%M%S).zip
-
-    - mv build/distributions/trivia-royale.zip ./$DEPLOY_PACKAGE_NAME
 
     - echo "*** $(date +%T) Uploading deployment package to S3 ***"
-    - aws s3 cp $DEPLOY_PACKAGE_NAME $S3_DEPLOY_BUCKET/$DEPLOY_PACKAGE_NAME
+    - pipeline-scripts/upload.sh
 
     - echo "*** $(date +%T) Build successful! ***"
 
@@ -43,3 +39,15 @@ build:
     paths:
       - ./*.zip
     expire_in: 1 week
+
+deploy:
+  stage: deploy
+  script:
+    - echo "*** $(date +%T) Deploying Lambda Function ***"
+    - pipeline-scripts/deploy.sh
+
+    - echo "*** $(date +%T) Deployment successful! ***"
+
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+      when: manual
