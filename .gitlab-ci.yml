@@ -8,6 +8,7 @@ stages:
 codenarc and tests:
   stage: test
   script:
+    - gradle --stop
     - gradle check
 
   rules:
