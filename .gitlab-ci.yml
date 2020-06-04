@@ -32,13 +32,8 @@ build:
     - echo "*** $(date +%T) Uploading deployment package to S3 ***"
     - aws s3 cp $DEPLOY_PACKAGE_NAME $S3_DEPLOY_BUCKET/$DEPLOY_PACKAGE_NAME
 
-    - echo "*** $(date +%T) Building Trivia Royale ***"
+    - echo "*** $(date +%T) Build successful! ***"
 
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
       when: on_success
-
-  artifacts:
-    paths:
-      - ./trivia-royale-$BUILD_TIME
-    expire_in: 1 week
