@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 apply plugin: 'codenarc'
 
-def GROOVY_VERSION = '2.5.8'
+def GROOVY_VERSION = '2.5.12'
 def ALEXA_SDK_VERSION = '2.27.1'
 def DYNAMODB_VERSION = '1.11.477'
 def JUNIT_VERSION = '5.5.2'
@@ -68,10 +68,12 @@ test {
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:$GROOVY_VERSION"
+    compile "org.codehaus.groovy:groovy:$GROOVY_VERSION"
+    compile "org.codehaus.groovy:groovy-json:$GROOVY_VERSION"
     compile "com.amazon.alexa:ask-sdk:$ALEXA_SDK_VERSION"
 
-    testCompile "org.codehaus.groovy:groovy-all:$GROOVY_VERSION"
+    testCompile "org.codehaus.groovy:groovy:$GROOVY_VERSION"
+    testCompile "org.codehaus.groovy:groovy-json:$GROOVY_VERSION"
     testCompile "com.amazonaws:DynamoDBLocal:$DYNAMODB_VERSION"
     testCompile "org.junit.jupiter:junit-jupiter-api:$JUNIT_VERSION"
     testCompile "org.spockframework:spock-core:$SPOCK_VERSION"
