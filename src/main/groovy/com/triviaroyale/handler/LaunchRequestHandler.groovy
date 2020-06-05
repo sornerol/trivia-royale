@@ -9,6 +9,7 @@ import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+import com.amazonaws.services.lambda.runtime.LambdaLogger
 import com.triviaroyale.data.Player
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.util.AlexaSdkHelper
@@ -16,9 +17,7 @@ import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
 
-@Slf4j
 @CompileStatic
 class LaunchRequestHandler implements RequestHandler {
 
@@ -29,7 +28,7 @@ class LaunchRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.info('START LaunchRequestHandler.handle()')
+        println('START LaunchRequestHandler.handle()')
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
         PlayerService playerService = new PlayerService(dynamoDB)
@@ -40,14 +39,13 @@ class LaunchRequestHandler implements RequestHandler {
 
         if (player == null) {
             sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_PLAYER_SETUP)
-            responseMessage = Messages.WELCOME_NEW_PLAYER + Messages.RULES + Messages.ASK_FOR_NAME
+            responseMessage = "$Messages.WELCOME_NEW_PLAYER $Messages.RULES $Messages.ASK_FOR_NAME"
             repromptMessage = Messages.ASK_FOR_NAME
         } else {
             sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
             sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
 
-            responseMessage = "${Messages.WELCOME_EXISTING_PLAYER} " +
-                    "${Messages.ASK_TO_START_NEW_GAME}"
+            responseMessage = "$Messages.WELCOME_EXISTING_PLAYER $Messages.ASK_TO_START_NEW_GAME"
             repromptMessage = Messages.ASK_TO_START_NEW_GAME
         }
 

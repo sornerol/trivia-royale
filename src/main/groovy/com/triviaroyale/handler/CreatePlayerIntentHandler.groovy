@@ -16,22 +16,18 @@ import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
 
-@Slf4j
 @CompileStatic
 class CreatePlayerIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
         input.matches(intentName('NewPlayerIntent')
-                & sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_PLAYER_SETUP))
+                & sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_PLAYER_SETUP.toString()))
     }
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.debug('START CreatePlayerIntentHandler.handle()')
-
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         Player player = new Player()
 
