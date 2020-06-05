@@ -37,7 +37,7 @@ build:
 
   artifacts:
     paths:
-      - ./*.zip
+      - build/distributions/*.zip
     expire_in: 1 week
 
 deploy:
