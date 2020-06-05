@@ -29,7 +29,7 @@ class LaunchRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.debug('START LaunchRequestHandler.handle()')
+        log.info('START LaunchRequestHandler.handle()')
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
         PlayerService playerService = new PlayerService(dynamoDB)
