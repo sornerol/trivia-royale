@@ -9,7 +9,6 @@ import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
-import com.amazonaws.services.lambda.runtime.LambdaLogger
 import com.triviaroyale.data.Player
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.util.AlexaSdkHelper
