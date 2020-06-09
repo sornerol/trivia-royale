@@ -14,7 +14,6 @@ import java.security.SecureRandom
 @CompileStatic
 class QuizService extends DynamoDBAccess {
 
-    public static final String QUESTION_SEPARATOR = '. '
     public static final char FIRST_ANSWER_LETTER = 'A'
 
     QuizService(AmazonDynamoDB dynamoDB) {
@@ -64,20 +63,22 @@ class QuizService extends DynamoDBAccess {
     }
 
     protected static String generateQuestionText(Question question, int correctAnswerIndex) {
-        String questionText = question.questionText
         int possibleAnswers = question.otherAnswers.size() + 1
         List<String> answers = []
         Collections.shuffle(question.otherAnswers)
         String answerLetter = FIRST_ANSWER_LETTER.toString()
         for (int i = 0; i < possibleAnswers; i++) {
+            String formattedAnswer
             if (i == correctAnswerIndex) {
-                answers[i] = answerLetter + QUESTION_SEPARATOR + question.correctAnswer + QUESTION_SEPARATOR
+                formattedAnswer = "${answerLetter}. $question.correctAnswer\n"
             } else {
-                answers[i] = answerLetter + QUESTION_SEPARATOR + question.otherAnswers.pop() + QUESTION_SEPARATOR
+                formattedAnswer = "${answerLetter}. ${question.otherAnswers.pop()}\n"
             }
+            answers[i] = formattedAnswer
             answerLetter++
         }
 
+        String questionText = question.questionText + '\n'
         answers.each {
             answer -> questionText += answer
         }
