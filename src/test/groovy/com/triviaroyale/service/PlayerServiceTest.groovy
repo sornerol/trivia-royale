@@ -56,6 +56,17 @@ class PlayerServiceTest extends Specification {
 
     }
 
+    def "LoadNonExistingPlayer"() {
+        setup:
+        Player player
+
+        when:
+        player = sut.loadPlayer('ThisPlayerDoesNotExist')
+
+        then:
+        !player
+    }
+
     def "SavePlayer"() {
         setup:
         Player testPlayer = new Player()
