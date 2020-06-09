@@ -23,7 +23,7 @@ class CancelAndStopIntentHandler implements RequestHandler {
         input.matches(intentName('AMAZON.CancelIntent')) ||
                 input.matches(intentName('AMAZON.StopIntent')) ||
                 input.matches(intentName('AMAZON.NoIntent') &
-                        sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME))
+                        sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME.toString()))
     }
 
     @Override

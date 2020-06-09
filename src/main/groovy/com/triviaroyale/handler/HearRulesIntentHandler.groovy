@@ -7,6 +7,7 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
 import com.triviaroyale.util.AlexaSdkHelper
+import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
@@ -29,8 +30,14 @@ class HearRulesIntentHandler implements RequestHandler {
         String responseMessage = Messages.RULES
         String repromptMessage
 
-        String nextActionMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
-        responseMessage += nextActionMessage
+        String nextActionMessage
+        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.NEW_PLAYER_SETUP) {
+            nextActionMessage = Messages.ASK_FOR_NAME
+        } else {
+            nextActionMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
+        }
+
+        responseMessage += " $nextActionMessage"
         repromptMessage = nextActionMessage
 
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)

@@ -41,6 +41,7 @@ class LaunchRequestHandler implements RequestHandler {
             responseMessage = "$Messages.WELCOME_NEW_PLAYER $Messages.RULES $Messages.ASK_FOR_NAME"
             repromptMessage = Messages.ASK_FOR_NAME
         } else {
+            //TODO: Check for active game state. If found, ask player if they want to resume or start a new game
             sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
             sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
 

@@ -21,7 +21,8 @@ class AnswerQuestionIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(intentName('AnswerIntent') & sessionAttribute(SessionAttributes.APP_STATE, AppState.IN_GAME))
+        input.matches(intentName('AnswerIntent') &
+                sessionAttribute(SessionAttributes.APP_STATE, AppState.IN_GAME.toString()))
     }
 
     @Override
