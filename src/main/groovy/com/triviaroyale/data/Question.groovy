@@ -3,10 +3,8 @@ package com.triviaroyale.data
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
 
 @CompileStatic
-@Slf4j
 class Question {
 
     String questionText
@@ -19,7 +17,7 @@ class Question {
         try {
             question = slurper.parseText(json) as Question
         } catch (IllegalArgumentException e) {
-            log.error('Could not create Question from JSON: ' + json)
+            println('Could not create Question from JSON: ' + json)
             throw e
         }
         question
