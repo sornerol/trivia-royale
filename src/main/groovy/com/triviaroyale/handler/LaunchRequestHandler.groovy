@@ -34,15 +34,18 @@ class LaunchRequestHandler implements RequestHandler {
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
         PlayerService playerService = new PlayerService(dynamoDB)
 
-        Player player = playerService.loadPlayer(AlexaSdkHelper.getUserId(input))
+        String playerId = AlexaSdkHelper.getUserId(input)
+        Player player = playerService.loadPlayer(playerId)
         String responseMessage
         String repromptMessage
 
         if (player == null) {
+            logger.info("Player ID ${playerId} not found")
             sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_PLAYER_SETUP)
             responseMessage = "$Messages.WELCOME_NEW_PLAYER $Messages.RULES $Messages.ASK_FOR_NAME"
             repromptMessage = Messages.ASK_FOR_NAME
         } else {
+            logger.info("Found ${player.alexaId}. Name: ${player.name}.")
             //TODO: Check for active game state. If found, ask player if they want to resume or start a new game
             sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
             sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
