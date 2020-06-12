@@ -2,8 +2,13 @@ package com.triviaroyale.util
 
 import groovy.transform.CompileStatic
 
+import java.util.logging.Level
+
 @CompileStatic
 class Constants {
+
+    //TODO: Find a better way to set the default log level
+    public static final Level LOG_LEVEL = Level.FINER
 
     public static final String SKILL_TITLE = 'Trivia Royale'
     public static final int NUMBER_OF_PLAYERS = 10
