@@ -7,10 +7,11 @@
         </Lambda>
     </Appenders>
     <Loggers>
-        <Root level="DEBUG">
+        <Root level="WARN">
             <AppenderRef ref="Lambda"/>
         </Root>
         <Logger name="software.amazon.awssdk" level="WARN" />
         <Logger name="software.amazon.awssdk.request" level="DEBUG" />
+        <Logger name="com.triviaroyale" level="DEBUG" />
     </Loggers>
 </Configuration>
