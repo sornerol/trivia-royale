@@ -25,6 +25,8 @@ import com.triviaroyale.service.QuizService
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
 
+import java.util.logging.Logger
+
 @CompileStatic
 class NewGameIntentHandler implements RequestHandler {
 
@@ -36,6 +38,10 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
+        Logger logger = Logger.getLogger(this.class.name)
+        logger.level = Constants.LOG_LEVEL
+        logger.entering(this.class.name, 'handle')
+
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
         //Play audio clip and let player know we're setting things up.
@@ -75,6 +81,8 @@ class NewGameIntentHandler implements RequestHandler {
         String responseText = 'Question 1. ' + sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseText, repropmptText)
+        logger.exiting(this.class.name, 'handle')
+
         response.build()
     }
 

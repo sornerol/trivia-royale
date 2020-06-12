@@ -13,9 +13,12 @@ import com.triviaroyale.data.Player
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.AppState
+import com.triviaroyale.util.Constants
 import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+
+import java.util.logging.Logger
 
 @CompileStatic
 class CreatePlayerIntentHandler implements RequestHandler {
@@ -28,6 +31,10 @@ class CreatePlayerIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
+        Logger logger = Logger.getLogger(this.class.name)
+        logger.level = Constants.LOG_LEVEL
+        logger.entering(this.class.name, 'handle')
+
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         Player player = new Player()
 
@@ -52,6 +59,8 @@ class CreatePlayerIntentHandler implements RequestHandler {
 
         input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
+        logger.exiting(this.class.name, 'handle')
+
         response.build()
     }
 
