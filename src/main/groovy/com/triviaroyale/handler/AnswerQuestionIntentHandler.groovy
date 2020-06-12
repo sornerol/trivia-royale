@@ -30,7 +30,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
     Optional<Response> handle(HandlerInput input) {
         Logger logger = Logger.getLogger(this.class.name)
         logger.level = Constants.LOG_LEVEL
-        logger.entering(this.class.name, 'handle')
+        logger.entering(this.class.name, Constants.HANDLE_METHOD)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String playerAnswer = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
@@ -38,7 +38,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
         AnswerValidationBean answerValidation = GameStateService.processPlayersAnswer(currentGameState,
                 sessionAttributes[SessionAttributes.CORRECT_ANSWER_INDEX] as int, playerAnswer)
 
-        logger.exiting(this.class.name, 'handle')
+        logger.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         return null
     }

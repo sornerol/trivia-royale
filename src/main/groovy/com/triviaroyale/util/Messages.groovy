@@ -11,9 +11,9 @@ class Messages {
 
     public static final String RULES =
             "Test your brain power against other players in a battle royale style trivia game. The rules are simple: \
-Compete against ${Constants.NUMBER_OF_PLAYERS - 1} other players in a multiple choice trivia quiz. Correct answers will \
-gain you health points, while wrong answers will make you lose health. If your health drops to zero, you \
-will be eliminated. Can you survive?"
+Compete against ${Constants.NUMBER_OF_PLAYERS - 1} other players in a multiple choice trivia quiz. Correct answers \
+will gain you health points, while wrong answers will make you lose health. If your health drops to zero, you will \
+be eliminated. Can you survive?"
 
     public static final String ASK_FOR_NAME = 'To get started, tell me your name.'
 
