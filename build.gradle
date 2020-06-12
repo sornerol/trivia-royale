@@ -72,6 +72,7 @@ dependencies {
     compile "org.codehaus.groovy:groovy-json:$GROOVY_VERSION"
     compile "com.amazon.alexa:ask-sdk:$ALEXA_SDK_VERSION"
     compile 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    compile 'com.amazonaws:aws-lambda-java-log4j2:1.2.0'
     compile 'org.apache.logging.log4j:log4j-core:2.8.2'
 
     testCompile "org.codehaus.groovy:groovy:$GROOVY_VERSION"
