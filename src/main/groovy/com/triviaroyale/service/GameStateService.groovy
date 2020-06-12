@@ -89,9 +89,9 @@ class GameStateService extends DynamoDBAccess {
         AnswerValidationBean validation = new AnswerValidationBean()
         validation.updatedAppState = AppState.IN_GAME
         if (isPlayerCorrect) {
-            validation.validationMessage = 'Correct! '
+            validation.validationMessage = 'Correct!'
         } else {
-            validation.validationMessage = "Sorry, the correct answer was $currentQuestion.correctAnswer. "
+            validation.validationMessage = "Sorry, the correct answer was $currentQuestion.correctAnswer."
         }
 
         newGameState.currentQuestionIndex++
@@ -101,16 +101,26 @@ class GameStateService extends DynamoDBAccess {
             validation.updatedAppState = AppState.NEW_GAME
             int finalPlace = newGameState.playersHealth.size() + 1
             validation.validationMessage +=
-                    "Uh-oh, you've been eliminated. You finished in ${PLACE[finalPlace]} place. "
+                    " Uh-oh, you've been eliminated. You finished in ${PLACE[finalPlace]} place."
         } else if (newGameState.currentQuestionIndex >= Constants.NUMBER_OF_QUESTIONS) {
             newGameState.status = GameStateStatus.COMPLETED
             validation.updatedAppState = AppState.NEW_GAME
             int finalPlace = determinePlayersCurrentPlace(newGameState)
             validation.validationMessage +=
-                    "Congratulations, you completed the quiz. You finished in ${PLACE[finalPlace]} place. "
-        } else {
+                    " You completed the quiz. You finished in ${PLACE[finalPlace]} place."
+            if (finalPlace == 1) {
+                validation.validationMessage += ' Congratulations on your win!'
+            }
+        } else if (newGameState.playersHealth.size() == 1) {
+            newGameState.status = GameStateStatus.COMPLETED
+            validation.updatedAppState = AppState.NEW_GAME
+            validation.validationMessage +=
+                    " Congratulations! You're the last player remaining."
+        }
+        else {
             int currentPlace = determinePlayersCurrentPlace(newGameState)
-            validation.validationMessage += "You're currently in ${PLACE[currentPlace]}"
+            validation.validationMessage += " You're currently in ${PLACE[currentPlace]}. " +
+                    "Your current health is ${newGameState.playersHealth[newGameState.playerId]}"
         }
 
         validation.updatedGameState = newGameState
