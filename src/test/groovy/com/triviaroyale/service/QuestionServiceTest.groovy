@@ -11,8 +11,6 @@ import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
 
-//TODO: Fix problem with S3 mock 
-@Ignore
 class QuestionServiceTest extends Specification {
 
     public static final String S3_MOCK_PATH = 'test-data/trivia-royale-s3'
