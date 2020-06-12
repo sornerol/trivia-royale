@@ -11,9 +11,7 @@ import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
 
-@Slf4j
 @CompileStatic
 class RepeatIntentHandler implements RequestHandler {
 
@@ -26,8 +24,6 @@ class RepeatIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.debug('START RepeatIntentHandler.handle()')
-
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
         String repromptMessage = responseMessage

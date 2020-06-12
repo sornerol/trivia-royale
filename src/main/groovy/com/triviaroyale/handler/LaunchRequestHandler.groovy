@@ -16,9 +16,9 @@ import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-@Slf4j
 @CompileStatic
 class LaunchRequestHandler implements RequestHandler {
 
@@ -29,6 +29,7 @@ class LaunchRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
+        Logger log = LoggerFactory.getLogger(LaunchRequestHandler)
         log.debug('START LaunchRequestHandler.handle()')
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
