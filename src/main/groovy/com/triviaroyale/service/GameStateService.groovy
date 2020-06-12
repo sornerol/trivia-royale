@@ -80,10 +80,8 @@ class GameStateService extends DynamoDBAccess {
     static AnswerValidationBean processPlayersAnswer(GameState gameState,
                                                      int correctAnswerIndex,
                                                      String playersAnswer) {
-
-        String questionJson = gameState.questions[gameState.currentQuestionIndex]
+        Question currentQuestion = Question.fromJson(gameState.questions[gameState.currentQuestionIndex])
         String correctAnswerLetter = QuizService.FIRST_ANSWER_LETTER + correctAnswerIndex
-        Question currentQuestion = Question.fromJson(questionJson)
         Boolean isPlayerCorrect =
                 (playersAnswer == correctAnswerLetter || playersAnswer == currentQuestion.correctAnswer)
         GameState newGameState = updatePlayersHealthAfterResponse(gameState, isPlayerCorrect)
