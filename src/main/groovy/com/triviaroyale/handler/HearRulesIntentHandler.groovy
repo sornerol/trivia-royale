@@ -6,16 +6,12 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
-import com.triviaroyale.util.AlexaSdkHelper
-import com.triviaroyale.util.AppState
-import com.triviaroyale.util.Constants
-import com.triviaroyale.util.Messages
-import com.triviaroyale.util.SessionAttributes
+import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
-
-import java.util.logging.Logger
+import groovy.util.logging.Log
 
 @CompileStatic
+@Log
 class HearRulesIntentHandler implements RequestHandler {
 
     @Override
@@ -25,9 +21,8 @@ class HearRulesIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Logger logger = Logger.getLogger(this.class.name)
-        logger.level = Constants.LOG_LEVEL
-        logger.entering(this.class.name, 'handle')
+        log.level = Constants.LOG_LEVEL
+        log.entering(this.class.name, Constants.HANDLE_METHOD)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage = Messages.RULES
@@ -44,7 +39,7 @@ class HearRulesIntentHandler implements RequestHandler {
         repromptMessage = nextActionMessage
 
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
-        logger.exiting(this.class.name, 'handle')
+        log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         response.build()
     }

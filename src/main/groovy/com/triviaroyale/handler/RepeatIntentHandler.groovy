@@ -12,10 +12,10 @@ import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
-
-import java.util.logging.Logger
+import groovy.util.logging.Log
 
 @CompileStatic
+@Log
 class RepeatIntentHandler implements RequestHandler {
 
     @Override
@@ -27,16 +27,15 @@ class RepeatIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Logger logger = Logger.getLogger(this.class.name)
-        logger.level = Constants.LOG_LEVEL
-        logger.entering(this.class.name, 'handle')
+        log.level = Constants.LOG_LEVEL
+        log.entering(this.class.name, Constants.HANDLE_METHOD)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
         String repromptMessage = responseMessage
 
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
-        logger.exiting(this.class.name, 'handle')
+        log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         response.build()
     }

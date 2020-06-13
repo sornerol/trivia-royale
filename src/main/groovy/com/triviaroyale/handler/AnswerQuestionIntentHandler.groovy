@@ -8,16 +8,12 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.triviaroyale.data.GameState
 import com.triviaroyale.service.GameStateService
-import com.triviaroyale.util.AlexaSdkHelper
-import com.triviaroyale.util.AnswerValidationBean
-import com.triviaroyale.util.AppState
-import com.triviaroyale.util.Constants
-import com.triviaroyale.util.SessionAttributes
+import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
-
-import java.util.logging.Logger
+import groovy.util.logging.Log
 
 @CompileStatic
+@Log
 class AnswerQuestionIntentHandler implements RequestHandler {
 
     @Override
@@ -28,9 +24,8 @@ class AnswerQuestionIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Logger logger = Logger.getLogger(this.class.name)
-        logger.level = Constants.LOG_LEVEL
-        logger.entering(this.class.name, Constants.HANDLE_METHOD)
+        log.level = Constants.LOG_LEVEL
+        log.entering(this.class.name, Constants.HANDLE_METHOD)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String playerAnswer = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
@@ -38,9 +33,9 @@ class AnswerQuestionIntentHandler implements RequestHandler {
         AnswerValidationBean answerValidation = GameStateService.processPlayersAnswer(currentGameState,
                 sessionAttributes[SessionAttributes.CORRECT_ANSWER_INDEX] as int, playerAnswer)
 
-        logger.exiting(this.class.name, Constants.HANDLE_METHOD)
+        log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
-        return null
+        null
     }
 
 }

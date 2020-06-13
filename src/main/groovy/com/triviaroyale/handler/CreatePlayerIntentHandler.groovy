@@ -11,16 +11,12 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.Player
 import com.triviaroyale.service.PlayerService
-import com.triviaroyale.util.AlexaSdkHelper
-import com.triviaroyale.util.AppState
-import com.triviaroyale.util.Constants
-import com.triviaroyale.util.Messages
-import com.triviaroyale.util.SessionAttributes
+import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
-
-import java.util.logging.Logger
+import groovy.util.logging.Log
 
 @CompileStatic
+@Log
 class CreatePlayerIntentHandler implements RequestHandler {
 
     @Override
@@ -31,9 +27,8 @@ class CreatePlayerIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Logger logger = Logger.getLogger(this.class.name)
-        logger.level = Constants.LOG_LEVEL
-        logger.entering(this.class.name, 'handle')
+        log.level = Constants.LOG_LEVEL
+        log.entering(this.class.name, Constants.HANDLE_METHOD)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         Player player = new Player()
@@ -59,7 +54,7 @@ class CreatePlayerIntentHandler implements RequestHandler {
 
         input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
-        logger.exiting(this.class.name, 'handle')
+        log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         response.build()
     }

@@ -13,10 +13,10 @@ import com.triviaroyale.data.Player
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
-
-import java.util.logging.Logger
+import groovy.util.logging.Log
 
 @CompileStatic
+@Log
 class LaunchRequestHandler implements RequestHandler {
 
     @Override
@@ -26,9 +26,8 @@ class LaunchRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Logger logger = Logger.getLogger(this.class.name)
-        logger.level = Constants.LOG_LEVEL
-        logger.entering(this.class.name, 'handle')
+        log.level = Constants.LOG_LEVEL
+        log.entering(this.class.name, Constants.HANDLE_METHOD)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
@@ -40,12 +39,12 @@ class LaunchRequestHandler implements RequestHandler {
         String repromptMessage
 
         if (player == null) {
-            logger.info("Player ID ${playerId} not found")
+            log.info("Player ID ${playerId} not found")
             sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_PLAYER_SETUP)
             responseMessage = "$Messages.WELCOME_NEW_PLAYER $Messages.RULES $Messages.ASK_FOR_NAME"
             repromptMessage = Messages.ASK_FOR_NAME
         } else {
-            logger.info("Found ${player.alexaId}. Name: ${player.name}.")
+            log.info("Found ${player.alexaId}. Name: ${player.name}.")
             //TODO: Check for active game state. If found, ask player if they want to resume or start a new game
             sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
             sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
@@ -58,7 +57,7 @@ class LaunchRequestHandler implements RequestHandler {
 
         input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
-        logger.exiting(this.class.name, 'handle')
+        log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         response.build()
     }

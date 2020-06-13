@@ -8,10 +8,10 @@ import com.amazon.ask.model.Response
 import com.amazon.ask.model.SessionEndedRequest
 import com.triviaroyale.util.Constants
 import groovy.transform.CompileStatic
-
-import java.util.logging.Logger
+import groovy.util.logging.Log
 
 @CompileStatic
+@Log
 class SessionEndedRequestHandler implements RequestHandler {
 
     @Override
@@ -21,13 +21,12 @@ class SessionEndedRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        Logger logger = Logger.getLogger(this.class.name)
-        logger.level = Constants.LOG_LEVEL
-        logger.entering(this.class.name, 'handle')
+        log.level = Constants.LOG_LEVEL
+        log.entering(this.class.name, Constants.HANDLE_METHOD)
 
-        logger.exiting(this.class.name, 'handle')
+        log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
-        return null
+        null
     }
 
 }
