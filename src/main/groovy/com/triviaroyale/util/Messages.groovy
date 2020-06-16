@@ -20,6 +20,11 @@ be eliminated. Can you survive?"
     public static final String ASK_TO_START_NEW_GAME =
             'A new round of Trivia Royale is about to start. Would you like to play?'
 
+    public static final String ASK_TO_RESUME_GAME =
+            'You are currently in the middle of a game of Trivia Royale. Would you like to pick up where you left off?'
+
+    public static final String CONFIRM_START_OVER = 'Are you sure you want to give up and start a new game?'
+
     public static final String STARTING_NEW_GAME = 'Okay. Hold on while I find some opponents.'
 
     public static final String EXIT_SKILL =
