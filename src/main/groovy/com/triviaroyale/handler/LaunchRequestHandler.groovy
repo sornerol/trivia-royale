@@ -9,7 +9,9 @@ import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
+import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
@@ -45,12 +47,21 @@ class LaunchRequestHandler implements RequestHandler {
             repromptMessage = Messages.ASK_FOR_NAME
         } else {
             log.info("Found ${player.alexaId}. Name: ${player.name}.")
-            //TODO: Check for active game state. If found, ask player if they want to resume or start a new game
-            sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
-            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
-
-            responseMessage = "$Messages.WELCOME_EXISTING_PLAYER $Messages.ASK_TO_START_NEW_GAME"
-            repromptMessage = Messages.ASK_TO_START_NEW_GAME
+            GameStateService gameStateService = new GameStateService(dynamoDB)
+            GameState gameState = gameStateService.loadActiveGameState(player.alexaId)
+            responseMessage = Messages.WELCOME_EXISTING_PLAYER
+            if (gameState) {
+                log.info("Found active gameState ${gameState.sessionId}. Asking to resume.")
+                sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
+                sessionAttributes.put(SessionAttributes.APP_STATE, AppState.RESUME_EXISTING_GAME)
+                responseMessage += " $Messages.ASK_TO_RESUME_GAME"
+                repromptMessage = Messages.ASK_TO_RESUME_GAME
+            } else {
+                sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
+                sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
+                responseMessage += " $Messages.ASK_TO_START_NEW_GAME"
+                repromptMessage = Messages.ASK_TO_START_NEW_GAME
+            }
         }
 
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
