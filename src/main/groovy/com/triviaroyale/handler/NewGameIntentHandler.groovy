@@ -48,10 +48,7 @@ class NewGameIntentHandler implements RequestHandler {
         GameStateService gameStateService = new GameStateService(dynamoDB)
 
         if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.START_OVER_REQUEST.toString()) {
-            GameState oldGameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
-            log.info("Setting session ID $oldGameState.sessionId to ABORTED.")
-            oldGameState.status = GameStateStatus.ABORTED
-            gameStateService.saveGameState(oldGameState)
+            abortExistingGame(sessionAttributes, gameStateService)
         }
 
         //Play audio clip and let player know we're setting things up.
@@ -110,6 +107,15 @@ class NewGameIntentHandler implements RequestHandler {
         }
 
         newGame
+    }
+
+    private static void abortExistingGame(Map<String, Object> sessionAttributes, GameStateService gameStateService) {
+        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.START_OVER_REQUEST.toString()) {
+            GameState oldGameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
+            log.info("Setting session ID $oldGameState.sessionId to ABORTED.")
+            oldGameState.status = GameStateStatus.ABORTED
+            gameStateService.saveGameState(oldGameState)
+        }
     }
 
 }
