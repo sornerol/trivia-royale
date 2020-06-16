@@ -32,8 +32,9 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(intentName('AMAZON.YesIntent') &
-                sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME.toString()))
+        input.matches(intentName('AMAZON.YesIntent')) &&
+                (sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME.toString()) ||
+                        sessionAttribute(SessionAttributes.APP_STATE, AppState.START_OVER_REQUEST.toString()))
     }
 
     @Override
@@ -43,6 +44,16 @@ class NewGameIntentHandler implements RequestHandler {
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
+        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
+        GameStateService gameStateService = new GameStateService(dynamoDB)
+
+        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.START_OVER_REQUEST.toString()) {
+            GameState oldGameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
+            log.info("Setting session ID $oldGameState.sessionId to ABORTED.")
+            oldGameState.status = GameStateStatus.ABORTED
+            gameStateService.saveGameState(oldGameState)
+        }
+
         //Play audio clip and let player know we're setting things up.
         DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
         SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
@@ -50,7 +61,6 @@ class NewGameIntentHandler implements RequestHandler {
         SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
         directiveServiceClient.enqueue(sendDirectiveRequest)
 
-        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
         QuizService quizService = new QuizService(dynamoDB)
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
         Quiz quiz = quizService.loadNextAvailableQuizForPlayer(player)
@@ -70,7 +80,6 @@ class NewGameIntentHandler implements RequestHandler {
 
         newGame = GameStateService.initializePlayers(newGame, opponents)
 
-        GameStateService gameStateService = new GameStateService(dynamoDB)
         gameStateService.saveGameState(newGame)
         sessionAttributes[SessionAttributes.APP_STATE] = AppState.IN_GAME
         sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, newGame)
