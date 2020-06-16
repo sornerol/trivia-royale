@@ -29,7 +29,7 @@ class HearRulesIntentHandler implements RequestHandler {
         String repromptMessage
 
         String nextActionMessage
-        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.NEW_PLAYER_SETUP) {
+        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.NEW_PLAYER_SETUP.toString()) {
             nextActionMessage = Messages.ASK_FOR_NAME
         } else {
             nextActionMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
