@@ -19,7 +19,9 @@ class TriviaRoyaleStreamHandler extends SkillStreamHandler {
                         new LaunchRequestHandler(),
                         new NewGameIntentHandler(),
                         new RepeatIntentHandler(),
-                        new SessionEndedRequestHandler())
+                        new SessionEndedRequestHandler(),
+                        new StartOverIntentHandler(),
+                        new ResumeGameIntentHandler())
                 .build()
     }
 
