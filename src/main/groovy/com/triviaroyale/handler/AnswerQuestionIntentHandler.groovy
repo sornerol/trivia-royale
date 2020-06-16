@@ -6,6 +6,7 @@ import static com.amazon.ask.request.Predicates.sessionAttribute
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
+import com.amazon.ask.response.ResponseBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.util.*
@@ -33,9 +34,25 @@ class AnswerQuestionIntentHandler implements RequestHandler {
         AnswerValidationBean answerValidation = GameStateService.processPlayersAnswer(currentGameState,
                 sessionAttributes[SessionAttributes.CORRECT_ANSWER_INDEX] as int, playerAnswer)
 
+        currentGameState = answerValidation.updatedGameState
+        sessionAttributes[SessionAttributes.APP_STATE] = answerValidation.updatedAppState
+        String responseMessage = answerValidation.validationMessage
+        String repromtMessage
+        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.IN_GAME) {
+            sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, currentGameState)
+            responseMessage += "Question ${currentGameState.currentQuestionIndex + 1}: " +
+                    "${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
+            repromtMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
+        } else {
+            responseMessage += Messages.ASK_TO_START_NEW_GAME
+            repromtMessage = Messages.ASK_TO_START_NEW_GAME
+        }
+
+        input.attributesManager.sessionAttributes = sessionAttributes
+        ResponseBuilder responseBuilder = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromtMessage)
         log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
-        null
+        responseBuilder.build()
     }
 
 }
