@@ -9,6 +9,9 @@ class QuestionImport {
 
     public static final Character OTHER_ANSWERS_DELIMITER = '|'
     @CsvBindByName
+    String category
+
+    @CsvBindByName
     String questionText
 
     @CsvBindByName
