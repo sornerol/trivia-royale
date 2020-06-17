@@ -35,7 +35,7 @@ class ResumeGameIntentHandler implements RequestHandler {
         sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
         input.attributesManager.sessionAttributes = sessionAttributes
 
-        String responseText = "Question ${sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int + 1}. " +
+        String responseText = "Question ${(sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int) + 1}. " +
                 "${sessionAttributes[SessionAttributes.LAST_RESPONSE] as String}"
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseText, repropmptText)
