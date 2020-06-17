@@ -49,7 +49,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
         }
 
         input.attributesManager.sessionAttributes = sessionAttributes
-        ResponseBuilder responseBuilder = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromtMessage)
+        ResponseBuilder responseBuilder = AlexaSdkHelper.generateResponse(input, responseMessage, repromtMessage)
         log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         responseBuilder.build()

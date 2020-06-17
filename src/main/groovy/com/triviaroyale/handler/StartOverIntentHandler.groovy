@@ -31,7 +31,7 @@ class StartOverIntentHandler implements RequestHandler {
         sessionAttributes[SessionAttributes.LAST_RESPONSE] = Messages.CONFIRM_START_OVER
 
         input.attributesManager.sessionAttributes = sessionAttributes
-        ResponseBuilder responseBuilder = AlexaSdkHelper.responseWithSimpleCard(input,
+        ResponseBuilder responseBuilder = AlexaSdkHelper.generateResponse(input,
                 Messages.CONFIRM_START_OVER,
                 Messages.CONFIRM_START_OVER)
         log.exiting(this.class.name, Constants.HANDLE_METHOD)

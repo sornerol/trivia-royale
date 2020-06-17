@@ -53,7 +53,7 @@ class CreatePlayerIntentHandler implements RequestHandler {
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
 
         input.attributesManager.sessionAttributes = sessionAttributes
-        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
+        ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseMessage, repromptMessage)
         log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         response.build()

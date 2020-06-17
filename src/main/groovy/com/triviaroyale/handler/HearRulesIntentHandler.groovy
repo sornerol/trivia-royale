@@ -38,7 +38,7 @@ class HearRulesIntentHandler implements RequestHandler {
         responseMessage += " $nextActionMessage"
         repromptMessage = nextActionMessage
 
-        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseMessage, repromptMessage)
+        ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseMessage, repromptMessage)
         log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         response.build()

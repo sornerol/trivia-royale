@@ -22,14 +22,14 @@ class AlexaSdkHelper {
         slots[key].value
     }
 
-    static ResponseBuilder responseWithSimpleCard(HandlerInput input,
-                                                  String responseMessage,
-                                                  String repromptMessage) {
+    static ResponseBuilder generateResponse(HandlerInput input,
+                                            String responseMessage,
+                                            String repromptMessage) {
         ResponseBuilder responseBuilder = input.responseBuilder
         responseBuilder = responseBuilder
                 .withSpeech(responseMessage)
                 .withReprompt(repromptMessage)
-                .withSimpleCard(Constants.SKILL_TITLE, responseMessage)
+//                .withSimpleCard(Constants.SKILL_TITLE, responseMessage)
                 .withShouldEndSession(false)
         responseBuilder
     }

@@ -91,7 +91,7 @@ class NewGameIntentHandler implements RequestHandler {
 
         String responseText = 'Question 1. ' + sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
-        ResponseBuilder response = AlexaSdkHelper.responseWithSimpleCard(input, responseText, repropmptText)
+        ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseText, repropmptText)
         log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         response.build()
