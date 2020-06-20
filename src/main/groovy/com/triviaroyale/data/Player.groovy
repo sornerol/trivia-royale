@@ -22,6 +22,6 @@ class Player {
     String name
 
     @DynamoDBAttribute(attributeName = 'quizCompletion')
-    Map<String, Long> quizCompletion
+    Map<String, String> quizCompletion
 
 }

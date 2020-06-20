@@ -44,7 +44,7 @@ class PlayerServiceTest extends Specification {
             alexaId = DynamoDBConstants.PLAYER_PREFIX + playerId
             name = PLAYER_NAME
             quizCompletion = [:]
-            quizCompletion.put('General', 0)
+            quizCompletion.put('General', '!')
         }
         mapper.save(testPlayer)
 
@@ -75,7 +75,7 @@ class PlayerServiceTest extends Specification {
             alexaId = playerId
             name = PLAYER_NAME
             quizCompletion = [:]
-            quizCompletion.put('General', 0)
+            quizCompletion.put('General', '!')
         }
 
         String hashKey = DynamoDBConstants.PLAYER_PREFIX + playerId
