@@ -18,7 +18,8 @@ class PlayerService extends DynamoDBAccess {
         player.with {
             alexaId = sessionAttributes[SessionAttributes.PLAYER_ID] as String
             name = sessionAttributes[SessionAttributes.PLAYER_NAME] as String
-            quizCompletion = sessionAttributes[SessionAttributes.PLAYER_QUIZ_COMPLETION] as LinkedHashMap<String, String>
+            quizCompletion =
+                    sessionAttributes[SessionAttributes.PLAYER_QUIZ_COMPLETION] as LinkedHashMap<String, String>
         }
         player
     }

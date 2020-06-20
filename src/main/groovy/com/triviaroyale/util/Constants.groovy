@@ -22,4 +22,6 @@ class Constants {
     public static final String GENERAL_CATEGORY = 'GENERAL'
     public static final String S3_QUESTION_BUCKET = 'triviaroyale'
 
+    public static final String QUIZ_ID_DELIMITER = '|'
+
 }
