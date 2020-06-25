@@ -1,8 +1,10 @@
 package com.triviaroyale.service
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
 import com.triviaroyale.data.util.DynamoDBConstants
+import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 
@@ -47,6 +49,19 @@ class PlayerService extends DynamoDBAccess {
     void savePlayer(Player player) {
         player.alexaId = DynamoDBConstants.PLAYER_PREFIX + player.alexaId
         mapper.save(player)
+    }
+
+    Map<String, Object> updatePlayerQuizCompletion(Map<String, Object> sessionAttributes) {
+        Player player = getPlayerFromSessionAttributes(sessionAttributes)
+        GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
+
+        List<String> tokenizedQuizId = gameState.quizId.tokenize(Constants.QUIZ_ID_DELIMITER)
+
+        player.quizCompletion.put(tokenizedQuizId[0], tokenizedQuizId[1])
+        savePlayer(player)
+        Map<String, Object> newSessionAttributes = updatePlayerSessionAttributes(sessionAttributes, player)
+
+        newSessionAttributes
     }
 
 }

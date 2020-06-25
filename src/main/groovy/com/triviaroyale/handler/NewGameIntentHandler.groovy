@@ -55,14 +55,12 @@ class NewGameIntentHandler implements RequestHandler {
 
         if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.START_OVER_REQUEST.toString()) {
             abortExistingGame(sessionAttributes, gameStateService)
+            PlayerService playerService = new PlayerService(dynamoDB)
+            playerService.updatePlayerQuizCompletion(sessionAttributes)
         }
 
         //Play audio clip and let player know we're setting things up.
-        DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
-        SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
-        //TODO: add audio clip
-        SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
-        directiveServiceClient.enqueue(sendDirectiveRequest)
+        announceGameSetup(input)
 
         QuizService quizService = new QuizService(dynamoDB)
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
@@ -122,6 +120,14 @@ class NewGameIntentHandler implements RequestHandler {
             oldGameState.status = GameStateStatus.ABORTED
             gameStateService.saveGameState(oldGameState)
         }
+    }
+
+    private static void announceGameSetup(HandlerInput input) {
+        DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
+        SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
+        //TODO: add audio clip
+        SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
+        directiveServiceClient.enqueue(sendDirectiveRequest)
     }
 
 }

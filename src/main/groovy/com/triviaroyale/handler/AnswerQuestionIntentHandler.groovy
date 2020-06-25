@@ -7,10 +7,8 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.GameState
-import com.triviaroyale.data.Player
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.util.*
@@ -48,7 +46,8 @@ class AnswerQuestionIntentHandler implements RequestHandler {
                     "${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
             repromtMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
         } else {
-            sessionAttributes = updatePlayerQuizCompletion(sessionAttributes)
+            PlayerService playerService = new PlayerService(AmazonDynamoDBClientBuilder.defaultClient())
+            sessionAttributes = playerService.updatePlayerQuizCompletion(sessionAttributes)
             responseMessage += Messages.ASK_TO_START_NEW_GAME
             repromtMessage = Messages.ASK_TO_START_NEW_GAME
         }
@@ -58,22 +57,6 @@ class AnswerQuestionIntentHandler implements RequestHandler {
         log.exiting(this.class.name, Constants.HANDLE_METHOD)
 
         responseBuilder.build()
-    }
-
-    protected static Map<String, Object> updatePlayerQuizCompletion(Map<String, Object> sessionAttributes) {
-        Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
-        GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
-        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
-        PlayerService playerService = new PlayerService(dynamoDB)
-
-        List<String> tokenizedQuizId = gameState.quizId.tokenize(Constants.QUIZ_ID_DELIMITER)
-
-        player.quizCompletion.put(tokenizedQuizId[0], tokenizedQuizId[1])
-        playerService.savePlayer(player)
-        Map<String, Object> newSessionAttributes = PlayerService.updatePlayerSessionAttributes(
-                sessionAttributes, player)
-
-        newSessionAttributes
     }
 
 }
