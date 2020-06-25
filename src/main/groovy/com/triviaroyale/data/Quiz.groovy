@@ -19,7 +19,7 @@ class Quiz {
     String uniqueId
 
     @DynamoDBAttribute
-    List<Tuple2<String, List<Boolean>>> playerPool
+    Queue<Tuple2<String, List<Boolean>>> playerPool
 
     @DynamoDBAttribute
     List<String> questionJson
