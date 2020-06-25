@@ -111,6 +111,10 @@ class QuizService extends DynamoDBAccess {
 
     }
 
+    Quiz loadQuizById() {
+
+    }
+    
     protected static String generateQuestionText(Question question, int correctAnswerIndex) {
         int possibleAnswers = question.otherAnswers.size() + 1
         List<String> answers = []
