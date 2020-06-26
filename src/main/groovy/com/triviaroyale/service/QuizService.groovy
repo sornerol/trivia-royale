@@ -3,13 +3,11 @@ package com.triviaroyale.service
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
 import com.triviaroyale.data.Question
 import com.triviaroyale.data.Quiz
 import com.triviaroyale.data.util.DynamoDBConstants
-import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
@@ -23,6 +21,8 @@ class QuizService extends DynamoDBAccess {
 
     public static final String CATEGORY_ATTRIBUTE = ':hk'
     public static final String QUIZ_ID_ATTRIBUTE = ':rk'
+
+    public static final int ONE_HUNDRED_PERCENT = 100
 
     QuizService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
@@ -80,23 +80,18 @@ class QuizService extends DynamoDBAccess {
         quiz
     }
 
-    Quiz generateNewQuiz(List<String> questions, String playerId, String category = Constants.GENERAL_CATEGORY) {
+    Quiz generateNewQuiz(List<String> questions, String playerId, String quizCategory = Constants.GENERAL_CATEGORY) {
         Quiz quiz = new Quiz()
         quiz.with {
-            category = "${DynamoDBConstants.QUIZ_PREFIX}${category}"
+            category = "${DynamoDBConstants.QUIZ_PREFIX}${quizCategory}"
             uniqueId = "${System.currentTimeMillis().toString()}#${playerId}"
             questionJson = questions
         }
-        Queue<Tuple2<String, List<Boolean>>> playerPool = new LinkedList<>()
+        Queue<Tuple2<String, List<Boolean>>> playerPool = [] as Queue
         for (int i = 0; i < Quiz.MAXIMUM_POOL_SIZE; i++) {
             String housePlayerId = Constants.HOUSE_PLAYER_ID_BASE + i.toString()
-            List<Boolean> performance = []
-            SecureRandom random = new SecureRandom()
-            int correctPercentage = random.nextInt(Constants.HOUSE_PLAYER_CORRECT_PERCENTAGE)
+            List<Boolean> performance = completePerformanceWithRandomAnswers([])
 
-            for (int x = 0; x < Constants.NUMBER_OF_QUESTIONS; x++) {
-                performance.add(random.nextInt(correctPercentage) <= correctPercentage)
-            }
             Tuple2<String, List<Boolean>> poolEntry = new Tuple2<String, List<Boolean>>(housePlayerId, performance)
             playerPool.add(poolEntry)
         }
@@ -108,18 +103,31 @@ class QuizService extends DynamoDBAccess {
     }
 
     void addPerformanceToPool(GameState completedGame) {
-
+        List<String> tokenizedQuizId = completedGame.quizId.tokenize(Constants.QUIZ_ID_DELIMITER)
+        Quiz quiz = loadQuizByCategoryAndId(tokenizedQuizId[0], tokenizedQuizId[1])
+        List<Boolean> playerPerformance = completedGame.playersPerformance[completedGame.playerId]
+        playerPerformance = completePerformanceWithRandomAnswers(playerPerformance)
+        quiz.playerPool.add(new Tuple2<String, List<Boolean>>(completedGame.playerId, playerPerformance))
+        if (quiz.playerPool.size() > Quiz.MAXIMUM_POOL_SIZE) {
+            quiz.playerPool.remove()
+        }
+        mapper.save(quiz)
     }
 
-    Quiz loadQuizById() {
-
+    Quiz loadQuizByCategoryAndId(String category, String id) {
+        String hashKey = DynamoDBConstants.QUIZ_PREFIX + category
+        Quiz quiz = mapper.load(Quiz, hashKey, id)
+        if (quiz) {
+            quiz.category = quiz.category - DynamoDBConstants.QUIZ_PREFIX
+        }
+        quiz
     }
-    
+
     protected static String generateQuestionText(Question question, int correctAnswerIndex) {
         int possibleAnswers = question.otherAnswers.size() + 1
         List<String> answers = []
         Collections.shuffle(question.otherAnswers)
-        String answerLetter = FIRST_ANSWER_LETTER.toString()
+        String answerLetter = FIRST_ANSWER_LETTER
         for (int i = 0; i < possibleAnswers; i++) {
             String formattedAnswer
             if (i == correctAnswerIndex) {
@@ -137,6 +145,17 @@ class QuizService extends DynamoDBAccess {
         }
 
         questionText
+    }
+
+    protected static List<Boolean> completePerformanceWithRandomAnswers(List<Boolean> performance) {
+        SecureRandom random = new SecureRandom()
+        List<Boolean> completedPerformance = performance
+        int answeredQuestions = performance.size()
+        for (int i = answeredQuestions; i < Constants.NUMBER_OF_QUESTIONS; i++) {
+            completedPerformance.add(random.nextInt(ONE_HUNDRED_PERCENT) <= Constants.HOUSE_PLAYER_CORRECT_PERCENTAGE)
+        }
+
+        completedPerformance
     }
 
 }

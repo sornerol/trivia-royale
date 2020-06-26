@@ -7,10 +7,12 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
+import com.triviaroyale.service.QuizService
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -46,8 +48,13 @@ class AnswerQuestionIntentHandler implements RequestHandler {
                     "${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
             repromtMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
         } else {
-            PlayerService playerService = new PlayerService(AmazonDynamoDBClientBuilder.defaultClient())
+            AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
+            PlayerService playerService = new PlayerService(dynamoDB)
+            QuizService quizService = new QuizService(dynamoDB)
+
             sessionAttributes = playerService.updatePlayerQuizCompletion(sessionAttributes)
+            GameState completedGame = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
+            quizService.addPerformanceToPool(completedGame)
             responseMessage += Messages.ASK_TO_START_NEW_GAME
             repromtMessage = Messages.ASK_TO_START_NEW_GAME
         }
