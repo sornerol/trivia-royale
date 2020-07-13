@@ -28,7 +28,6 @@ class CancelAndStopIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.level = Constants.LOG_LEVEL
         log.entering(this.class.name, Constants.HANDLE_METHOD)
 
         ResponseBuilder responseBuilder = input.responseBuilder

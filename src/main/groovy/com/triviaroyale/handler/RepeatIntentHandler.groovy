@@ -23,7 +23,6 @@ class RepeatIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.level = Constants.LOG_LEVEL
         log.entering(this.class.name, Constants.HANDLE_METHOD)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
