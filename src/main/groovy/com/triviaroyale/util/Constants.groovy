@@ -8,7 +8,7 @@ import java.util.logging.Level
 class Constants {
 
     //TODO: Find a better way to set the default log level
-    public static final Level LOG_LEVEL = Level.ALL
+    public static final Level LOG_LEVEL = Level.FINEST
     public static final String HANDLE_METHOD = 'handle'
 
     public static final String HOUSE_PLAYER_ID_BASE = '__TRIVIAROYALE__'
