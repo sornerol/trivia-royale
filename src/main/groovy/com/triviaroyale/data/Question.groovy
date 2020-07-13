@@ -15,7 +15,6 @@ class Question {
     List<String> otherAnswers
 
     static Question fromJson(String json) {
-        log.level = Constants.LOG_LEVEL
         JsonSlurper slurper = new JsonSlurper()
         Question question
         try {
