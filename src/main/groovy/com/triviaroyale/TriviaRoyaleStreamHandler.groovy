@@ -10,6 +10,9 @@ import groovy.transform.CompileStatic
 class TriviaRoyaleStreamHandler extends SkillStreamHandler {
 
     private static Skill getSkill() {
+        String loggingPropertiesPath = TriviaRoyaleStreamHandler.classLoader.getResource('logging.properties').file
+        System.setProperty('java.util.logging.config.file', loggingPropertiesPath)
+
         Skills.standard()
                 .addRequestHandlers(
                         new AnswerQuestionIntentHandler(),
