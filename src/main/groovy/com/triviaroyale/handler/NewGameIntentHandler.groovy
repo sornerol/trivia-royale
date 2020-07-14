@@ -32,18 +32,13 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        log.fine(Constants.ENTERING_LOG_MESSAGE)
         if (input.matches(intentName('AMAZON.YesIntent'))) {
-            log.fine('Intent name is AMAZON.YesIntent')
             return input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME.toString())) ||
                     input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.START_OVER_REQUEST.toString()))
         } else if (input.matches(intentName('AMAZON.NoIntent'))) {
-            log.fine('Intent name is AMAZON.NoIntent')
             return input.matches(sessionAttribute(SessionAttributes.APP_STATE,
                     AppState.RESUME_EXISTING_GAME.toString()))
         }
-        log.fine('Intent name is not AMAZON.YesIntent or AMAZON.NoIntent. Can not handle this request.')
-        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         false
     }
