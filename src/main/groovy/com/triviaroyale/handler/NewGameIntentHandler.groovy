@@ -7,6 +7,7 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.amazon.ask.model.services.directive.DirectiveServiceClient
+import com.amazon.ask.model.services.directive.Header
 import com.amazon.ask.model.services.directive.SendDirectiveRequest
 import com.amazon.ask.model.services.directive.SpeakDirective
 import com.amazon.ask.response.ResponseBuilder
@@ -124,8 +125,12 @@ class NewGameIntentHandler implements RequestHandler {
     private static void announceGameSetup(HandlerInput input) {
         DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
         SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
+        Header header = Header.builder().withRequestId(input.requestEnvelope.request.requestId).build()
         //TODO: add audio clip
-        SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder().withDirective(speakDirective).build()
+        SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder()
+                .withDirective(speakDirective)
+                .withHeader(header)
+                .build()
         directiveServiceClient.enqueue(sendDirectiveRequest)
     }
 
