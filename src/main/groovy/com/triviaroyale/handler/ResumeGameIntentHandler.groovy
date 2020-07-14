@@ -27,7 +27,7 @@ class ResumeGameIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.entering(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
         sessionAttributes[SessionAttributes.APP_STATE] = AppState.IN_GAME
@@ -38,7 +38,7 @@ class ResumeGameIntentHandler implements RequestHandler {
                 "${sessionAttributes[SessionAttributes.LAST_RESPONSE] as String}"
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseText, repropmptText)
-        log.exiting(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         response.build()
     }

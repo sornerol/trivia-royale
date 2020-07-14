@@ -28,7 +28,7 @@ class LaunchRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.entering(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
@@ -67,7 +67,7 @@ class LaunchRequestHandler implements RequestHandler {
 
         input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseMessage, repromptMessage)
-        log.exiting(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         response.build()
     }

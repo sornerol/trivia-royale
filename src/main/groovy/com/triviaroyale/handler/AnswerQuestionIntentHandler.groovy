@@ -29,7 +29,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.entering(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String playerAnswer = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
@@ -60,7 +60,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
 
         input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder responseBuilder = AlexaSdkHelper.generateResponse(input, responseMessage, repromtMessage)
-        log.exiting(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         responseBuilder.build()
     }

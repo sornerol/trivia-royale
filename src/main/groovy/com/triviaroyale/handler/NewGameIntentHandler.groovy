@@ -32,20 +32,25 @@ class NewGameIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
         if (input.matches(intentName('AMAZON.YesIntent'))) {
+            log.fine('Intent name is AMAZON.YesIntent')
             return input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME.toString())) ||
                     input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.START_OVER_REQUEST.toString()))
         } else if (input.matches(intentName('AMAZON.NoIntent'))) {
+            log.fine('Intent name is AMAZON.NoIntent')
             return input.matches(sessionAttribute(SessionAttributes.APP_STATE,
                     AppState.RESUME_EXISTING_GAME.toString()))
         }
+        log.fine('Intent name is not AMAZON.YesIntent or AMAZON.NoIntent. Can not handle this request.')
+        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         false
     }
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.entering(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
@@ -89,7 +94,7 @@ class NewGameIntentHandler implements RequestHandler {
         String responseText = 'Question 1. ' + sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseText, repropmptText)
-        log.exiting(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         response.build()
     }

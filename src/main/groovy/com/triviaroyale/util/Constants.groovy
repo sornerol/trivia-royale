@@ -5,8 +5,9 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Constants {
 
-    //TODO: Find a better way to set the default log level
     public static final String HANDLE_METHOD = 'handle'
+    public static final String ENTERING_LOG_MESSAGE = 'ENTERING'
+    public static final String EXITING_LOG_MESSAGE = 'EXITING'
 
     public static final String HOUSE_PLAYER_ID_BASE = '__TRIVIAROYALE__'
     public static final int HOUSE_PLAYER_CORRECT_PERCENTAGE = 65

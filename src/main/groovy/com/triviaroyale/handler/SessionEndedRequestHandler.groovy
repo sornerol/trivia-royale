@@ -27,7 +27,7 @@ class SessionEndedRequestHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.entering(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.IN_GAME.toString()) {
             GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
@@ -35,7 +35,7 @@ class SessionEndedRequestHandler implements RequestHandler {
             GameStateService gameStateService = new GameStateService(dynamoDB)
             gameStateService.saveGameState(gameState)
         }
-        log.exiting(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         null
     }

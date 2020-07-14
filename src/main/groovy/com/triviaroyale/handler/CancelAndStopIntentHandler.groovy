@@ -28,14 +28,14 @@ class CancelAndStopIntentHandler implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.entering(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         ResponseBuilder responseBuilder = input.responseBuilder
                 .withSpeech(Messages.EXIT_SKILL)
                 .withSimpleCard(Constants.SKILL_TITLE, Messages.EXIT_SKILL)
                 .withShouldEndSession(true)
 
-        log.exiting(this.class.name, Constants.HANDLE_METHOD)
+        log.fine(Constants.EXITING_LOG_MESSAGE)
         responseBuilder.build()
     }
 
