@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded
 import com.triviaroyale.data.Player
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.testing.service.DynamoDBService
+import com.triviaroyale.util.Constants
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -44,7 +45,7 @@ class PlayerServiceTest extends Specification {
             alexaId = DynamoDBConstants.PLAYER_PREFIX + playerId
             name = PLAYER_NAME
             quizCompletion = [:]
-            quizCompletion.put('General', '!')
+            quizCompletion.put(Constants.GENERAL_CATEGORY, '!')
         }
         mapper.save(testPlayer)
 
@@ -75,7 +76,7 @@ class PlayerServiceTest extends Specification {
             alexaId = playerId
             name = PLAYER_NAME
             quizCompletion = [:]
-            quizCompletion.put('General', '!')
+            quizCompletion.put(Constants.GENERAL_CATEGORY, '!')
         }
 
         String hashKey = DynamoDBConstants.PLAYER_PREFIX + playerId

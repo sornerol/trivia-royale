@@ -11,6 +11,8 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.Player
 import com.triviaroyale.service.PlayerService
+import com.triviaroyale.service.QuestionService
+import com.triviaroyale.service.QuizService
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -36,6 +38,7 @@ class CreatePlayerIntentHandler implements RequestHandler {
             name = AlexaSdkHelper.getSlotValue(input, AlexaSdkHelper.NAME_SLOT_KEY)
             alexaId = AlexaSdkHelper.getUserId(input)
             quizCompletion = [:]
+            quizCompletion.put(Constants.GENERAL_CATEGORY, '!')
         }
 
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
