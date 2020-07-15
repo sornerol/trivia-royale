@@ -1,9 +1,7 @@
 package com.triviaroyale.data
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
+import com.amazonaws.services.dynamodbv2.datamodeling.*
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperFieldModel.DynamoDBAttributeType
 import com.triviaroyale.data.util.DynamoDBConstants
 import groovy.transform.CompileStatic
 
@@ -18,6 +16,7 @@ class Quiz {
     @DynamoDBRangeKey(attributeName = DynamoDBConstants.RANGE_KEY)
     String uniqueId
 
+    @DynamoDBTyped(DynamoDBAttributeType.L)
     @DynamoDBAttribute
     Queue<Tuple2<String, List<Boolean>>> playerPool
 
