@@ -39,4 +39,5 @@ class GameState implements Cloneable {
     Object clone() throws CloneNotSupportedException {
         (GameState)super.clone()
     }
+    
 }
