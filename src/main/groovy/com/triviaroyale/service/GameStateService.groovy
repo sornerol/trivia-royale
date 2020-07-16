@@ -71,6 +71,9 @@ class GameStateService extends DynamoDBAccess {
     }
 
     static GameState initializePlayers(GameState gameState, List<Tuple2<String, List<Boolean>>> opponents) {
+        gameState.playersHealth.put(gameState.playerId, Constants.STARTING_HEALTH)
+        gameState.playersPerformance.put(gameState.playerId, [])
+
         opponents.each { opponent ->
             gameState.playersHealth.put(opponent.first, Constants.STARTING_HEALTH)
             gameState.playersPerformance.put(opponent.first, opponent.second)
@@ -163,9 +166,6 @@ class GameStateService extends DynamoDBAccess {
     }
 
     protected static GameState updatePlayersHealthAfterResponse(GameState gameState, Boolean isPlayerCorrect) {
-        log.fine("Player ID: $gameState.playerId")
-        log.fine("Was player correct? $isPlayerCorrect")
-        log.fine(gameState.playersPerformance.toString())
         gameState.playersPerformance[gameState.playerId].add(isPlayerCorrect)
         int playersWithRightAnswer = 0
         int playersWithWrongAnswer = 0

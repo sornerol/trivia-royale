@@ -107,8 +107,6 @@ class NewGameIntentHandler implements RequestHandler {
             currentQuestionIndex = 0
             playersHealth = [:]
             playersPerformance = [:]
-            playersHealth.put(player.alexaId, Constants.STARTING_HEALTH)
-            playersPerformance.put(player.alexaId, [])
         }
 
         newGame
