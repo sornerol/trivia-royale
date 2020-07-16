@@ -163,6 +163,9 @@ class GameStateService extends DynamoDBAccess {
     }
 
     protected static GameState updatePlayersHealthAfterResponse(GameState gameState, Boolean isPlayerCorrect) {
+        log.fine("Player ID: $gameState.playerId")
+        log.fine("Was player correct? $isPlayerCorrect")
+        log.fine(gameState.playersPerformance.toString())
         gameState.playersPerformance[gameState.playerId].add(isPlayerCorrect)
         int playersWithRightAnswer = 0
         int playersWithWrongAnswer = 0
