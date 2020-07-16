@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 @DynamoDBTable(tableName = DynamoDBConstants.TABLE_NAME)
-class GameState {
+class GameState implements Cloneable {
 
     @DynamoDBHashKey(attributeName = DynamoDBConstants.HASH_KEY)
     String playerId
@@ -35,4 +35,8 @@ class GameState {
     @DynamoDBAttribute
     Map<String, List<Boolean>> playersPerformance
 
+    @Override
+    Object clone() throws CloneNotSupportedException {
+        (GameState)super.clone()
+    }
 }
