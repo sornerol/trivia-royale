@@ -1,6 +1,5 @@
 package com.triviaroyale.data
 
-import com.triviaroyale.util.Constants
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic

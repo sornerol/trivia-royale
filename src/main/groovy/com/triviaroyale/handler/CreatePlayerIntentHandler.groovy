@@ -11,8 +11,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.Player
 import com.triviaroyale.service.PlayerService
-import com.triviaroyale.service.QuestionService
-import com.triviaroyale.service.QuizService
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log

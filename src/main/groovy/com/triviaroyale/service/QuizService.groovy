@@ -23,6 +23,7 @@ class QuizService extends DynamoDBAccess {
     public static final String QUIZ_ID_ATTRIBUTE = ':rk'
 
     public static final int ONE_HUNDRED_PERCENT = 100
+    public static final int FIRST_ELEMENT = 0
 
     QuizService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
@@ -34,7 +35,7 @@ class QuizService extends DynamoDBAccess {
     }
 
     static List<Tuple2<String, List<Boolean>>> getRandomPlayersForQuiz(Quiz quiz, int numberOfPlayers) {
-        List<Tuple2<String, List<Boolean>>> playerPool = quiz.playerPool.asList()
+        List<Tuple2<String, List<Boolean>>> playerPool = quiz.playerPool
         List<Tuple2<String, List<Boolean>>> selectedPlayers = []
         Collections.shuffle(playerPool)
         for (int i = 0; i < numberOfPlayers; i++) {
@@ -87,7 +88,7 @@ class QuizService extends DynamoDBAccess {
             uniqueId = "${System.currentTimeMillis().toString()}#${playerId}"
             questionJson = questions
         }
-        Queue<Tuple2<String, List<Boolean>>> playerPool = [] as Queue
+        List<Tuple2<String, List<Boolean>>> playerPool = []
         for (int i = 0; i < Quiz.MAXIMUM_POOL_SIZE; i++) {
             String housePlayerId = Constants.HOUSE_PLAYER_ID_BASE + i.toString()
             List<Boolean> performance = completePerformanceWithRandomAnswers([])
@@ -109,7 +110,7 @@ class QuizService extends DynamoDBAccess {
         playerPerformance = completePerformanceWithRandomAnswers(playerPerformance)
         quiz.playerPool.add(new Tuple2<String, List<Boolean>>(completedGame.playerId, playerPerformance))
         if (quiz.playerPool.size() > Quiz.MAXIMUM_POOL_SIZE) {
-            quiz.playerPool.remove()
+            quiz.playerPool.remove(FIRST_ELEMENT)
         }
         mapper.save(quiz)
     }
