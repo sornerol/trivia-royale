@@ -157,11 +157,12 @@ class GameStateService extends DynamoDBAccess {
 
     void saveGameState(GameState gameState) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
+        GameState savedGameState = gameState
         log.fine('Initial player ID in game state : ' + gameState.playerId)
-        gameState.playerId = DynamoDBConstants.PLAYER_PREFIX + gameState.playerId
-        gameState.sessionId = DynamoDBConstants.SESSION_PREFIX + gameState.sessionId
+        savedGameState.playerId = DynamoDBConstants.PLAYER_PREFIX + savedGameState.playerId
+        savedGameState.sessionId = DynamoDBConstants.SESSION_PREFIX + savedGameState.sessionId
         log.fine('Saved player ID in game state : ' + gameState.playerId)
-        mapper.save(gameState)
+        mapper.save(savedGameState)
         log.fine(Constants.EXITING_LOG_MESSAGE)
     }
 
