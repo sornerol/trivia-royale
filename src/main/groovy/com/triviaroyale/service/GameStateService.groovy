@@ -23,16 +23,16 @@ class GameStateService extends DynamoDBAccess {
     public static final String SESSION_STATUS_INDEX = 'sessionStatus'
 
     public static final Map<Integer, String> PLACE = [
-            1 : 'first',
-            2 : 'second',
-            3 : 'third',
-            4 : 'fourth',
-            5 : 'fifth',
-            6 : 'sixth',
-            7 : 'seventh',
-            8 : 'eighth',
-            9 : 'ninth',
-            10: 'tenth',
+            1:'first',
+            2:'second',
+            3:'third',
+            4:'fourth',
+            5:'fifth',
+            6:'sixth',
+            7:'seventh',
+            8:'eighth',
+            9:'ninth',
+            10:'tenth',
     ]
 
     GameStateService(AmazonDynamoDB dynamoDB) {
@@ -84,9 +84,8 @@ class GameStateService extends DynamoDBAccess {
                                                      String playersAnswer) {
         Question currentQuestion = Question.fromJson(gameState.questions[gameState.currentQuestionIndex])
         String correctAnswerLetter = QuizService.FIRST_ANSWER_LETTER + correctAnswerIndex
-        Boolean isPlayerCorrect =
-                (playersAnswer.toUpperCase() == correctAnswerLetter ||
-                        playersAnswer.toUpperCase() == currentQuestion.correctAnswer.toUpperCase())
+        Boolean isPlayerCorrect = (playersAnswer.toUpperCase() == correctAnswerLetter ||
+                playersAnswer.toUpperCase() == currentQuestion.correctAnswer.toUpperCase())
         GameState newGameState = updatePlayersHealthAfterResponse(gameState, isPlayerCorrect)
 
         AnswerValidationBean validation = new AnswerValidationBean()
@@ -119,7 +118,8 @@ class GameStateService extends DynamoDBAccess {
             validation.updatedAppState = AppState.NEW_GAME
             validation.validationMessage +=
                     " Congratulations! You're the last player remaining."
-        } else {
+        }
+        else {
             int currentPlace = determinePlayersCurrentPlace(newGameState)
             validation.validationMessage += " You're currently in ${PLACE[currentPlace]}. " +
                     "Your current health is ${newGameState.playersHealth[newGameState.playerId]}"
