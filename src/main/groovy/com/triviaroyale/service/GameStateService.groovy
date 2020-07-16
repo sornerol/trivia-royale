@@ -145,10 +145,10 @@ class GameStateService extends DynamoDBAccess {
 
         GameState retrievedGameState = mapper.query(GameState, queryExpression)[0] as GameState
         if (retrievedGameState) {
-            log.fine('Initial game state : ' + retrievedGameState.toString())
+            log.fine('Initial player ID in game state : ' + retrievedGameState.playerId)
             retrievedGameState.playerId = retrievedGameState.playerId - DynamoDBConstants.PLAYER_PREFIX
             retrievedGameState.sessionId = retrievedGameState.sessionId - DynamoDBConstants.SESSION_PREFIX
-            log.fine('Returned game state : ' + retrievedGameState.toString())
+            log.fine('Returned player ID in game state : ' + retrievedGameState.playerId)
         }
         log.fine(Constants.EXITING_LOG_MESSAGE)
 
@@ -157,10 +157,10 @@ class GameStateService extends DynamoDBAccess {
 
     void saveGameState(GameState gameState) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
-        log.fine('Initial game state: ' + gameState.toString())
+        log.fine('Initial player ID in game state : ' + gameState.playerId)
         gameState.playerId = DynamoDBConstants.PLAYER_PREFIX + gameState.playerId
         gameState.sessionId = DynamoDBConstants.SESSION_PREFIX + gameState.sessionId
-        log.fine('Saved game state: ' + gameState.toString())
+        log.fine('Saved player ID in game state : ' + gameState.playerId)
         mapper.save(gameState)
         log.fine(Constants.EXITING_LOG_MESSAGE)
     }
