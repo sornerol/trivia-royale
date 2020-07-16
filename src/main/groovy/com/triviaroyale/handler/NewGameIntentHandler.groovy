@@ -81,7 +81,10 @@ class NewGameIntentHandler implements RequestHandler {
 
         newGame = GameStateService.initializePlayers(newGame, opponents)
 
+        log.fine('Created game state: ' + newGame.toString())
         gameStateService.saveGameState(newGame)
+        log.fine('Game state after save: ' + newGame.toString())
+
         sessionAttributes[SessionAttributes.APP_STATE] = AppState.IN_GAME
         sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, newGame)
         sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)

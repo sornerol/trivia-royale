@@ -12,7 +12,9 @@ import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log
 
+@Log
 @CompileStatic
 class GameStateService extends DynamoDBAccess {
 
@@ -129,6 +131,8 @@ class GameStateService extends DynamoDBAccess {
     }
 
     GameState loadActiveGameState(String alexaId) {
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
+
         Map<String, AttributeValue> attributeValues = [:]
         attributeValues.put(STATUS_ATTRIBUTE, new AttributeValue().withS(GameStateStatus.ACTIVE as String))
         attributeValues.put(HASH_KEY_ATTRIBUTE, new AttributeValue().withS(DynamoDBConstants.PLAYER_PREFIX + alexaId))
@@ -141,17 +145,24 @@ class GameStateService extends DynamoDBAccess {
 
         GameState retrievedGameState = mapper.query(GameState, queryExpression)[0] as GameState
         if (retrievedGameState) {
+            log.fine('Initial game state : ' + retrievedGameState.toString())
             retrievedGameState.playerId = retrievedGameState.playerId - DynamoDBConstants.PLAYER_PREFIX
             retrievedGameState.sessionId = retrievedGameState.sessionId - DynamoDBConstants.SESSION_PREFIX
+            log.fine('Returned game state : ' + retrievedGameState.toString())
         }
+        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         retrievedGameState
     }
 
     void saveGameState(GameState gameState) {
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
+        log.fine('Initial game state: ' + gameState.toString())
         gameState.playerId = DynamoDBConstants.PLAYER_PREFIX + gameState.playerId
         gameState.sessionId = DynamoDBConstants.SESSION_PREFIX + gameState.sessionId
+        log.fine('Saved game state: ' + gameState.toString())
         mapper.save(gameState)
+        log.fine(Constants.EXITING_LOG_MESSAGE)
     }
 
     protected static GameState updatePlayersHealthAfterResponse(GameState gameState, Boolean isPlayerCorrect) {
