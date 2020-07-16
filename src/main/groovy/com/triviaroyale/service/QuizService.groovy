@@ -135,13 +135,14 @@ class QuizService extends DynamoDBAccess {
                 formattedAnswer = "<emphasis>${answerLetter}.</emphasis> " +
                         "$question.correctAnswer\n<break time=\"500ms\"/>"
             } else {
-                formattedAnswer = "${answerLetter}. ${question.otherAnswers.pop()}\n"
+                formattedAnswer = "<emphasis>${answerLetter}.</emphasis> " +
+                        "${question.otherAnswers.pop()}\n<break time=\"500ms\"/>"
             }
             answers[i] = formattedAnswer
             answerLetter++
         }
 
-        String questionText = question.questionText + '\n'
+        String questionText = question.questionText + '<break time="500ms"/>\n'
         answers.each {
             answer -> questionText += answer
         }

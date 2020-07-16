@@ -145,10 +145,8 @@ class GameStateService extends DynamoDBAccess {
 
         GameState retrievedGameState = mapper.query(GameState, queryExpression)[0] as GameState
         if (retrievedGameState) {
-            log.fine('Initial player ID in game state : ' + retrievedGameState.playerId)
             retrievedGameState.playerId = retrievedGameState.playerId - DynamoDBConstants.PLAYER_PREFIX
             retrievedGameState.sessionId = retrievedGameState.sessionId - DynamoDBConstants.SESSION_PREFIX
-            log.fine('Returned player ID in game state : ' + retrievedGameState.playerId)
         }
         log.fine(Constants.EXITING_LOG_MESSAGE)
 
@@ -158,16 +156,14 @@ class GameStateService extends DynamoDBAccess {
     void saveGameState(GameState gameState) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
         GameState savedGameState = gameState.clone() as GameState
-        log.fine('Initial player ID in game state : ' + gameState.playerId)
         savedGameState.playerId = DynamoDBConstants.PLAYER_PREFIX + savedGameState.playerId
         savedGameState.sessionId = DynamoDBConstants.SESSION_PREFIX + savedGameState.sessionId
-        log.fine('Saved player ID in game state : ' + gameState.playerId)
         mapper.save(savedGameState)
         log.fine(Constants.EXITING_LOG_MESSAGE)
     }
 
     protected static GameState updatePlayersHealthAfterResponse(GameState gameState, Boolean isPlayerCorrect) {
-        gameState.playersPerformance[gameState.playerId][gameState.currentQuestionIndex] = isPlayerCorrect
+        gameState.playersPerformance[gameState.playerId].add(isPlayerCorrect)
         int playersWithRightAnswer = 0
         int playersWithWrongAnswer = 0
         gameState.playersHealth.each { player ->
