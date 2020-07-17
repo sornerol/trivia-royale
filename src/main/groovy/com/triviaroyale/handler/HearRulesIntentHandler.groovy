@@ -16,6 +16,8 @@ class HearRulesIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
+        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
+
         input.matches(intentName('AMAZON.HelpIntent'))
     }
 

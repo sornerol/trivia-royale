@@ -23,6 +23,8 @@ class LaunchRequestHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
+        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
+
         input.matches(requestType(LaunchRequest))
     }
 

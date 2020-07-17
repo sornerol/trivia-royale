@@ -21,6 +21,8 @@ class CreatePlayerIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
+        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
+
         input.matches(intentName('NewPlayerIntent')
                 & sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_PLAYER_SETUP.toString()))
     }

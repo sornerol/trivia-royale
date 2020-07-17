@@ -23,6 +23,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
+        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
         input.matches(intentName('AnswerIntent') &
                 sessionAttribute(SessionAttributes.APP_STATE, AppState.IN_GAME.toString()))
     }

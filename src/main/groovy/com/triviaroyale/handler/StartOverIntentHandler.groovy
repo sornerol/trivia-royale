@@ -17,6 +17,8 @@ class StartOverIntentHandler implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
+        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
+
         input.matches(intentName('AMAZON.StartOverIntent') &
                 sessionAttribute(SessionAttributes.APP_STATE, AppState.IN_GAME.toString()))
     }
