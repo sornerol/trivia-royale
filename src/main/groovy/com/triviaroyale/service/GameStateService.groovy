@@ -85,11 +85,12 @@ class GameStateService extends DynamoDBAccess {
     static AnswerValidationBean processPlayersAnswer(GameState gameState,
                                                      int correctAnswerIndex,
                                                      String playersAnswer) {
-        log.info("Player's answer: ${playersAnswer}")
-        int playerAnswerIndex = playersAnswer.toInteger()
+        log.info("Player's answer: ${playersAnswer.toUpperCase()}")
         Question currentQuestion = Question.fromJson(gameState.questions[gameState.currentQuestionIndex])
-        log.info("Correct answer: index=$correctAnswerIndex")
-        Boolean isPlayerCorrect = (playerAnswerIndex == correctAnswerIndex)
+        String correctAnswerLetter = QuizService.FIRST_ANSWER_LETTER + correctAnswerIndex
+        log.info("Correct answer: index=$correctAnswerIndex | letter=$correctAnswerLetter")
+        Boolean isPlayerCorrect = (playersAnswer.toUpperCase() == correctAnswerLetter ||
+                playersAnswer.toUpperCase() == currentQuestion.correctAnswer.toUpperCase())
         log.info("Was player correct: $isPlayerCorrect")
         GameState newGameState = updatePlayersHealthAfterResponse(gameState, isPlayerCorrect)
 
