@@ -165,7 +165,14 @@ class GameStateService extends DynamoDBAccess {
         log.fine(Constants.EXITING_LOG_MESSAGE)
     }
 
-    protected static GameState updatePlayersHealthAfterResponse(GameState gameState, Boolean isPlayerCorrect) {
+    protected static GameState updatePlayersHealthAfterResponse(GameState gameState, Boolean isPlayerCorrect)
+            throws IllegalStateException {
+        if (!gameState.playersPerformance.containsKey(gameState.playerId)) {
+            if (gameState.currentQuestionIndex != 0) {
+                throw new IllegalStateException("GameState is missing player's performance history.")
+            }
+            gameState.playersPerformance.put(gameState.playerId, [])
+        }
         gameState.playersPerformance[gameState.playerId].add(isPlayerCorrect)
         int playersWithRightAnswer = 0
         int playersWithWrongAnswer = 0
