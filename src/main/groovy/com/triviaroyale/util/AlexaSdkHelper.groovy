@@ -5,9 +5,7 @@ import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Slot
 import com.amazon.ask.response.ResponseBuilder
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log
 
-@Log
 @CompileStatic
 class AlexaSdkHelper {
 
@@ -21,15 +19,13 @@ class AlexaSdkHelper {
     static String getSlotValue(HandlerInput input, String key) {
         IntentRequest request = (IntentRequest) input.requestEnvelope.request
         Map<String, Slot> slots = request.intent.slots
-        log.fine(slots[key].toString())
         slots[key].value
     }
 
-    static String getSlotResolution(HandlerInput input, String key) {
+    static int getSlotId(HandlerInput input, String key) {
         IntentRequest request = (IntentRequest) input.requestEnvelope.request
         Map<String, Slot> slots = request.intent.slots
-        log.fine(slots[key].toString())
-        slots[key].resolutions.toString()
+        slots[key].resolutions.resolutionsPerAuthority[0].values[0].value.id.toInteger()
     }
 
     static ResponseBuilder generateResponse(HandlerInput input,
