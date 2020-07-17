@@ -33,7 +33,7 @@ class CancelAndStopIntentHandler implements RequestHandler {
     @Override
     Optional<Response> handle(HandlerInput input) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
-        
+
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.IN_GAME.toString()) {
             GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
