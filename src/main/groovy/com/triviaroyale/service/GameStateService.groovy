@@ -127,10 +127,10 @@ class GameStateService extends DynamoDBAccess {
         }
         else {
             int currentPlace = determinePlayersCurrentPlace(newGameState)
-            validation.validationMessage += " You're currently in ${PLACE[currentPlace]}. <break time=\"500ms\">" +
+            validation.validationMessage += " You're currently in ${PLACE[currentPlace]}. <break time=\"500ms\"/>" +
                     "Your current health is ${newGameState.playersHealth[newGameState.playerId]}." +
-                    "<break time=\"500ms\"> There are ${newGameState.playersHealth.size()} players remaining." +
-                    '<break time="500ms">'
+                    "<break time=\"500ms\"/> There are ${newGameState.playersHealth.size()} players remaining." +
+                    '<break time="500ms"/>'
         }
 
         validation.updatedGameState = newGameState
