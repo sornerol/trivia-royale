@@ -85,10 +85,13 @@ class GameStateService extends DynamoDBAccess {
     static AnswerValidationBean processPlayersAnswer(GameState gameState,
                                                      int correctAnswerIndex,
                                                      String playersAnswer) {
+        log.info("Player's answer: ${playersAnswer.toUpperCase()}")
         Question currentQuestion = Question.fromJson(gameState.questions[gameState.currentQuestionIndex])
         String correctAnswerLetter = QuizService.FIRST_ANSWER_LETTER + correctAnswerIndex
+        log.info("Correct answer: index=$correctAnswerIndex | letter=$correctAnswerLetter")
         Boolean isPlayerCorrect = (playersAnswer.toUpperCase() == correctAnswerLetter ||
                 playersAnswer.toUpperCase() == currentQuestion.correctAnswer.toUpperCase())
+        log.info("Was player correct: $isPlayerCorrect")
         GameState newGameState = updatePlayersHealthAfterResponse(gameState, isPlayerCorrect)
 
         AnswerValidationBean validation = new AnswerValidationBean()
@@ -96,7 +99,8 @@ class GameStateService extends DynamoDBAccess {
         if (isPlayerCorrect) {
             validation.validationMessage = 'Correct!'
         } else {
-            validation.validationMessage = "Sorry, the correct answer was $currentQuestion.correctAnswer."
+            validation.validationMessage =
+                    "Sorry, the correct answer was $currentQuestion.correctAnswer.<break time=\"500ms\"/>"
         }
 
         newGameState.currentQuestionIndex++
@@ -124,8 +128,10 @@ class GameStateService extends DynamoDBAccess {
         }
         else {
             int currentPlace = determinePlayersCurrentPlace(newGameState)
-            validation.validationMessage += " You're currently in ${PLACE[currentPlace]}. " +
-                    "Your current health is ${newGameState.playersHealth[newGameState.playerId]}"
+            validation.validationMessage += " You're currently in ${PLACE[currentPlace]}. <break time=\"500ms\">" +
+                    "Your current health is ${newGameState.playersHealth[newGameState.playerId]}." +
+                    "<break time=\"500ms\"> There are ${newGameState.playersHealth.size()} players remaining." +
+                    '<break time="500ms">'
         }
 
         validation.updatedGameState = newGameState
@@ -181,6 +187,7 @@ class GameStateService extends DynamoDBAccess {
                     playersWithRightAnswer++ : playersWithWrongAnswer++
         }
 
+        log.info("Correct/Incorrect counts: $playersWithRightAnswer to $playersWithWrongAnswer")
         int rightAnswerHealthAdjustment = playersWithWrongAnswer * Constants.CORRECT_HEALTH_ADJUSTMENT
         int wrongAnswerHealthAdjustment = playersWithRightAnswer * Constants.INCORRECT_HEALTH_ADJUSTMENT
 
@@ -191,11 +198,12 @@ class GameStateService extends DynamoDBAccess {
                 it.value -= wrongAnswerHealthAdjustment
             }
         }
-
+        log.info("Player's health after adjustment: ${gameState.playersHealth.toString()}")
         gameState.playersHealth = gameState.playersHealth.findAll {
             it.value >= 0
         }
 
+        log.info("Player's health after eliminations: ${gameState.playersHealth.toString()}")
         gameState
     }
 
@@ -203,6 +211,7 @@ class GameStateService extends DynamoDBAccess {
         List<Integer> healthValues = gameState.playersHealth.values() as List<Integer>
         int playersHealth = gameState.playersHealth[gameState.playerId]
         Collections.sort(healthValues)
+        log.fine(healthValues.toString())
         healthValues.indexOf(playersHealth) + 1
     }
 
