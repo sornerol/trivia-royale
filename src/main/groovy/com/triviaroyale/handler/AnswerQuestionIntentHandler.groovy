@@ -52,11 +52,13 @@ class AnswerQuestionIntentHandler implements RequestHandler {
             AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
             PlayerService playerService = new PlayerService(dynamoDB)
             QuizService quizService = new QuizService(dynamoDB)
+            GameStateService gameStateService = new GameStateService(dynamoDB)
+            gameStateService.saveGameState(currentGameState)
 
             sessionAttributes = playerService.updatePlayerQuizCompletion(sessionAttributes)
             log.fine('Session attributes at end of game: ' + sessionAttributes.toString())
-            GameState completedGame = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
-            quizService.addPerformanceToPool(completedGame)
+//            GameState completedGame = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
+            quizService.addPerformanceToPool(currentGameState)
             responseMessage += Messages.ASK_TO_START_NEW_GAME
             repromtMessage = Messages.ASK_TO_START_NEW_GAME
         }
