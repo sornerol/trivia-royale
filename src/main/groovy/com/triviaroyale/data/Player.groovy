@@ -24,4 +24,9 @@ class Player {
     @DynamoDBAttribute(attributeName = 'quizCompletion')
     Map<String, String> quizCompletion
 
+    @Override
+    Object clone() throws CloneNotSupportedException {
+        (Player)super.clone()
+    }
+
 }
