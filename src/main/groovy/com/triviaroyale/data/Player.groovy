@@ -9,7 +9,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 @DynamoDBTable(tableName = DynamoDBConstants.TABLE_NAME)
-class Player {
+class Player implements Cloneable {
 
     @DynamoDBHashKey(attributeName = DynamoDBConstants.HASH_KEY)
     String alexaId

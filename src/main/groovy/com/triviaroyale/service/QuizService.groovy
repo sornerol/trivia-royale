@@ -11,7 +11,6 @@ import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log
 
 import java.security.SecureRandom
 
