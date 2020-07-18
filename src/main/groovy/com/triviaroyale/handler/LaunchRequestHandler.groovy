@@ -48,6 +48,7 @@ class LaunchRequestHandler implements RequestHandler {
             repromptMessage = Messages.ASK_FOR_NAME
         } else {
             log.info("Found ${player.alexaId}. Name: ${player.name}.")
+            sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
             GameStateService gameStateService = new GameStateService(dynamoDB)
             GameState gameState = gameStateService.loadActiveGameState(player.alexaId)
             responseMessage = Messages.WELCOME_EXISTING_PLAYER
@@ -58,7 +59,6 @@ class LaunchRequestHandler implements RequestHandler {
                 responseMessage += " $Messages.ASK_TO_RESUME_GAME"
                 repromptMessage = Messages.ASK_TO_RESUME_GAME
             } else {
-                sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
                 sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
                 responseMessage += " $Messages.ASK_TO_START_NEW_GAME"
                 repromptMessage = Messages.ASK_TO_START_NEW_GAME
