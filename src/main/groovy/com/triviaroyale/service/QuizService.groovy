@@ -11,9 +11,11 @@ import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log
 
 import java.security.SecureRandom
 
+@Log
 @CompileStatic
 class QuizService extends DynamoDBAccess {
 
@@ -106,6 +108,8 @@ class QuizService extends DynamoDBAccess {
     void addPerformanceToPool(GameState completedGame) {
         List<String> tokenizedQuizId = completedGame.quizId.tokenize(Constants.QUIZ_ID_DELIMITER)
         Quiz quiz = loadQuizByCategoryAndId(tokenizedQuizId[0], tokenizedQuizId[1])
+
+        log.fine('Player\'s performance: ' + completedGame.playersPerformance.toString())
         List<Boolean> playerPerformance = completedGame.playersPerformance[completedGame.playerId]
         playerPerformance = completePerformanceWithRandomAnswers(playerPerformance)
         quiz.playerPool.add(new Tuple2<String, List<Boolean>>(completedGame.playerId, playerPerformance))

@@ -54,6 +54,7 @@ class AnswerQuestionIntentHandler implements RequestHandler {
             QuizService quizService = new QuizService(dynamoDB)
 
             sessionAttributes = playerService.updatePlayerQuizCompletion(sessionAttributes)
+            log.fine('Session attributes at end of game: ' + sessionAttributes.toString())
             GameState completedGame = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
             quizService.addPerformanceToPool(completedGame)
             responseMessage += Messages.ASK_TO_START_NEW_GAME
