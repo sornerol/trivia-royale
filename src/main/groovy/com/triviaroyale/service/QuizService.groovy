@@ -109,7 +109,6 @@ class QuizService extends DynamoDBAccess {
         List<String> tokenizedQuizId = completedGame.quizId.tokenize(Constants.QUIZ_ID_DELIMITER)
         Quiz quiz = loadQuizByCategoryAndId(tokenizedQuizId[0], tokenizedQuizId[1])
 
-        log.fine('Player\'s performance: ' + completedGame.playersPerformance.toString())
         List<Boolean> playerPerformance = completedGame.playersPerformance[completedGame.playerId]
         playerPerformance = completePerformanceWithRandomAnswers(playerPerformance)
         quiz.playerPool.add(new Tuple2<String, List<Boolean>>(completedGame.playerId, playerPerformance))
@@ -157,8 +156,9 @@ class QuizService extends DynamoDBAccess {
 
     protected static List<Boolean> completePerformanceWithRandomAnswers(List<Boolean> performance) {
         SecureRandom random = new SecureRandom()
-        List<Boolean> completedPerformance = performance
-        int answeredQuestions = performance.size()
+        log.fine('Performance: ' + performance.toString())
+        List<Boolean> completedPerformance = performance.clone() as List<Boolean>
+        int answeredQuestions = completedPerformance.size()
         for (int i = answeredQuestions; i < Constants.NUMBER_OF_QUESTIONS; i++) {
             completedPerformance.add(random.nextInt(ONE_HUNDRED_PERCENT) <= Constants.HOUSE_PLAYER_CORRECT_PERCENTAGE)
         }
