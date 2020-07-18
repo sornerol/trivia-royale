@@ -112,6 +112,7 @@ class QuizService extends DynamoDBAccess {
         if (quiz.playerPool.size() > Quiz.MAXIMUM_POOL_SIZE) {
             quiz.playerPool.remove(FIRST_ELEMENT)
         }
+        quiz.category = DynamoDBConstants.QUIZ_PREFIX + quiz.category
         mapper.save(quiz)
     }
 

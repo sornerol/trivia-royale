@@ -39,11 +39,11 @@ class AnswerQuestionIntentHandler implements RequestHandler {
                 sessionAttributes[SessionAttributes.CORRECT_ANSWER_INDEX] as int, playerAnswer)
 
         currentGameState = answerValidation.updatedGameState
+        sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, currentGameState)
         sessionAttributes[SessionAttributes.APP_STATE] = answerValidation.updatedAppState
         String responseMessage = answerValidation.validationMessage
         String repromtMessage
         if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.IN_GAME) {
-            sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, currentGameState)
             sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
             responseMessage += "Question ${currentGameState.currentQuestionIndex + 1}: " +
                     "${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
