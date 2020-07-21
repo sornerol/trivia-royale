@@ -5,7 +5,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Constants {
 
-    public static final String HANDLE_METHOD = 'handle'
     public static final String ENTERING_LOG_MESSAGE = 'ENTERING'
     public static final String EXITING_LOG_MESSAGE = 'EXITING'
 
@@ -17,7 +16,7 @@ class Constants {
     public static final int NUMBER_OF_QUESTIONS = 10
     public static final int STARTING_HEALTH = 100
 
-    public static final int CORRECT_HEALTH_ADJUSTMENT = 5
+    public static final int CORRECT_HEALTH_ADJUSTMENT = 2
     public static final int INCORRECT_HEALTH_ADJUSTMENT = 10
 
     public static final String GENERAL_CATEGORY = 'GENERAL'
