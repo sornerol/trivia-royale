@@ -74,7 +74,7 @@ class GameStateService extends DynamoDBAccess {
         gameState.playersHealth.put(gameState.playerId, Constants.STARTING_HEALTH)
         gameState.playersPerformance.put(gameState.playerId, [])
 
-        opponents.each { opponent ->
+        opponents.each { Tuple2<String,List<Boolean>> opponent ->
             gameState.playersHealth.put(opponent.first, Constants.STARTING_HEALTH)
             gameState.playersPerformance.put(opponent.first, opponent.second)
         }
