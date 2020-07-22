@@ -78,7 +78,7 @@ class NewGameIntentHandler implements RequestHandler {
 
         GameState newGame = initializeGameState(quiz, player)
 
-        List<Tuple2<String, List<Boolean>>> opponents =
+        Map<String, List<Boolean>> opponents =
                 QuizService.getRandomPlayersForQuiz(quiz, Constants.NUMBER_OF_PLAYERS - 1)
 
         newGame = GameStateService.initializePlayers(newGame, opponents)

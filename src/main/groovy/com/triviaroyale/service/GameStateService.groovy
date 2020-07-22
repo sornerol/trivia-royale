@@ -70,13 +70,13 @@ class GameStateService extends DynamoDBAccess {
         sessionAttributes
     }
 
-    static GameState initializePlayers(GameState gameState, List<Tuple2<String, List<Boolean>>> opponents) {
+    static GameState initializePlayers(GameState gameState, Map<String, List<Boolean>> opponents) {
         gameState.playersHealth.put(gameState.playerId, Constants.STARTING_HEALTH)
         gameState.playersPerformance.put(gameState.playerId, [])
 
         opponents.each { opponent ->
-            gameState.playersHealth.put(opponent.first, Constants.STARTING_HEALTH)
-            gameState.playersPerformance.put(opponent.first, opponent.second)
+            gameState.playersHealth.put(opponent.key, Constants.STARTING_HEALTH)
+            gameState.playersPerformance.put(opponent.key, opponent.value)
         }
 
         gameState

@@ -3,6 +3,7 @@ package com.triviaroyale.service
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.sun.org.apache.xpath.internal.operations.Bool
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
 import com.triviaroyale.data.Question
@@ -34,12 +35,13 @@ class QuizService extends DynamoDBAccess {
         quizId
     }
 
-    static List<Tuple2<String, List<Boolean>>> getRandomPlayersForQuiz(Quiz quiz, int numberOfPlayers) {
-        List<Tuple2<String, List<Boolean>>> playerPool = quiz.playerPool
-        List<Tuple2<String, List<Boolean>>> selectedPlayers = []
-        Collections.shuffle(playerPool)
+    static Map<String,List<Boolean>> getRandomPlayersForQuiz(Quiz quiz, int numberOfPlayers) {
+        List<String> playerPoolIds = quiz.playerPool.keySet() as List<String>
+        Map<String,List<Boolean>> selectedPlayers = [:]
+        Collections.shuffle(playerPoolIds)
         for (int i = 0; i < numberOfPlayers; i++) {
-            selectedPlayers.add(playerPool.pop())
+            String selectedPlayer = playerPoolIds.pop()
+            selectedPlayers.put(selectedPlayer, quiz.playerPool[selectedPlayer])
         }
 
         selectedPlayers
@@ -88,15 +90,13 @@ class QuizService extends DynamoDBAccess {
             uniqueId = "${System.currentTimeMillis().toString()}#${playerId}"
             questionJson = questions
         }
-        List<Tuple2<String, List<Boolean>>> playerPool = []
+        quiz.playerPool = [:]
         for (int i = 0; i < Quiz.MAXIMUM_POOL_SIZE; i++) {
             String housePlayerId = Constants.HOUSE_PLAYER_ID_BASE + i.toString()
             List<Boolean> performance = completePerformanceWithRandomAnswers([])
 
-            Tuple2<String, List<Boolean>> poolEntry = new Tuple2<String, List<Boolean>>(housePlayerId, performance)
-            playerPool.add(poolEntry)
+            quiz.playerPool.put(housePlayerId, performance)
         }
-        quiz.playerPool = playerPool
         mapper.save(quiz)
         quiz.category = quiz.category - DynamoDBConstants.QUIZ_PREFIX
 
@@ -109,7 +109,7 @@ class QuizService extends DynamoDBAccess {
 
         List<Boolean> completedPlayerPerformance = completePerformanceWithRandomAnswers(
                 completedGame.playersPerformance[completedGame.playerId])
-        quiz.playerPool.add(new Tuple2<String, List<Boolean>>(completedGame.playerId, completedPlayerPerformance))
+        quiz.playerPool.put(completedGame.playerId, completedPlayerPerformance)
         if (quiz.playerPool.size() > Quiz.MAXIMUM_POOL_SIZE) {
             quiz.playerPool.remove(FIRST_ELEMENT)
         }
