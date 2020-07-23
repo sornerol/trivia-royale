@@ -24,7 +24,7 @@ class QuizService extends DynamoDBAccess {
     public static final String QUIZ_ID_ATTRIBUTE = ':rk'
 
     public static final int ONE_HUNDRED_PERCENT = 100
-    public static final int FIRST_ELEMENT = 0
+    public static final int FIRST_ELEMENT = 1
 
     QuizService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
@@ -111,7 +111,7 @@ class QuizService extends DynamoDBAccess {
                 completedGame.playersPerformance[completedGame.playerId])
         quiz.playerPool.put(completedGame.playerId, completedPlayerPerformance)
         if (quiz.playerPool.size() > Quiz.MAXIMUM_POOL_SIZE) {
-            quiz.playerPool.remove(FIRST_ELEMENT)
+            quiz.playerPool.drop(FIRST_ELEMENT)
         }
         quiz.category = DynamoDBConstants.QUIZ_PREFIX + quiz.category
         mapper.save(quiz)
