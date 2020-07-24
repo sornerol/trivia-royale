@@ -17,7 +17,7 @@ class Constants {
     public static final int STARTING_HEALTH = 100
 
     public static final int CORRECT_HEALTH_ADJUSTMENT = 2
-    public static final int INCORRECT_HEALTH_ADJUSTMENT = 10
+    public static final int INCORRECT_HEALTH_ADJUSTMENT = 5
 
     public static final String GENERAL_CATEGORY = 'GENERAL'
     public static final String S3_QUESTION_BUCKET = 'triviaroyale'

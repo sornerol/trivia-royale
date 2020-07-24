@@ -188,8 +188,12 @@ class GameStateService extends DynamoDBAccess {
         }
 
         log.info("Correct/Incorrect counts: $playersWithRightAnswer to $playersWithWrongAnswer")
-        int rightAnswerHealthAdjustment = playersWithWrongAnswer * Constants.CORRECT_HEALTH_ADJUSTMENT
-        int wrongAnswerHealthAdjustment = playersWithRightAnswer * Constants.INCORRECT_HEALTH_ADJUSTMENT
+        int rightAnswerHealthAdjustment = playersWithWrongAnswer *
+                Constants.CORRECT_HEALTH_ADJUSTMENT *
+                (gameState.currentQuestionIndex + 1)
+        int wrongAnswerHealthAdjustment = playersWithRightAnswer *
+                Constants.INCORRECT_HEALTH_ADJUSTMENT *
+                (gameState.currentQuestionIndex + 1)
 
         gameState.playersHealth.each {
             if (gameState.playersPerformance[it.key][gameState.currentQuestionIndex]) {
