@@ -19,7 +19,6 @@ class PlayerService extends DynamoDBAccess {
         Player player = new Player()
         player.with {
             alexaId = sessionAttributes[SessionAttributes.PLAYER_ID] as String
-            name = sessionAttributes[SessionAttributes.PLAYER_NAME] as String
             quizCompletion =
                     sessionAttributes[SessionAttributes.PLAYER_QUIZ_COMPLETION] as LinkedHashMap<String, String>
         }
@@ -30,7 +29,6 @@ class PlayerService extends DynamoDBAccess {
                                                              Player player) {
         sessionAttributes.with {
             put(SessionAttributes.PLAYER_ID, player.alexaId)
-            put(SessionAttributes.PLAYER_NAME, player.name)
             put(SessionAttributes.PLAYER_QUIZ_COMPLETION, player.quizCompletion)
         }
 

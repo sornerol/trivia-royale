@@ -8,7 +8,6 @@ class SessionAttributes {
     public static final String APP_STATE = 'appState'
     //Player information
     public static final String PLAYER_ID = 'playerId'
-    public static final String PLAYER_NAME = 'playerName'
     public static final String PLAYER_QUIZ_COMPLETION = 'quizCompletion'
 
     //Game state information

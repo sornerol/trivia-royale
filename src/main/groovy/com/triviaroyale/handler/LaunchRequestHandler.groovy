@@ -80,7 +80,8 @@ class LaunchRequestHandler implements RequestHandler {
         Player newPlayer = new Player()
         newPlayer.with {
             alexaId = playerId
-            quizCompletion = [Constants.GENERAL_CATEGORY: '!']
+            quizCompletion = [:]
+            quizCompletion.put(Constants.GENERAL_CATEGORY, '!')
         }
         playerService.savePlayer(newPlayer)
 

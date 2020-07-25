@@ -13,7 +13,6 @@ import spock.lang.Specification
 class PlayerServiceTest extends Specification {
     
     public static final String PLAYER_ID_BASE = 'TEST-PLAYER-12345-'
-    public static final String PLAYER_NAME = 'Tess'
 
     @Shared
     AmazonDynamoDB dynamoDB
@@ -43,7 +42,6 @@ class PlayerServiceTest extends Specification {
         String playerId = PLAYER_ID_BASE + '1'
         testPlayer.with {
             alexaId = DynamoDBConstants.PLAYER_PREFIX + playerId
-            name = PLAYER_NAME
             quizCompletion = [:]
             quizCompletion.put(Constants.GENERAL_CATEGORY, '!')
         }
@@ -74,7 +72,6 @@ class PlayerServiceTest extends Specification {
         String playerId = PLAYER_ID_BASE + '2'
         testPlayer.with {
             alexaId = playerId
-            name = PLAYER_NAME
             quizCompletion = [:]
             quizCompletion.put(Constants.GENERAL_CATEGORY, '!')
         }
@@ -87,7 +84,6 @@ class PlayerServiceTest extends Specification {
 
         then:
         testPlayerRetrieved.alexaId == hashKey
-
     }
 
 }
