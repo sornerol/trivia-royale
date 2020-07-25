@@ -26,18 +26,8 @@ class HearRulesIntentHandler implements RequestHandler {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        String responseMessage = Messages.RULES
-        String repromptMessage
-
-        String nextActionMessage
-        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.NEW_PLAYER_SETUP.toString()) {
-            nextActionMessage = Messages.ASK_FOR_NAME
-        } else {
-            nextActionMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
-        }
-
-        responseMessage += " $nextActionMessage"
-        repromptMessage = nextActionMessage
+        String responseMessage = "$Messages.RULES ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
+        String repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
 
         ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseMessage, repromptMessage)
         log.fine(Constants.EXITING_LOG_MESSAGE)

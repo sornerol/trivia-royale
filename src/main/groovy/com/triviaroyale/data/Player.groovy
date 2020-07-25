@@ -18,9 +18,6 @@ class Player implements Cloneable {
     @DynamoDBRangeKey(attributeName = DynamoDBConstants.RANGE_KEY)
     String rk = 'METADATA'
 
-    @DynamoDBAttribute(attributeName = 'name')
-    String name
-
     @DynamoDBAttribute(attributeName = 'quizCompletion')
     Map<String, String> quizCompletion
 

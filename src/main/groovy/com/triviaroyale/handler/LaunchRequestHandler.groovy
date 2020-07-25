@@ -21,6 +21,10 @@ import groovy.util.logging.Log
 @Log
 class LaunchRequestHandler implements RequestHandler {
 
+    AmazonDynamoDB dynamoDB
+    PlayerService playerService
+    GameStateService gameStateService
+
     @Override
     boolean canHandle(HandlerInput input) {
         log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
@@ -33,37 +37,35 @@ class LaunchRequestHandler implements RequestHandler {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
-        PlayerService playerService = new PlayerService(dynamoDB)
+        dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
+        playerService = new PlayerService(dynamoDB)
 
         String playerId = AlexaSdkHelper.getUserId(input)
         Player player = playerService.loadPlayer(playerId)
-        String responseMessage
+        String responseMessage = Messages.WELCOME_PLAYER
         String repromptMessage
 
         if (player == null) {
-            log.info("Player ID ${playerId} not found")
-            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_PLAYER_SETUP)
-            responseMessage = "$Messages.WELCOME_NEW_PLAYER $Messages.RULES $Messages.ASK_FOR_NAME"
-            repromptMessage = Messages.ASK_FOR_NAME
-        } else {
-            log.info("Found ${player.alexaId}. Name: ${player.name}.")
-            sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
-            GameStateService gameStateService = new GameStateService(dynamoDB)
-            GameState gameState = gameStateService.loadActiveGameState(player.alexaId)
-            responseMessage = Messages.WELCOME_EXISTING_PLAYER
-            if (gameState) {
-                log.info("Found active gameState ${gameState.sessionId}. Asking to resume.")
-                sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
-                sessionAttributes.put(SessionAttributes.APP_STATE, AppState.RESUME_EXISTING_GAME)
-                responseMessage += " $Messages.ASK_TO_RESUME_GAME"
-                repromptMessage = Messages.ASK_TO_RESUME_GAME
-            } else {
-                sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
-                responseMessage += " $Messages.ASK_TO_START_NEW_GAME"
-                repromptMessage = Messages.ASK_TO_START_NEW_GAME
-            }
+            log.info("Creating new player entry for ${playerId}.")
+            player = createNewPlayer(playerId)
+            responseMessage += " $Messages.RULES"
         }
+        sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
+        gameStateService = new GameStateService(dynamoDB)
+        GameState gameState = gameStateService.loadActiveGameState(player.alexaId)
+
+        if (gameState) {
+            log.info("Found active gameState ${gameState.sessionId}. Asking to resume.")
+            sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
+            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.RESUME_EXISTING_GAME)
+            responseMessage += " $Messages.ASK_TO_RESUME_GAME"
+            repromptMessage = Messages.ASK_TO_RESUME_GAME
+        } else {
+            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
+            responseMessage += " $Messages.ASK_TO_START_NEW_GAME"
+            repromptMessage = Messages.ASK_TO_START_NEW_GAME
+        }
+
 
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
 
@@ -74,4 +76,14 @@ class LaunchRequestHandler implements RequestHandler {
         response.build()
     }
 
+    Player createNewPlayer(String playerId) {
+        Player newPlayer = new Player()
+        newPlayer.with {
+            alexaId = playerId
+            quizCompletion = [Constants.GENERAL_CATEGORY: '!']
+        }
+        playerService.savePlayer(newPlayer)
+
+        newPlayer
+    }
 }
