@@ -3,7 +3,8 @@ package com.triviaroyale
 import com.amazon.ask.Skill
 import com.amazon.ask.SkillStreamHandler
 import com.amazon.ask.Skills
-import com.triviaroyale.handler.*
+import com.triviaroyale.requestrouter.*
+
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -15,15 +16,18 @@ class TriviaRoyaleStreamHandler extends SkillStreamHandler {
 
         Skills.standard()
                 .addRequestHandlers(
-                        new AnswerQuestionIntentHandler(),
-                        new CancelAndStopIntentHandler(),
-                        new HearRulesIntentHandler(),
-                        new LaunchRequestHandler(),
-                        new NewGameIntentHandler(),
-                        new RepeatIntentHandler(),
-                        new SessionEndedRequestHandler(),
-                        new StartOverIntentHandler(),
-                        new ResumeGameIntentHandler())
+                        new AnswerIntentRequestRouter(),
+                        new CancelAndStopIntentRequestRouter(),
+                        new HelpIntentRequestRouter(),
+                        new LaunchRequestRouter(),
+                        new NavigateHomeIntentRequestRouter(),
+                        new NoIntentRequestRouter(),
+                        new RepeatIntentRequestRouter(),
+                        new SessionEndedRequestRouter(),
+                        new StartOverIntentRequestRouter(),
+                        new YesIntentRequestRouter(),
+                        new FallbackIntentRequestRouter()
+                )
                 .build()
     }
 
