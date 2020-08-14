@@ -6,9 +6,12 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.amazon.ask.model.SessionEndedRequest
+import com.triviaroyale.handler.SessionEndedRequestHandler
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log
 
 @CompileStatic
+@Log
 class SessionEndedRequestRouter implements RequestHandler {
 
     @Override
@@ -18,7 +21,9 @@ class SessionEndedRequestRouter implements RequestHandler {
 
     @Override
     Optional<Response> handle (HandlerInput input) {
+        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
 
+        SessionEndedRequestHandler.handle(input)
     }
 
 }

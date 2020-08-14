@@ -4,7 +4,6 @@ import com.amazon.ask.Skill
 import com.amazon.ask.SkillStreamHandler
 import com.amazon.ask.Skills
 import com.triviaroyale.requestrouter.*
-
 import groovy.transform.CompileStatic
 
 @CompileStatic

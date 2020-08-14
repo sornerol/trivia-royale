@@ -23,6 +23,10 @@ be eliminated. Can you survive?"
 
     public static final String STARTING_NEW_GAME = 'Okay. Hold on while I find some opponents.'
 
+    public static final String CANT_UNDERSTAND = "Sorry, I didn't understand you."
+
+    public static final String HOW_TO_ANSWER = 'Tell me the letter of the answer you choose.'
+
     public static final String EXIT_SKILL =
             '''Thank you for playing Trivia Royale. If you enjoyed playing, would you mind leaving a review in the
 Alexa Skills Store?'''
