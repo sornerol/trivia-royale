@@ -29,7 +29,7 @@ class GetStatusIntentRequestRouter implements RequestHandler {
     Optional<Response> handle (HandlerInput input) {
         log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
 
-        if (sessionAttribute(SessionAttributes.APP_STATE, AppState.IN_GAME.toString())) {
+        if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.IN_GAME.toString()))) {
             return GetStatusIntentHandler.getStatus(input)
         }
 

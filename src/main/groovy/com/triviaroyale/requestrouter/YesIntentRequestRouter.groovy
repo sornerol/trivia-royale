@@ -27,7 +27,7 @@ class YesIntentRequestRouter implements RequestHandler {
     Optional<Response> handle(HandlerInput input) {
         log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
 
-        if (sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME.toString())) {
+        if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME.toString()))) {
             return NewGameIntentHandler.handle(input)
         }
         if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.RESUME_EXISTING_GAME.toString()))) {
