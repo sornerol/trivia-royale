@@ -27,6 +27,8 @@ be eliminated. Can you survive?"
 
     public static final String HOW_TO_ANSWER = 'Tell me the letter of the answer you choose.'
 
+    public static final String NOT_IN_GAME = 'You are not currently playing a game of Trivia Royale.'
+
     public static final String EXIT_SKILL =
             '''Thank you for playing Trivia Royale. If you enjoyed playing, would you mind leaving a review in the
 Alexa Skills Store?'''
