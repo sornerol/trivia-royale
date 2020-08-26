@@ -9,6 +9,7 @@ import com.triviaroyale.data.GameState
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.service.QuizService
+import com.triviaroyale.service.bean.AnswerValidationBean
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -45,7 +46,6 @@ class AnswerQuestionIntentHandler {
 
             sessionAttributes = playerService.updatePlayerQuizCompletion(sessionAttributes)
             log.fine('Session attributes at end of game: ' + sessionAttributes.toString())
-//            GameState completedGame = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
             quizService.addPerformanceToPool(currentGameState)
             responseMessage += Messages.ASK_TO_START_NEW_GAME
             repromtMessage = Messages.ASK_TO_START_NEW_GAME

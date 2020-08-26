@@ -3,7 +3,6 @@ package com.triviaroyale
 import com.amazon.ask.Skill
 import com.amazon.ask.SkillStreamHandler
 import com.amazon.ask.Skills
-import com.triviaroyale.handler.GetStatusIntentHandler
 import com.triviaroyale.requestrouter.*
 import groovy.transform.CompileStatic
 

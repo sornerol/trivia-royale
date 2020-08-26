@@ -6,11 +6,7 @@ import static com.amazon.ask.request.Predicates.sessionAttribute
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
-import com.triviaroyale.handler.CancelAndStopIntentHandler
-import com.triviaroyale.handler.FallbackRequestHandler
 import com.triviaroyale.handler.GetStatusIntentHandler
-import com.triviaroyale.handler.NewGameIntentHandler
-import com.triviaroyale.handler.RepeatIntentHandler
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic

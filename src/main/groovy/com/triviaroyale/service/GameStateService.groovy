@@ -7,7 +7,7 @@ import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Question
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
-import com.triviaroyale.util.AnswerValidationBean
+import com.triviaroyale.service.bean.AnswerValidationBean
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
@@ -21,6 +21,9 @@ class GameStateService extends DynamoDBAccess {
     public static final String STATUS_ATTRIBUTE = ':status'
     public static final String HASH_KEY_ATTRIBUTE = ':hk'
     public static final String SESSION_STATUS_INDEX = 'sessionStatus'
+
+    public static final boolean CORRECT = true
+    public static final boolean INCORRECT = false
 
     public static final Map<Integer, String> PLACE = [
             1:'first',
@@ -86,24 +89,23 @@ class GameStateService extends DynamoDBAccess {
                                                      int correctAnswerIndex,
                                                      int playersAnswer) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
-        log.info("Player's answer: $playersAnswer")
+        log.info("Player's answer: $playersAnswer. Correct answer: $correctAnswerIndex")
         Question currentQuestion = Question.fromJson(gameState.questions[gameState.currentQuestionIndex])
-        log.info("Correct answer: $correctAnswerIndex")
         Boolean isPlayerCorrect = (playersAnswer == correctAnswerIndex)
-        log.info("Was player correct: $isPlayerCorrect")
-        GameState newGameState = updatePlayersHealthAfterResponse(gameState, isPlayerCorrect)
+        GameState newGameState = gameState.clone() as GameState
+        newGameState = updatePlayersHealthAfterResponse(newGameState, isPlayerCorrect)
 
         AnswerValidationBean validation = new AnswerValidationBean()
         validation.updatedAppState = AppState.IN_GAME
-        if (isPlayerCorrect) {
-            validation.validationMessage = 'Correct!'
-        } else {
-            validation.validationMessage =
-                    "Sorry, the correct answer was $currentQuestion.correctAnswer.<break time=\"500ms\"/>"
-        }
+        validation.validationMessage = isPlayerCorrect ? 'Correct!' :
+               "Sorry, the correct answer was $currentQuestion.correctAnswer.<break time=\"500ms\"/>"
 
         newGameState.currentQuestionIndex++
 
+        int playersWithRightAnswer = numberOfPlayersWithAnswerType(newGameState, CORRECT)
+
+        validation.validationMessage += " $playersWithRightAnswer out of" +
+                " ${gameState.playersHealth.size()} players got that question right."
         if (!newGameState.playersHealth.containsKey(newGameState.playerId)) {
             newGameState.status = GameStateStatus.GAME_OVER
             validation.updatedAppState = AppState.NEW_GAME
@@ -184,12 +186,8 @@ class GameStateService extends DynamoDBAccess {
             gameState.playersPerformance.put(gameState.playerId, [])
         }
         gameState.playersPerformance[gameState.playerId].add(isPlayerCorrect)
-        int playersWithRightAnswer = 0
-        int playersWithWrongAnswer = 0
-        gameState.playersHealth.each { player ->
-            gameState.playersPerformance[player.key][gameState.currentQuestionIndex] ?
-                    playersWithRightAnswer++ : playersWithWrongAnswer++
-        }
+        int playersWithRightAnswer = numberOfPlayersWithAnswerType(gameState, CORRECT)
+        int playersWithWrongAnswer = numberOfPlayersWithAnswerType(gameState, INCORRECT)
 
         log.info("Correct/Incorrect counts: $playersWithRightAnswer to $playersWithWrongAnswer")
         int rightAnswerHealthAdjustment = playersWithWrongAnswer *
@@ -221,6 +219,17 @@ class GameStateService extends DynamoDBAccess {
         Collections.sort(healthValues, Collections.reverseOrder())
         log.fine(healthValues.toString())
         healthValues.indexOf(playersHealth) + 1
+    }
+
+    protected static int numberOfPlayersWithAnswerType(GameState gameState, boolean answerType) {
+        int playerCount = 0
+        gameState.playersHealth.each { player ->
+            if (gameState.playersPerformance[player.key][gameState.currentQuestionIndex] == answerType) {
+                playerCount++
+            }
+        }
+
+        playerCount
     }
 
 }
