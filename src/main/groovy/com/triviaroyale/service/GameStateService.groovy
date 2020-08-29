@@ -100,12 +100,11 @@ class GameStateService extends DynamoDBAccess {
         validation.validationMessage = isPlayerCorrect ? 'Correct!' :
                "Sorry, the correct answer was $currentQuestion.correctAnswer.<break time=\"500ms\"/>"
 
-        newGameState.currentQuestionIndex++
-
         int playersWithRightAnswer = numberOfPlayersWithAnswerType(newGameState, CORRECT)
-
         validation.validationMessage += " $playersWithRightAnswer out of" +
                 " ${gameState.playersHealth.size()} players got that question right."
+
+        newGameState.currentQuestionIndex++
         if (!newGameState.playersHealth.containsKey(newGameState.playerId)) {
             newGameState.status = GameStateStatus.GAME_OVER
             validation.updatedAppState = AppState.NEW_GAME
