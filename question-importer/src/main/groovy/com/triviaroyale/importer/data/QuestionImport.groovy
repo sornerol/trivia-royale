@@ -8,6 +8,10 @@ import groovy.transform.CompileStatic
 class QuestionImport {
 
     public static final Character OTHER_ANSWERS_DELIMITER = '|'
+
+    @CsvBindByName
+    String id
+
     @CsvBindByName
     String category
 
