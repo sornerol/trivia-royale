@@ -49,7 +49,7 @@ class AnswerQuestionIntentHandler {
             quizService.addPerformanceToPool(currentGameState)
             responseMessage += Messages.ASK_TO_START_NEW_GAME
             repromtMessage = Messages.ASK_TO_START_NEW_GAME
-            sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
+            sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_START_NEW_GAME)
         }
 
         input.attributesManager.sessionAttributes = sessionAttributes
