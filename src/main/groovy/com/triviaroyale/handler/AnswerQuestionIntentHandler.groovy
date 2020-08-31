@@ -34,7 +34,7 @@ class AnswerQuestionIntentHandler {
         String repromtMessage
         if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.IN_GAME) {
             sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
-            responseMessage += "Question ${currentGameState.currentQuestionIndex + 1}: " +
+            responseMessage += " Question ${currentGameState.currentQuestionIndex + 1}: " +
                     "${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
             repromtMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
         } else {
@@ -47,7 +47,7 @@ class AnswerQuestionIntentHandler {
             sessionAttributes = playerService.updatePlayerQuizCompletion(sessionAttributes)
             log.fine('Session attributes at end of game: ' + sessionAttributes.toString())
             quizService.addPerformanceToPool(currentGameState)
-            responseMessage += Messages.ASK_TO_START_NEW_GAME
+            responseMessage += " ${Messages.ASK_TO_START_NEW_GAME}"
             repromtMessage = Messages.ASK_TO_START_NEW_GAME
             sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_START_NEW_GAME)
         }
