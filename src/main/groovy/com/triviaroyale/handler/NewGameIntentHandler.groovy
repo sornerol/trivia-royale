@@ -96,12 +96,10 @@ class NewGameIntentHandler {
     }
 
     private static void abortExistingGame(Map<String, Object> sessionAttributes, GameStateService gameStateService) {
-        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.START_OVER_REQUEST.toString()) {
-            GameState oldGameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
-            log.info("Setting session ID $oldGameState.sessionId to ABORTED.")
-            oldGameState.status = GameStateStatus.ABORTED
-            gameStateService.saveGameState(oldGameState)
-        }
+        GameState oldGameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
+        log.info("Setting session ID $oldGameState.sessionId to ABORTED.")
+        oldGameState.status = GameStateStatus.ABORTED
+        gameStateService.saveGameState(oldGameState)
     }
 
     private static void announceGameSetup(HandlerInput input) {
