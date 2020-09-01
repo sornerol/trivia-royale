@@ -11,10 +11,12 @@ import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log
 
 import java.security.SecureRandom
 
 @CompileStatic
+@Log
 class QuizService extends DynamoDBAccess {
 
     public static final char FIRST_ANSWER_LETTER = 'A'
@@ -34,9 +36,9 @@ class QuizService extends DynamoDBAccess {
         quizId
     }
 
-    static Map<String,List<Boolean>> getRandomPlayersForQuiz(Quiz quiz, int numberOfPlayers) {
+    static Map<String, List<Boolean>> getRandomPlayersForQuiz(Quiz quiz, int numberOfPlayers) {
         List<String> playerPoolIds = quiz.playerPool.keySet() as List<String>
-        Map<String,List<Boolean>> selectedPlayers = [:]
+        Map<String, List<Boolean>> selectedPlayers = [:]
         Collections.shuffle(playerPoolIds)
         for (int i = 0; i < numberOfPlayers; i++) {
             String selectedPlayer = playerPoolIds.pop()
@@ -90,7 +92,7 @@ class QuizService extends DynamoDBAccess {
             questionJson = questions
         }
         quiz.playerPool = [:]
-        for (int i = 0; i < Quiz.MAXIMUM_POOL_SIZE; i++) {
+        for (int i = 0; i < Quiz.STARTING_POOL_SIZE; i++) {
             String housePlayerId = Constants.HOUSE_PLAYER_ID_BASE + i.toString()
             List<Boolean> performance = completePerformanceWithRandomAnswers([])
 
@@ -106,11 +108,16 @@ class QuizService extends DynamoDBAccess {
         List<String> tokenizedQuizId = completedGame.quizId.tokenize(Constants.QUIZ_ID_DELIMITER)
         Quiz quiz = loadQuizByCategoryAndId(tokenizedQuizId[0], tokenizedQuizId[1])
 
+        log.info("Adding player performance for player ID $completedGame.playerId" +
+                " to quiz ID $completedGame.quizId")
         List<Boolean> completedPlayerPerformance = completePerformanceWithRandomAnswers(
                 completedGame.playersPerformance[completedGame.playerId])
         quiz.playerPool.put(completedGame.playerId, completedPlayerPerformance)
+        log.fine("Player pool size for ${quiz.category} - ${quiz.uniqueId} is ${quiz.playerPool.size()}.")
         if (quiz.playerPool.size() > Quiz.MAXIMUM_POOL_SIZE) {
-            quiz.playerPool.drop(FIRST_ELEMENT)
+            log.info("Dropping old player performance in ${quiz.category} - ${quiz.uniqueId}...")
+            quiz.playerPool = quiz.playerPool.drop(FIRST_ELEMENT)
+            log.fine("Player pool size for ${quiz.category} - ${quiz.uniqueId} is ${quiz.playerPool.size()}.")
         }
         quiz.category = DynamoDBConstants.QUIZ_PREFIX + quiz.category
         mapper.save(quiz)
