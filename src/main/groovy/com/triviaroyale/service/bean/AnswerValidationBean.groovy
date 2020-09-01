@@ -1,6 +1,7 @@
-package com.triviaroyale.util
+package com.triviaroyale.service.bean
 
 import com.triviaroyale.data.GameState
+import com.triviaroyale.util.AppState
 import groovy.transform.CompileStatic
 
 @CompileStatic

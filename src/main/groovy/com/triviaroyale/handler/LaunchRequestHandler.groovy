@@ -1,10 +1,6 @@
 package com.triviaroyale.handler
 
-import static com.amazon.ask.request.Predicates.requestType
-
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
-import com.amazon.ask.dispatcher.request.handler.RequestHandler
-import com.amazon.ask.model.LaunchRequest
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
@@ -19,21 +15,13 @@ import groovy.util.logging.Log
 
 @CompileStatic
 @Log
-class LaunchRequestHandler implements RequestHandler {
+class LaunchRequestHandler {
 
-    AmazonDynamoDB dynamoDB
-    PlayerService playerService
-    GameStateService gameStateService
+    static AmazonDynamoDB dynamoDB
+    static PlayerService playerService
+    static GameStateService gameStateService
 
-    @Override
-    boolean canHandle(HandlerInput input) {
-        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
-
-        input.matches(requestType(LaunchRequest))
-    }
-
-    @Override
-    Optional<Response> handle(HandlerInput input) {
+    static Optional<Response> handle(HandlerInput input) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
@@ -47,9 +35,10 @@ class LaunchRequestHandler implements RequestHandler {
 
         if (player == null) {
             log.info("Creating new player entry for ${playerId}.")
-            player = createNewPlayer(playerId)
+            player = initializeNewPlayer(playerId)
             responseMessage += " $Messages.RULES"
         }
+
         sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
         gameStateService = new GameStateService(dynamoDB)
         GameState gameState = gameStateService.loadActiveGameState(player.alexaId)
@@ -66,7 +55,6 @@ class LaunchRequestHandler implements RequestHandler {
             repromptMessage = Messages.ASK_TO_START_NEW_GAME
         }
 
-
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
 
         input.attributesManager.sessionAttributes = sessionAttributes
@@ -76,7 +64,7 @@ class LaunchRequestHandler implements RequestHandler {
         response.build()
     }
 
-    Player createNewPlayer(String playerId) {
+    static Player initializeNewPlayer(String playerId) {
         Player newPlayer = new Player()
         newPlayer.with {
             alexaId = playerId
@@ -87,4 +75,5 @@ class LaunchRequestHandler implements RequestHandler {
 
         newPlayer
     }
+
 }

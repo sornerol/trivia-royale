@@ -1,6 +1,8 @@
 package com.triviaroyale.importer
 
 import com.opencsv.bean.CsvToBeanBuilder
+import com.opencsv.bean.StatefulBeanToCsv
+import com.opencsv.bean.StatefulBeanToCsvBuilder
 import com.triviaroyale.importer.data.QuestionImport
 import groovy.transform.CompileStatic
 
@@ -25,13 +27,21 @@ class QuestionsFromCsv {
                 .parse()
 
         importedQuestions.each { importedQuestion ->
-            String outputDirectoryPath = "$OUTPUT_DIRECTORY_BASE/${importedQuestion.category}_${exportTime}"
+            String outputDirectoryPath = "${OUTPUT_DIRECTORY_BASE}_${exportTime}/${importedQuestion.category}"
             File outputDirectory = new File(outputDirectoryPath)
             outputDirectory.mkdirs()
-            String newFilename = "$outputDirectoryPath/${UUID.randomUUID()}.json"
+            if (!importedQuestion.id) {
+                importedQuestion.id = UUID.randomUUID()
+            }
+            String newFilename = "$outputDirectoryPath/${importedQuestion.id}.json"
             File outputFile = new File(newFilename)
             outputFile.write(importedQuestion.toQuestion().toJson())
         }
+        FileWriter writer = new FileWriter(fileName)
+        StatefulBeanToCsv csvWriter = new StatefulBeanToCsvBuilder(writer)
+                .build()
+        csvWriter.write(importedQuestions)
+        writer.close()
     }
 
 }
