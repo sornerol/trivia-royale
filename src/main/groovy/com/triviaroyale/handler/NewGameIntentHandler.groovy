@@ -127,7 +127,7 @@ class NewGameIntentHandler implements RequestHandler {
         DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
         SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
         Header header = Header.builder().withRequestId(input.requestEnvelope.request.requestId).build()
-        //TODO: add audio clip
+
         SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder()
                 .withDirective(speakDirective)
                 .withHeader(header)
