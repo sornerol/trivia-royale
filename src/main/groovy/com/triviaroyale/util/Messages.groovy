@@ -21,7 +21,8 @@ be eliminated. Can you survive?"
 
     public static final String CONFIRM_START_OVER = 'Are you sure you want to give up and start a new game?'
 
-    public static final String STARTING_NEW_GAME = 'Okay. Hold on while I find some opponents.'
+    public static final String STARTING_NEW_GAME = 'Okay. Hold on while I find some opponents. ' +
+            '<audio src="https://trivia-royale-assets.s3.amazonaws.com/gamestart.mp3" />'
 
     public static final String CANT_UNDERSTAND = "Sorry, I didn't understand you."
 

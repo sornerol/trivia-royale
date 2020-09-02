@@ -71,8 +71,7 @@ class NewGameIntentHandler {
         sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
         input.attributesManager.sessionAttributes = sessionAttributes
 
-        String responseText = '<audio src="https://trivia-royale-assets.s3.amazonaws.com/gamestart.mp3" />' +
-                'Question 1. ' + sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
+        String responseText = 'Question 1. ' + sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseText, repropmptText)
         log.fine(Constants.EXITING_LOG_MESSAGE)
@@ -105,7 +104,9 @@ class NewGameIntentHandler {
 
     private static void announceGameSetup(HandlerInput input) {
         DirectiveServiceClient directiveServiceClient = input.serviceClientFactory.directiveService
-        SpeakDirective speakDirective = SpeakDirective.builder().withSpeech(Messages.STARTING_NEW_GAME).build()
+        SpeakDirective speakDirective = SpeakDirective.builder()
+                .withSpeech("<speak>$Messages.STARTING_NEW_GAME</speak>")
+                .build()
         Header header = Header.builder().withRequestId(input.requestEnvelope.request.requestId).build()
 
         SendDirectiveRequest sendDirectiveRequest = SendDirectiveRequest.builder()
