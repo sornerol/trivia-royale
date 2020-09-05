@@ -5,13 +5,17 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Messages {
 
-    public static final String WELCOME_PLAYER = 'Welcome to Trivia Royale!'
+    public static final String WELCOME_NEW_PLAYER = 'Welcome to Trivia Royale! Test your brain power against other \
+players in this battle royale style trivia game.'
 
-    public static final String RULES =
+    public static final String WELCOME_EXISTING_PLAYER = 'Welcome back to Trivia Royale!'
+
+    public static final String HELP_MESSAGE =
             "Test your brain power against other players in a battle royale style trivia game. The rules are simple: \
 Compete against ${Constants.NUMBER_OF_PLAYERS - 1} other players in a multiple choice trivia quiz. Correct answers \
-will gain you health points, while wrong answers will make you lose health. If your health drops to zero, you will \
-be eliminated. Can you survive?"
+allow you to steal health points from players who give wrong answers. As the quiz progresses, wrong answers have a \
+bigger impact on your health. If your health drops to zero, you will be eliminated. The player with the highest health \
+score at the end of the game is the winner."
 
     public static final String ASK_TO_START_NEW_GAME =
             'A new round of Trivia Royale is about to start. Would you like to play?'

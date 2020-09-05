@@ -30,13 +30,12 @@ class LaunchRequestHandler {
 
         String playerId = AlexaSdkHelper.getUserId(input)
         Player player = playerService.loadPlayer(playerId)
-        String responseMessage = Messages.WELCOME_PLAYER
+        String responseMessage = player ? Messages.WELCOME_EXISTING_PLAYER : Messages.WELCOME_NEW_PLAYER
         String repromptMessage
 
-        if (player == null) {
+        if (!player) {
             log.info("Creating new player entry for ${playerId}.")
             player = initializeNewPlayer(playerId)
-            responseMessage += " $Messages.RULES"
         }
 
         sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)

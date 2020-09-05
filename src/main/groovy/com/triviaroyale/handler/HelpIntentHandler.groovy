@@ -12,13 +12,13 @@ import groovy.util.logging.Log
 
 @CompileStatic
 @Log
-class HearRulesIntentHandler {
+class HelpIntentHandler {
 
     static Optional<Response> handle(HandlerInput input) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        String responseMessage = "$Messages.RULES ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
+        String responseMessage = "$Messages.HELP_MESSAGE ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
         String repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
 
         ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseMessage, repromptMessage)
