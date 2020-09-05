@@ -35,8 +35,16 @@ class AlexaSdkHelper {
         responseBuilder = responseBuilder
                 .withSpeech(responseMessage)
                 .withReprompt(repromptMessage)
-//                .withSimpleCard(Constants.SKILL_TITLE, responseMessage)
                 .withShouldEndSession(false)
+        responseBuilder
+    }
+
+    static ResponseBuilder generateEndSessionResponse(HandlerInput input,
+                                            String responseMessage) {
+        ResponseBuilder responseBuilder = input.responseBuilder
+        responseBuilder = responseBuilder
+                .withSpeech(responseMessage)
+                .withShouldEndSession(true)
         responseBuilder
     }
 
