@@ -7,9 +7,13 @@ import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log
 
 @CompileStatic
+@Log
 class PlayerService extends DynamoDBAccess {
+
+    public static final String CATEGORY_PROGRESS_INITIALIZER = '!'
 
     PlayerService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
@@ -28,11 +32,15 @@ class PlayerService extends DynamoDBAccess {
     static Map<String, Object> updatePlayerSessionAttributes(Map<String, Object> sessionAttributes,
                                                              Player player) {
         sessionAttributes.with {
-            put(SessionAttributes.PLAYER_ID, player.alexaId)
-            put(SessionAttributes.PLAYER_QUIZ_COMPLETION, player.quizCompletion)
+            put(SessionAttributes.PLAYER_ID, player?.alexaId)
+            put(SessionAttributes.PLAYER_QUIZ_COMPLETION, player?.quizCompletion)
         }
 
         sessionAttributes
+    }
+    static boolean isNewPlayer(Player player) {
+        player.quizCompletion.size() <= 1 &&
+                player.quizCompletion[Constants.GENERAL_CATEGORY] == CATEGORY_PROGRESS_INITIALIZER
     }
 
     Player loadPlayer(String alexaId) {
@@ -42,6 +50,19 @@ class PlayerService extends DynamoDBAccess {
             player.alexaId = player.alexaId - DynamoDBConstants.PLAYER_PREFIX
         }
         player
+    }
+
+    Player initializeNewPlayer(String playerId) {
+        log.info("Creating new player entry for ${playerId}.")
+        Player newPlayer = new Player()
+        newPlayer.with {
+            alexaId = playerId
+            quizCompletion = [:]
+            quizCompletion.put(Constants.GENERAL_CATEGORY, CATEGORY_PROGRESS_INITIALIZER)
+        }
+        savePlayer(newPlayer)
+
+        newPlayer
     }
 
     void savePlayer(Player player) {

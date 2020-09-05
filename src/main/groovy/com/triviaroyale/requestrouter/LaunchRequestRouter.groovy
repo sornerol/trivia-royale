@@ -7,6 +7,7 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.LaunchRequest
 import com.amazon.ask.model.Response
 import com.triviaroyale.handler.LaunchRequestHandler
+import com.triviaroyale.util.AlexaSdkHelper
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 
@@ -22,7 +23,8 @@ class LaunchRequestRouter implements RequestHandler {
     @Override
     Optional<Response> handle (HandlerInput input) {
         log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
-        LaunchRequestHandler.handle(input)
+        HandlerInput initializedInput = AlexaSdkHelper.initializeHandlerInput(input)
+        LaunchRequestHandler.handle(initializedInput)
     }
 
 }

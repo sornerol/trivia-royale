@@ -60,14 +60,14 @@ class GameStateService extends DynamoDBAccess {
     static Map<String, Object> updateGameStateSessionAttributes(Map<String, Object> sessionAttributes,
                                                                 GameState gameState) {
         sessionAttributes.with {
-            put(SessionAttributes.PLAYER_ID, gameState.playerId)
-            put(SessionAttributes.SESSION_ID, gameState.sessionId)
-            put(SessionAttributes.GAME_STATE, gameState.status)
-            put(SessionAttributes.QUIZ_ID, gameState.quizId)
-            put(SessionAttributes.QUESTION_LIST, gameState.questions)
-            put(SessionAttributes.QUESTION_NUMBER, gameState.currentQuestionIndex)
-            put(SessionAttributes.PLAYERS_HEALTH, gameState.playersHealth)
-            put(SessionAttributes.PLAYERS_PERFORMANCE, gameState.playersPerformance)
+            put(SessionAttributes.PLAYER_ID, gameState?.playerId)
+            put(SessionAttributes.SESSION_ID, gameState?.sessionId)
+            put(SessionAttributes.GAME_STATE, gameState?.status)
+            put(SessionAttributes.QUIZ_ID, gameState?.quizId)
+            put(SessionAttributes.QUESTION_LIST, gameState?.questions)
+            put(SessionAttributes.QUESTION_NUMBER, gameState?.currentQuestionIndex)
+            put(SessionAttributes.PLAYERS_HEALTH, gameState?.playersHealth)
+            put(SessionAttributes.PLAYERS_PERFORMANCE, gameState?.playersPerformance)
         }
 
         sessionAttributes

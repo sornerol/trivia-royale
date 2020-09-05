@@ -3,8 +3,6 @@ package com.triviaroyale.handler
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
 import com.triviaroyale.service.GameStateService
@@ -17,39 +15,25 @@ import groovy.util.logging.Log
 @Log
 class LaunchRequestHandler {
 
-    static AmazonDynamoDB dynamoDB
-    static PlayerService playerService
-    static GameStateService gameStateService
-
     static Optional<Response> handle(HandlerInput input) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
-        playerService = new PlayerService(dynamoDB)
 
-        String playerId = AlexaSdkHelper.getUserId(input)
-        Player player = playerService.loadPlayer(playerId)
-        String responseMessage = player ? Messages.WELCOME_EXISTING_PLAYER : Messages.WELCOME_NEW_PLAYER
+        Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
+        boolean isNewPlayer = PlayerService.isNewPlayer(player)
+        String responseMessage = isNewPlayer ? Messages.WELCOME_EXISTING_PLAYER : Messages.WELCOME_NEW_PLAYER
         String repromptMessage
 
-        if (!player) {
-            log.info("Creating new player entry for ${playerId}.")
-            player = initializeNewPlayer(playerId)
-        }
-
         sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
-        gameStateService = new GameStateService(dynamoDB)
-        GameState gameState = gameStateService.loadActiveGameState(player.alexaId)
+        GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
 
-        if (gameState) {
+        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.RESUME_EXISTING_GAME) {
             log.info("Found active gameState ${gameState.sessionId}. Asking to resume.")
             sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
-            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.RESUME_EXISTING_GAME)
             responseMessage += " $Messages.ASK_TO_RESUME_GAME"
             repromptMessage = Messages.ASK_TO_RESUME_GAME
         } else {
-            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
             responseMessage += " $Messages.ASK_TO_START_NEW_GAME"
             repromptMessage = Messages.ASK_TO_START_NEW_GAME
         }
@@ -61,18 +45,6 @@ class LaunchRequestHandler {
         log.fine(Constants.EXITING_LOG_MESSAGE)
 
         response.build()
-    }
-
-    static Player initializeNewPlayer(String playerId) {
-        Player newPlayer = new Player()
-        newPlayer.with {
-            alexaId = playerId
-            quizCompletion = [:]
-            quizCompletion.put(Constants.GENERAL_CATEGORY, '!')
-        }
-        playerService.savePlayer(newPlayer)
-
-        newPlayer
     }
 
 }

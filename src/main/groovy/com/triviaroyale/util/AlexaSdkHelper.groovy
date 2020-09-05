@@ -4,22 +4,21 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Slot
 import com.amazon.ask.response.ResponseBuilder
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+import com.triviaroyale.data.GameState
+import com.triviaroyale.data.Player
+import com.triviaroyale.service.GameStateService
+import com.triviaroyale.service.PlayerService
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class AlexaSdkHelper {
 
-    static final String NAME_SLOT_KEY = 'name'
     static final String ANSWER_SLOT_KEY = 'answer'
 
     static String getUserId(HandlerInput input) {
         input.requestEnvelope.context.system.user.userId
-    }
-
-    static String getSlotValue(HandlerInput input, String key) {
-        IntentRequest request = (IntentRequest) input.requestEnvelope.request
-        Map<String, Slot> slots = request.intent.slots
-        slots[key].value
     }
 
     static int getSlotId(HandlerInput input, String key) {
@@ -46,6 +45,33 @@ class AlexaSdkHelper {
                 .withSpeech(responseMessage)
                 .withShouldEndSession(true)
         responseBuilder
+    }
+
+    static HandlerInput initializeHandlerInput(HandlerInput input) {
+        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
+        String playerId = getUserId(input)
+        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
+        if (!sessionAttributes[SessionAttributes.PLAYER_ID]) {
+            PlayerService playerService = new PlayerService(dynamoDB)
+            Player player = playerService.loadPlayer(playerId)
+            player = player ?: playerService.initializeNewPlayer(playerId)
+            sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
+        }
+        if (!sessionAttributes[SessionAttributes.SESSION_ID]) {
+            GameStateService gameStateService = new GameStateService(dynamoDB)
+            GameState gameState = gameStateService.loadActiveGameState(playerId)
+            sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
+        }
+        if (!sessionAttributes[SessionAttributes.APP_STATE]) {
+            AppState initialAppState = sessionAttributes[SessionAttributes.SESSION_ID] ?
+                    AppState.RESUME_EXISTING_GAME : AppState.NEW_GAME
+            sessionAttributes.put(SessionAttributes.APP_STATE, initialAppState)
+        }
+
+        HandlerInput newHandlerInput = input
+        newHandlerInput.attributesManager.sessionAttributes = sessionAttributes
+
+        newHandlerInput
     }
 
 }
