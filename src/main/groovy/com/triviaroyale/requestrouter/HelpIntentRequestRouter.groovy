@@ -22,7 +22,7 @@ class HelpIntentRequestRouter implements RequestHandler {
     @Override
     Optional<Response> handle (HandlerInput input) {
         HandlerInput initializedInput = AlexaSdkHelper.initializeHandlerInput(input)
-        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
+        log.fine('Request envelope: ' + initializedInput.requestEnvelopeJson.toString())
         HelpIntentHandler.handle(initializedInput)
     }
 

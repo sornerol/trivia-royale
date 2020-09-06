@@ -57,6 +57,7 @@ class AlexaSdkHelper {
             PlayerService playerService = new PlayerService(dynamoDB)
             Player player = playerService.loadPlayer(playerId)
             player = player ?: playerService.initializeNewPlayer(playerId)
+            log.fine('New Player Created: ' + player.alexaId)
             sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
         }
         if (!sessionAttributes[SessionAttributes.SESSION_ID]) {
