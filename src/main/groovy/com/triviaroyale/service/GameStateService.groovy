@@ -50,7 +50,7 @@ class GameStateService extends DynamoDBAccess {
             status = sessionAttributes[SessionAttributes.GAME_STATE] as GameStateStatus
             quizId = sessionAttributes[SessionAttributes.QUIZ_ID] as String
             questions = sessionAttributes[SessionAttributes.QUESTION_LIST] as List<String>
-            currentQuestionIndex = sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int
+            currentQuestionIndex = sessionAttributes[SessionAttributes.QUESTION_NUMBER] as Integer
             playersHealth = sessionAttributes[SessionAttributes.PLAYERS_HEALTH] as Map<String, Integer>
             playersPerformance = sessionAttributes[SessionAttributes.PLAYERS_PERFORMANCE] as Map<String, List<Boolean>>
         }
