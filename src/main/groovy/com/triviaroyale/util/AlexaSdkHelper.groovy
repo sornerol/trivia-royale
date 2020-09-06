@@ -57,13 +57,14 @@ class AlexaSdkHelper {
             PlayerService playerService = new PlayerService(dynamoDB)
             Player player = playerService.loadPlayer(playerId)
             player = player ?: playerService.initializeNewPlayer(playerId)
-            log.fine('New Player Created: ' + player.alexaId)
             sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
         }
         if (!sessionAttributes[SessionAttributes.SESSION_ID]) {
             GameStateService gameStateService = new GameStateService(dynamoDB)
             GameState gameState = gameStateService.loadActiveGameState(playerId)
-            sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
+            if (gameState) {
+                sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
+            }
         }
         if (!sessionAttributes[SessionAttributes.APP_STATE]) {
             AppState initialAppState = sessionAttributes[SessionAttributes.SESSION_ID] ?
@@ -71,7 +72,6 @@ class AlexaSdkHelper {
             sessionAttributes.put(SessionAttributes.APP_STATE, initialAppState)
         }
 
-        log.fine(sessionAttributes.toString())
         HandlerInput newHandlerInput = input
         newHandlerInput.attributesManager.sessionAttributes = sessionAttributes
 

@@ -32,15 +32,13 @@ class PlayerService extends DynamoDBAccess {
     static Map<String, Object> updatePlayerSessionAttributes(Map<String, Object> sessionAttributes,
                                                              Player player) {
         sessionAttributes.with {
-            put(SessionAttributes.PLAYER_ID, player.alexaId)
-            put(SessionAttributes.PLAYER_QUIZ_COMPLETION, player.quizCompletion)
+            put(SessionAttributes.PLAYER_ID, player?.alexaId)
+            put(SessionAttributes.PLAYER_QUIZ_COMPLETION, player?.quizCompletion)
         }
 
         sessionAttributes
     }
     static boolean isNewPlayer(Player player) {
-        log.fine("quizCompletionSize = ${player.quizCompletion.size()}.\n" +
-                "generalCategoryCompletion = ${player.quizCompletion[Constants.GENERAL_CATEGORY]}")
         player.quizCompletion.size() <= 1 &&
                 player.quizCompletion[Constants.GENERAL_CATEGORY] == CATEGORY_PROGRESS_INITIALIZER
     }
