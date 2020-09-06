@@ -11,7 +11,9 @@ import com.triviaroyale.data.Player
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log
 
+@Log
 @CompileStatic
 class AlexaSdkHelper {
 
