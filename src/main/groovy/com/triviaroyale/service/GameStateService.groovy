@@ -43,6 +43,10 @@ class GameStateService extends DynamoDBAccess {
     }
 
     static GameState getSessionFromAlexaSessionAttributes(Map<String, Object> sessionAttributes) {
+        if (!sessionAttributes[SessionAttributes.SESSION_ID]) {
+            return null
+        }
+
         GameState session = new GameState()
         session.with {
             playerId = sessionAttributes[SessionAttributes.PLAYER_ID] as String
