@@ -22,8 +22,12 @@ class GetStatusIntentRequestRouter implements RequestHandler {
     }
 
     @Override
-    Optional<Response> handle (HandlerInput input) {
+    Optional<Response> handle(HandlerInput input) {
         log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
+        if (!input.attributesManager.sessionAttributes[SessionAttributes.APP_STATE]) {
+            log.severe('Received intent for uninitialized session. Exiting...')
+            return null
+        }
 
         if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.IN_GAME.toString()))) {
             return GetStatusIntentHandler.getStatus(input)

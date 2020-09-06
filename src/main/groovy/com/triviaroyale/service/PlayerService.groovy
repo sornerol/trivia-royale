@@ -20,6 +20,10 @@ class PlayerService extends DynamoDBAccess {
     }
 
     static Player getPlayerFromSessionAttributes(Map<String, Object> sessionAttributes) {
+        if (!sessionAttributes[SessionAttributes.PLAYER_ID]) {
+            return null
+        }
+
         Player player = new Player()
         player.with {
             alexaId = sessionAttributes[SessionAttributes.PLAYER_ID] as String
@@ -38,6 +42,7 @@ class PlayerService extends DynamoDBAccess {
 
         sessionAttributes
     }
+
     static boolean isNewPlayer(Player player) {
         player.quizCompletion.size() <= 1 &&
                 player.quizCompletion[Constants.GENERAL_CATEGORY] == CATEGORY_PROGRESS_INITIALIZER

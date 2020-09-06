@@ -22,8 +22,8 @@ class LaunchRequestRouter implements RequestHandler {
 
     @Override
     Optional<Response> handle (HandlerInput input) {
+        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
         HandlerInput initializedInput = AlexaSdkHelper.initializeHandlerInput(input)
-        log.fine('Request envelope: ' + initializedInput.requestEnvelopeJson.toString())
         LaunchRequestHandler.handle(initializedInput)
     }
 
