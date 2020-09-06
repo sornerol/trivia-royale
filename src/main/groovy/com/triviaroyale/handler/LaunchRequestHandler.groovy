@@ -22,10 +22,9 @@ class LaunchRequestHandler {
 
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
         boolean isNewPlayer = PlayerService.isNewPlayer(player)
-        String responseMessage = isNewPlayer ? Messages.WELCOME_EXISTING_PLAYER : Messages.WELCOME_NEW_PLAYER
+        String responseMessage = isNewPlayer ? Messages.WELCOME_NEW_PLAYER : Messages.WELCOME_EXISTING_PLAYER
         String repromptMessage
 
-        sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
         GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
 
         if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.RESUME_EXISTING_GAME) {
