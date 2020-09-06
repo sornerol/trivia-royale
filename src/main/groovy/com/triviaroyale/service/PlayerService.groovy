@@ -39,6 +39,8 @@ class PlayerService extends DynamoDBAccess {
         sessionAttributes
     }
     static boolean isNewPlayer(Player player) {
+        log.fine("quizCompletionSize = ${player.quizCompletion.size()}.\n" +
+                "generalCategoryCompletion = ${player.quizCompletion[Constants.GENERAL_CATEGORY]}")
         player.quizCompletion.size() <= 1 &&
                 player.quizCompletion[Constants.GENERAL_CATEGORY] == CATEGORY_PROGRESS_INITIALIZER
     }
