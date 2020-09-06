@@ -41,7 +41,7 @@ class AlexaSdkHelper {
     }
 
     static ResponseBuilder generateEndSessionResponse(HandlerInput input,
-                                            String responseMessage) {
+                                                      String responseMessage) {
         ResponseBuilder responseBuilder = input.responseBuilder
         responseBuilder = responseBuilder
                 .withSpeech(responseMessage)
@@ -71,6 +71,7 @@ class AlexaSdkHelper {
             sessionAttributes.put(SessionAttributes.APP_STATE, initialAppState)
         }
 
+        log.fine(sessionAttributes.toString())
         HandlerInput newHandlerInput = input
         newHandlerInput.attributesManager.sessionAttributes = sessionAttributes
 
