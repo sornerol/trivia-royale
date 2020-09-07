@@ -7,6 +7,8 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.triviaroyale.handler.HelpIntentHandler
 import com.triviaroyale.util.AlexaSdkHelper
+import com.triviaroyale.util.AppState
+import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 
@@ -23,6 +25,9 @@ class HelpIntentRequestRouter implements RequestHandler {
     Optional<Response> handle (HandlerInput input) {
         log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
         HandlerInput initializedInput = AlexaSdkHelper.initializeHandlerInput(input)
+        if (!input.attributesManager.sessionAttributes[SessionAttributes.APP_STATE]) {
+            initializedInput.attributesManager.sessionAttributes.put(SessionAttributes.APP_STATE, AppState.HELP_REQUEST)
+        }
         HelpIntentHandler.handle(initializedInput)
     }
 

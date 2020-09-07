@@ -22,6 +22,8 @@ eliminated. The player with the highest health score at the end of the game is t
     public static final String ASK_TO_RESUME_GAME =
             'You are currently in the middle of a game of Trivia Royale. Would you like to pick up where you left off?'
 
+    public static final String ASK_TO_PLAY_AFTER_HELP = 'Would you like to play Trivia Royale?'
+
     public static final String CONFIRM_START_OVER = 'Are you sure you want to give up and start a new game?'
 
     public static final String STARTING_NEW_GAME = 'Okay. Hold on while I find some opponents. ' +

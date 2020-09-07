@@ -26,7 +26,7 @@ class NoIntentRequestRouter implements RequestHandler {
     }
 
     @Override
-    Optional<Response> handle (HandlerInput input) {
+    Optional<Response> handle(HandlerInput input) {
         log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
         if (!input.attributesManager.sessionAttributes[SessionAttributes.APP_STATE]) {
             log.severe('Received intent for uninitialized session. Exiting...')
@@ -41,6 +41,9 @@ class NoIntentRequestRouter implements RequestHandler {
         }
         if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.START_OVER_REQUEST.toString()))) {
             return RepeatIntentHandler.handle(input)
+        }
+        if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.HELP_REQUEST.toString()))) {
+            return AlexaSdkHelper.endSessionWithoutSpeech(input)
         }
 
         FallbackRequestHandler.handle(input)

@@ -16,13 +16,8 @@ class HelpIntentHandler {
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage = Messages.HELP_MESSAGE
-        switch (sessionAttributes[SessionAttributes.APP_STATE]) {
-            case AppState.NEW_GAME.toString():
-                sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_START_NEW_GAME)
-                break
-            case AppState.RESUME_EXISTING_GAME.toString():
-                sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_RESUME_GAME)
-                break
+        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.HELP_REQUEST.toString()) {
+            sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_PLAY_AFTER_HELP)
         }
         responseMessage += " ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
         String repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
