@@ -19,6 +19,7 @@ class HelpIntentHandler {
         log.fine("AppState = ${sessionAttributes[SessionAttributes.APP_STATE]}")
         if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.HELP_REQUEST.toString()) {
             sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_PLAY_AFTER_HELP)
+            log.fine("LAST_RESPONSE = ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}")
         }
         responseMessage += " ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
         String repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
