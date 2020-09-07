@@ -1,6 +1,5 @@
 package com.triviaroyale.util
 
-
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Response
