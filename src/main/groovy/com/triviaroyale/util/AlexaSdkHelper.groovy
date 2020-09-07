@@ -1,5 +1,7 @@
 package com.triviaroyale.util
 
+import static com.amazon.ask.request.Predicates.intentName
+
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Response
@@ -75,6 +77,9 @@ class AlexaSdkHelper {
         if (!sessionAttributes[SessionAttributes.APP_STATE]) {
             AppState initialAppState = sessionAttributes[SessionAttributes.SESSION_ID] ?
                     AppState.RESUME_EXISTING_GAME : AppState.NEW_GAME
+            if (input.matches(intentName('AMAZON.HelpIntent'))) {
+                initialAppState = AppState.HELP_REQUEST
+            }
             sessionAttributes.put(SessionAttributes.APP_STATE, initialAppState)
         }
 
