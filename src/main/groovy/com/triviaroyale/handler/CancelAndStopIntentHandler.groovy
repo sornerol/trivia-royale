@@ -23,7 +23,7 @@ class CancelAndStopIntentHandler {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.IN_GAME.toString()) {
+        if (sessionAttributes[SessionAttributes.APP_STATE] as AppState == AppState.IN_GAME) {
             GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
             AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
             GameStateService gameStateService = new GameStateService(dynamoDB)

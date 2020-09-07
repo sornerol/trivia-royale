@@ -35,8 +35,8 @@ class NewGameIntentHandler {
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
         GameStateService gameStateService = new GameStateService(dynamoDB)
 
-        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.START_OVER_REQUEST.toString() ||
-                sessionAttributes[SessionAttributes.APP_STATE] == AppState.RESUME_EXISTING_GAME.toString()) {
+        if (sessionAttributes[SessionAttributes.APP_STATE] as AppState == AppState.START_OVER_REQUEST ||
+                sessionAttributes[SessionAttributes.APP_STATE] as AppState == AppState.RESUME_EXISTING_GAME) {
             abortExistingGame(sessionAttributes, gameStateService)
             PlayerService playerService = new PlayerService(dynamoDB)
             playerService.updatePlayerQuizCompletion(sessionAttributes)

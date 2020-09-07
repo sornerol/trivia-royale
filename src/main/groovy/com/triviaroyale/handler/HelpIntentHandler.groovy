@@ -16,10 +16,8 @@ class HelpIntentHandler {
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage = Messages.HELP_MESSAGE
-        log.fine("AppState = ${sessionAttributes[SessionAttributes.APP_STATE]}")
-        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.HELP_REQUEST.toString()) {
+        if (sessionAttributes[SessionAttributes.APP_STATE] as AppState == AppState.HELP_REQUEST) {
             sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_PLAY_AFTER_HELP)
-            log.fine("LAST_RESPONSE = ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}")
         }
         responseMessage += " ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
         String repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]

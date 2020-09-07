@@ -16,7 +16,7 @@ class FallbackRequestHandler {
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String responseMessage = Messages.CANT_UNDERSTAND
-        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.IN_GAME.toString()) {
+        if (sessionAttributes[SessionAttributes.APP_STATE] as AppState == AppState.IN_GAME) {
             responseMessage += " $Messages.HOW_TO_ANSWER"
         }
         responseMessage += " ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"

@@ -75,10 +75,10 @@ class AlexaSdkHelper {
             }
         }
         if (!sessionAttributes[SessionAttributes.APP_STATE]) {
-            AppState initialAppState = sessionAttributes[SessionAttributes.SESSION_ID] ?
-                    AppState.RESUME_EXISTING_GAME : AppState.NEW_GAME
+            String initialAppState = sessionAttributes[SessionAttributes.SESSION_ID] ?
+                    AppState.RESUME_EXISTING_GAME.toString() : AppState.NEW_GAME.toString()
             if (input.matches(intentName('AMAZON.HelpIntent'))) {
-                initialAppState = AppState.HELP_REQUEST
+                initialAppState = AppState.HELP_REQUEST.toString()
             }
             sessionAttributes.put(SessionAttributes.APP_STATE, initialAppState)
         }
