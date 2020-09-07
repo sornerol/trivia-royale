@@ -10,6 +10,7 @@ import com.triviaroyale.handler.CancelAndStopIntentHandler
 import com.triviaroyale.handler.FallbackRequestHandler
 import com.triviaroyale.handler.NewGameIntentHandler
 import com.triviaroyale.handler.RepeatIntentHandler
+import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
@@ -29,7 +30,7 @@ class NoIntentRequestRouter implements RequestHandler {
         log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
         if (!input.attributesManager.sessionAttributes[SessionAttributes.APP_STATE]) {
             log.severe('Received intent for uninitialized session. Exiting...')
-            return null
+            return AlexaSdkHelper.endSessionWithoutSpeech(input)
         }
 
         if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.NEW_GAME.toString()))) {

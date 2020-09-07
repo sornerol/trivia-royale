@@ -2,6 +2,7 @@ package com.triviaroyale.util
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.IntentRequest
+import com.amazon.ask.model.Response
 import com.amazon.ask.model.Slot
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
@@ -47,6 +48,11 @@ class AlexaSdkHelper {
                 .withSpeech(responseMessage)
                 .withShouldEndSession(true)
         responseBuilder
+    }
+
+    static Optional<Response> endSessionWithoutSpeech(HandlerInput input) {
+        ResponseBuilder responseBuilder = input.responseBuilder
+        responseBuilder.withShouldEndSession(true).build()
     }
 
     static HandlerInput initializeHandlerInput(HandlerInput input) {
