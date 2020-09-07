@@ -27,12 +27,14 @@ class LaunchRequestHandler {
 
         GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
 
-        if (sessionAttributes[SessionAttributes.APP_STATE] == AppState.RESUME_EXISTING_GAME) {
+        if (sessionAttributes[SessionAttributes.SESSION_ID]) {
             log.info("Found active gameState ${gameState.sessionId}. Asking to resume.")
             sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
+            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.RESUME_EXISTING_GAME)
             responseMessage += " $Messages.ASK_TO_RESUME_GAME"
             repromptMessage = Messages.ASK_TO_RESUME_GAME
         } else {
+            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
             responseMessage += " $Messages.ASK_TO_START_NEW_GAME"
             repromptMessage = Messages.ASK_TO_START_NEW_GAME
         }
