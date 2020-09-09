@@ -54,6 +54,9 @@ task copyNativeDeps(type: Copy) {
 }
 
 task buildZip(type: Zip) {
+    dependsOn codenarcMain
+    dependsOn codenarcTest
+
     from compileGroovy
     from processResources
     into('lib') {

@@ -1,29 +1,12 @@
 stages:
-  - test
   - build
   - deploy
-
-codenarc and tests:
-  stage: test
-  script:
-    - gradle --stop
-    - gradle clean check
-
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"'
-      when: always
-
-  artifacts:
-    paths:
-      - build/reports/*
-    expire_in: 1 week
-    when: always
 
 build:
   stage: build
   script:
     - echo "*** $(date +%T) Building Trivia Royale ***"
-    - gradle clean buildZip
+    - gradle clean test buildZip
 
     - echo "*** $(date +%T) Uploading deployment package to S3 ***"
     - pipeline-scripts/upload.sh
@@ -36,6 +19,7 @@ build:
 
   artifacts:
     paths:
+      - build/reports/*
       - build/distributions/*.zip
     expire_in: 1 week
 
