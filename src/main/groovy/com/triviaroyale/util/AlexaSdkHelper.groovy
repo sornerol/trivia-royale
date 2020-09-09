@@ -4,11 +4,13 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Response
 import com.amazon.ask.model.Slot
+import com.amazon.ask.model.slu.entityresolution.StatusCode
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
+import com.triviaroyale.handler.exception.InvalidSlotException
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
 import groovy.transform.CompileStatic
@@ -24,9 +26,12 @@ class AlexaSdkHelper {
         input.requestEnvelope.context.system.user.userId
     }
 
-    static int getSlotId(HandlerInput input, String key) {
+    static int getSlotId(HandlerInput input, String key) throws InvalidSlotException {
         IntentRequest request = (IntentRequest) input.requestEnvelope.request
         Map<String, Slot> slots = request.intent.slots
+        if (slots[key].resolutions.resolutionsPerAuthority[0].status.code != StatusCode.ER_SUCCESS_MATCH) {
+            throw new InvalidSlotException('Could not match given answer to a slot ID.')
+        }
         slots[key].resolutions.resolutionsPerAuthority[0].values[0].value.id.toInteger()
     }
 

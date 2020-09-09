@@ -6,6 +6,7 @@ import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.GameState
+import com.triviaroyale.handler.exception.InvalidSlotException
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.service.QuizService
@@ -22,7 +23,12 @@ class AnswerQuestionIntentHandler {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        int playerAnswer = AlexaSdkHelper.getSlotId(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
+        int playerAnswer
+        try {
+            playerAnswer = AlexaSdkHelper.getSlotId(input, AlexaSdkHelper.ANSWER_SLOT_KEY)
+        } catch (InvalidSlotException ignored) {
+            return FallbackRequestHandler.handle(input)
+        }
         GameState currentGameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
         AnswerValidationBean answerValidation = GameStateService.processPlayersAnswer(currentGameState,
                 sessionAttributes[SessionAttributes.CORRECT_ANSWER_INDEX] as int, playerAnswer)
