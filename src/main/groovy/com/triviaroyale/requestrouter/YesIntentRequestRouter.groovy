@@ -27,7 +27,7 @@ class YesIntentRequestRouter implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
+        log.info('Request envelope: ' + input.requestEnvelopeJson.toString())
         if (!input.attributesManager.sessionAttributes[SessionAttributes.APP_STATE]) {
             log.severe('Received intent for uninitialized session. Exiting...')
             return AlexaSdkHelper.endSessionWithoutSpeech(input)

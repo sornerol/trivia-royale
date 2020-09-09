@@ -27,7 +27,7 @@ class StartOverIntentRequestRouter implements RequestHandler {
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        log.fine('Request envelope: ' + input.requestEnvelopeJson.toString())
+        log.info('Request envelope: ' + input.requestEnvelopeJson.toString())
         if (!input.attributesManager.sessionAttributes[SessionAttributes.APP_STATE]) {
             HandlerInput initializedInput = AlexaSdkHelper.initializeHandlerInput(input)
             return LaunchRequestHandler.handle(initializedInput)
