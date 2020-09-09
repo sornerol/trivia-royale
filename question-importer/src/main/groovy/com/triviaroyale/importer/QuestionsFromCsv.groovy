@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat
 class QuestionsFromCsv {
 
     public static final String OUTPUT_DIRECTORY_BASE = 'output'
+    public static final String DEFAULT_CATEGORY = 'UNCATEGORIZED'
+    public static final int MAX_UUID_GENERATION_ATTEMPTS = 100
 
     static void main(String[] args) {
         if (args.length < 1) {
@@ -27,12 +29,23 @@ class QuestionsFromCsv {
                 .parse()
 
         importedQuestions.each { importedQuestion ->
+            if (!importedQuestion.id) {
+                int uuidGenerationAttempts = 0
+                while (uuidGenerationAttempts < MAX_UUID_GENERATION_ATTEMPTS) {
+                    String uuid = UUID.randomUUID()
+                    boolean isUuidUnique = !importedQuestions.any {it.id == uuid}
+                    if (isUuidUnique) {
+                        importedQuestion.id = uuid
+                        break
+                    }
+                }
+            }
+            if (!importedQuestion.category) {
+                importedQuestion.category = DEFAULT_CATEGORY
+            }
             String outputDirectoryPath = "${OUTPUT_DIRECTORY_BASE}_${exportTime}/${importedQuestion.category}"
             File outputDirectory = new File(outputDirectoryPath)
             outputDirectory.mkdirs()
-            if (!importedQuestion.id) {
-                importedQuestion.id = UUID.randomUUID()
-            }
             String newFilename = "$outputDirectoryPath/${importedQuestion.id}.json"
             File outputFile = new File(newFilename)
             outputFile.write(importedQuestion.toQuestion().toJson())
