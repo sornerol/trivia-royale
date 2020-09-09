@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic
 @DynamoDBTable(tableName = 'TriviaRoyale')
 class Quiz {
 
-    public static final int STARTING_POOL_SIZE = 50 //TODO - Change to smaller number for prod
+    public static final int STARTING_POOL_SIZE = 15
     public static final int MAXIMUM_POOL_SIZE = 50
     @DynamoDBHashKey(attributeName = DynamoDBConstants.HASH_KEY)
     String category
