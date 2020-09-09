@@ -140,10 +140,10 @@ class QuizService extends DynamoDBAccess {
         for (int i = 0; i < possibleAnswers; i++) {
             String formattedAnswer
             if (i == correctAnswerIndex) {
-                formattedAnswer = "<emphasis>${answerLetter}.</emphasis> " +
+                formattedAnswer = "${answerLetter}. <break time=\"300ms\"/>" +
                         "$question.correctAnswer\n<break time=\"500ms\"/>"
             } else {
-                formattedAnswer = "<emphasis>${answerLetter}.</emphasis> " +
+                formattedAnswer = "${answerLetter}. <break time=\"300ms\"/>" +
                         "${question.otherAnswers.pop()}\n<break time=\"500ms\"/>"
             }
             answers[i] = formattedAnswer
