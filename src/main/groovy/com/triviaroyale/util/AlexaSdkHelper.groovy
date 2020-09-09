@@ -30,8 +30,8 @@ class AlexaSdkHelper {
         IntentRequest request = (IntentRequest) input.requestEnvelope.request
         Map<String, Slot> slots = request.intent.slots
         if (slots[key].resolutions.resolutionsPerAuthority[0].status.code != StatusCode.ER_SUCCESS_MATCH) {
-            String message = "Could not get slot ID. " +
-                    "(Status code: ${slots[key].resolutions.resolutionsPerAuthority[0].status.code}"
+            String message = 'Could not get slot ID. '
+            message += "(Status code: ${slots[key].resolutions.resolutionsPerAuthority[0].status.code}"
             log.severe(message)
             throw new InvalidSlotException(message)
         }

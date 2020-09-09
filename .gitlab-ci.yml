@@ -5,8 +5,9 @@ stages:
 build:
   stage: build
   script:
+    - gradle --stop
     - echo "*** $(date +%T) Building Trivia Royale ***"
-    - gradle clean test buildZip
+    - gradle clean buildZip
 
     - echo "*** $(date +%T) Uploading deployment package to S3 ***"
     - pipeline-scripts/upload.sh
