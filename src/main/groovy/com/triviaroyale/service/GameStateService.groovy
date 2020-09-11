@@ -209,7 +209,7 @@ class GameStateService extends DynamoDBAccess {
         }
         log.info("Player's health after adjustment: ${gameState.playersHealth.toString()}")
         gameState.playersHealth = gameState.playersHealth.findAll {
-            it.value >= 0
+            it.value > 0
         }
 
         log.info("Player's health after eliminations: ${gameState.playersHealth.toString()}")
