@@ -2,21 +2,21 @@ stages:
   - build
   - deploy
 
+before_script:
+  - if [ "$CI_COMMIT_REF_NAME" = "master" ] ; then ENVIRONMENT=PROD ; else ENVIRONMENT=DEV ; fi
+
 build:
   stage: build
   script:
+    - pipeline-scripts/setDynamoDbTableName.sh $ENVIRONMENT
     - gradle --stop
     - echo "*** $(date +%T) Building Trivia Royale ***"
     - gradle clean buildZip
 
     - echo "*** $(date +%T) Uploading deployment package to S3 ***"
-    - pipeline-scripts/upload.sh
+    - pipeline-scripts/upload.sh $ENVIRONMENT
 
     - echo "*** $(date +%T) Build successful! ***"
-
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"'
-      when: on_success
 
   artifacts:
     paths:
@@ -28,10 +28,9 @@ deploy:
   stage: deploy
   script:
     - echo "*** $(date +%T) Deploying Lambda Function ***"
-    - pipeline-scripts/deploy.sh
+    - pipeline-scripts/deploy.sh $ENVIRONMENT
 
     - echo "*** $(date +%T) Deployment successful! ***"
 
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"'
-      when: manual
+  when: manual
+
