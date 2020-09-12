@@ -1,4 +1,5 @@
-PACKAGE_NAME=trivia-royale.zip
+PACKAGE_NAME_ORIG=trivia-royale.zip
+PACKAGE_NAME=trivia-royale-PROD.zip
 DEPLOYMENT_PACKAGE_PATH=build/distributions
 S3_DEPLOY_BUCKET=trivaroyale-deploy
 

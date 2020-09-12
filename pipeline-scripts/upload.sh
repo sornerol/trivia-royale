@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(dirname "$0")/variables.sh
+ENVIRONMENT=$1
+source $(dirname "$0")/variables-$ENVIRONMENT.sh
 
-aws s3 rm s3://$S3_DEPLOY_BUCKET/*.zip
-aws s3 cp $DEPLOYMENT_PACKAGE_PATH/$PACKAGE_NAME s3://$S3_DEPLOY_BUCKET/$PACKAGE_NAME
+aws s3 cp $DEPLOYMENT_PACKAGE_PATH/$PACKAGE_NAME_ORIG s3://$S3_DEPLOY_BUCKET/$PACKAGE_NAME
