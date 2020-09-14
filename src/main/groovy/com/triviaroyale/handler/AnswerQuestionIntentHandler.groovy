@@ -29,11 +29,11 @@ class AnswerQuestionIntentHandler {
         } catch (InvalidSlotException ignored) {
             return FallbackRequestHandler.handle(input)
         }
-        GameState currentGameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
-        AnswerValidationBean answerValidation = GameStateService.processPlayersAnswer(currentGameState,
-                sessionAttributes[SessionAttributes.CORRECT_ANSWER_INDEX] as int, playerAnswer)
 
-        currentGameState = answerValidation.updatedGameState
+        AnswerValidationBean answerValidation = GameStateService.processPlayersAnswer(sessionAttributes,
+                playerAnswer)
+
+        GameState currentGameState = answerValidation.updatedGameState
         sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, currentGameState)
         sessionAttributes[SessionAttributes.APP_STATE] = answerValidation.updatedAppState
         String responseMessage = answerValidation.validationMessage

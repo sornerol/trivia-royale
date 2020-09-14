@@ -1,6 +1,7 @@
 package com.triviaroyale.service
 
 import com.amazonaws.services.s3.AmazonS3
+import com.triviaroyale.data.Question
 import com.triviaroyale.util.Constants
 import groovy.transform.CompileStatic
 
@@ -22,11 +23,14 @@ class QuestionService {
         List<String> questionPool = fetchQuestionPoolForCategory(category)
         Collections.shuffle(questionPool)
         for (int i = 0; i < numberOfQuestions; i++) {
-            String nextQuestionKey = questionPool.pop()
-            String nextQuestionJson = s3.getObjectAsString(bucket, nextQuestionKey)
-            questionList.add(nextQuestionJson)
+            String questionKey = questionPool.pop()
+            questionList.add(questionKey)
         }
         questionList
+    }
+
+    Question fetchQuestion(String questionKey) {
+        Question.fromJson(s3.getObjectAsString(bucket, questionKey))
     }
 
     protected List<String> fetchQuestionPoolForCategory(String category) {

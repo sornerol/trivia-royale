@@ -9,15 +9,12 @@ import com.amazon.ask.model.services.directive.SpeakDirective
 import com.amazon.ask.response.ResponseBuilder
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
-import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
 import com.triviaroyale.data.Quiz
 import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
-import com.triviaroyale.service.QuestionService
 import com.triviaroyale.service.QuizService
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
@@ -47,15 +44,7 @@ class NewGameIntentHandler {
 
         QuizService quizService = new QuizService(dynamoDB)
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
-        Quiz quiz = quizService.loadNextAvailableQuizForPlayer(player)
-
-        if (quiz == null) {
-            AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient()
-            QuestionService questionService = new QuestionService(s3, Constants.S3_QUESTION_BUCKET)
-            List<String> newQuizQuestions =
-                    questionService.fetchRandomQuestionsForCategory(Constants.NUMBER_OF_QUESTIONS)
-            quiz = quizService.generateNewQuiz(newQuizQuestions, player.alexaId)
-        }
+        Quiz quiz = quizService.loadNextAvailableQuizForPlayer(player) ?: quizService.generateNewQuiz(player.alexaId)
 
         GameState newGame = initializeGameState(quiz, player)
 
@@ -86,7 +75,7 @@ class NewGameIntentHandler {
             sessionId = System.currentTimeMillis().toString()
             status = GameStateStatus.ACTIVE
             quizId = QuizService.getQuizIdAsString(quiz)
-            questions = quiz.questionJson
+            questions = quiz.questions
             currentQuestionIndex = 0
             playersHealth = [:]
             playersPerformance = [:]

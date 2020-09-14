@@ -3,6 +3,7 @@ package com.triviaroyale.service
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
 import com.triviaroyale.data.Question
@@ -50,14 +51,18 @@ class QuizService extends DynamoDBAccess {
 
     static Map<String, Object> updateSessionAttributesWithCurrentQuestion(Map<String, Object> sessionAttributes) {
         List<String> questionList = sessionAttributes[SessionAttributes.QUESTION_LIST] as List<String>
-        Question currentQuestion = Question.fromJson(
-                questionList[sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int])
+        QuestionService questionService =
+                new QuestionService(AmazonS3ClientBuilder.defaultClient(), Constants.S3_QUESTION_BUCKET)
+        int currentQuestionIndex = sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int
+
+        Question currentQuestion = questionService.fetchQuestion(questionList[currentQuestionIndex])
         SecureRandom random = new SecureRandom()
         int correctAnswerIndex = random.nextInt(currentQuestion.otherAnswers.size() + 1)
         String questionText = generateQuestionText(currentQuestion, correctAnswerIndex)
 
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, questionText)
         sessionAttributes.put(SessionAttributes.CORRECT_ANSWER_INDEX, correctAnswerIndex)
+        sessionAttributes.put(SessionAttributes.CORRECT_ANSWER_TEXT, currentQuestion.correctAnswer)
 
         sessionAttributes
     }
@@ -84,12 +89,14 @@ class QuizService extends DynamoDBAccess {
         quiz
     }
 
-    Quiz generateNewQuiz(List<String> questions, String playerId, String quizCategory = Constants.GENERAL_CATEGORY) {
+    Quiz generateNewQuiz(String playerId, String quizCategory = Constants.GENERAL_CATEGORY) {
         Quiz quiz = new Quiz()
+        QuestionService questionService =
+                new QuestionService(AmazonS3ClientBuilder.defaultClient(), Constants.S3_QUESTION_BUCKET)
         quiz.with {
             category = "${DynamoDBConstants.QUIZ_PREFIX}${quizCategory}"
             uniqueId = "${System.currentTimeMillis().toString()}#${playerId}"
-            questionJson = questions
+            questions = questionService.fetchRandomQuestionsForCategory(Constants.NUMBER_OF_QUESTIONS)
         }
         quiz.playerPool = [:]
         for (int i = 0; i < Quiz.STARTING_POOL_SIZE; i++) {

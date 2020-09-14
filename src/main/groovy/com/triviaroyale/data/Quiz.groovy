@@ -5,7 +5,7 @@ import com.triviaroyale.data.util.DynamoDBConstants
 import groovy.transform.CompileStatic
 
 @CompileStatic
-@DynamoDBTable(tableName = 'TriviaRoyale')
+@DynamoDBTable(tableName = DynamoDBConstants.TABLE_NAME)
 class Quiz {
 
     public static final int STARTING_POOL_SIZE = 15
@@ -20,6 +20,6 @@ class Quiz {
     Map<String, List<Boolean>> playerPool
 
     @DynamoDBAttribute
-    List<String> questionJson
+    List<String> questions
 
 }
