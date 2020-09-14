@@ -4,7 +4,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.triviaroyale.data.GameState
-import com.triviaroyale.data.Question
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.service.bean.AnswerValidationBean
@@ -26,16 +25,16 @@ class GameStateService extends DynamoDBAccess {
     public static final boolean INCORRECT = false
 
     public static final Map<Integer, String> PLACE = [
-            1:'first',
-            2:'second',
-            3:'third',
-            4:'fourth',
-            5:'fifth',
-            6:'sixth',
-            7:'seventh',
-            8:'eighth',
-            9:'ninth',
-            10:'tenth',
+            1 : 'first',
+            2 : 'second',
+            3 : 'third',
+            4 : 'fourth',
+            5 : 'fifth',
+            6 : 'sixth',
+            7 : 'seventh',
+            8 : 'eighth',
+            9 : 'ninth',
+            10: 'tenth',
     ]
 
     GameStateService(AmazonDynamoDB dynamoDB) {
@@ -89,24 +88,24 @@ class GameStateService extends DynamoDBAccess {
         gameState
     }
 
-    static AnswerValidationBean processPlayersAnswer(GameState gameState,
-                                                     int correctAnswerIndex,
+    static AnswerValidationBean processPlayersAnswer(Map<String, Object> sessionAttributes,
                                                      int playersAnswer) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
+        int correctAnswerIndex = sessionAttributes[SessionAttributes.CORRECT_ANSWER_INDEX] as int
         log.info("Player's answer: $playersAnswer. Correct answer: $correctAnswerIndex")
-        Question currentQuestion = Question.fromJson(gameState.questions[gameState.currentQuestionIndex])
         Boolean isPlayerCorrect = (playersAnswer == correctAnswerIndex)
-        GameState newGameState = gameState.clone() as GameState
-        newGameState = updatePlayersHealthAfterResponse(newGameState, isPlayerCorrect)
+        GameState oldGameState = getSessionFromAlexaSessionAttributes(sessionAttributes)
+        GameState newGameState = updatePlayersHealthAfterResponse(sessionAttributes, isPlayerCorrect)
 
         AnswerValidationBean validation = new AnswerValidationBean()
         validation.updatedAppState = AppState.IN_GAME
         validation.validationMessage = isPlayerCorrect ? 'Correct!' :
-               "Sorry, the correct answer was $currentQuestion.correctAnswer.<break time=\"500ms\"/>"
+                'Sorry, the correct answer was ' +
+                        "${sessionAttributes[SessionAttributes.CORRECT_ANSWER_TEXT]}. <break time=\"500ms\"/>"
 
         int playersWithRightAnswer = numberOfPlayersWithAnswerType(newGameState, CORRECT)
         validation.validationMessage += " $playersWithRightAnswer out of" +
-                " ${gameState.playersHealth.size()} players got that question right."
+                " ${oldGameState.playersHealth.size()} players got that question right."
 
         newGameState.currentQuestionIndex++
         if (!newGameState.playersHealth.containsKey(newGameState.playerId)) {
@@ -129,8 +128,7 @@ class GameStateService extends DynamoDBAccess {
             validation.updatedAppState = AppState.NEW_GAME
             validation.validationMessage +=
                     " Congratulations! You're the last player remaining."
-        }
-        else {
+        } else {
             validation.validationMessage += getPlayerStatusMessage(newGameState)
         }
 
@@ -180,8 +178,10 @@ class GameStateService extends DynamoDBAccess {
         log.fine(Constants.EXITING_LOG_MESSAGE)
     }
 
-    protected static GameState updatePlayersHealthAfterResponse(GameState gameState, Boolean isPlayerCorrect)
+    protected static GameState updatePlayersHealthAfterResponse(Map<String, Object> sessionAttributes,
+                                                                Boolean isPlayerCorrect)
             throws IllegalStateException {
+        GameState gameState = getSessionFromAlexaSessionAttributes(sessionAttributes)
         if (!gameState.playersPerformance.containsKey(gameState.playerId)) {
             if (gameState.currentQuestionIndex != 0) {
                 throw new IllegalStateException("GameState is missing player's performance history.")

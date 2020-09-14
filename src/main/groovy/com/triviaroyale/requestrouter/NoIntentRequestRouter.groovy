@@ -9,7 +9,7 @@ import com.amazon.ask.model.Response
 import com.triviaroyale.handler.CancelAndStopIntentHandler
 import com.triviaroyale.handler.FallbackRequestHandler
 import com.triviaroyale.handler.NewGameIntentHandler
-import com.triviaroyale.handler.RepeatIntentHandler
+import com.triviaroyale.handler.ResumeGameIntentHandler
 import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.SessionAttributes
@@ -40,7 +40,7 @@ class NoIntentRequestRouter implements RequestHandler {
             return NewGameIntentHandler.handle(input)
         }
         if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.START_OVER_REQUEST.toString()))) {
-            return RepeatIntentHandler.handle(input)
+            return ResumeGameIntentHandler.handle(input)
         }
         if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.HELP_REQUEST.toString()))) {
             return AlexaSdkHelper.endSessionWithoutSpeech(input)
