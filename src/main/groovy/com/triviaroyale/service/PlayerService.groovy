@@ -76,6 +76,17 @@ class PlayerService extends DynamoDBAccess {
         mapper.save(savedPlayer)
     }
 
+    Player setIspSessionId(Player player, String sessionId) {
+        player.ispSessionId = sessionId
+        savePlayer(player)
+        log.info("Set ispSessionId for player $player.alexaId to $sessionId.")
+        player
+    }
+
+    Player clearIspSessionId(Player player) {
+        setIspSessionId(player, null)
+    }
+
     Map<String, Object> updatePlayerQuizCompletion(Map<String, Object> sessionAttributes) {
         Player player = getPlayerFromSessionAttributes(sessionAttributes)
 

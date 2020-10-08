@@ -63,19 +63,25 @@ class AlexaSdkHelper {
         responseBuilder.withShouldEndSession(true).build()
     }
 
-    static HandlerInput initializeHandlerInput(HandlerInput input) {
+    static HandlerInput initializeHandlerInput(HandlerInput input, boolean loadIspSession = false) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         String playerId = getUserId(input)
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
+        PlayerService playerService = new PlayerService(dynamoDB)
+        GameStateService gameStateService = new GameStateService(dynamoDB)
+        Player player = playerService.loadPlayer(playerId)
+        GameState gameState
+
         if (!sessionAttributes[SessionAttributes.PLAYER_ID]) {
-            PlayerService playerService = new PlayerService(dynamoDB)
-            Player player = playerService.loadPlayer(playerId)
             player = player ?: playerService.initializeNewPlayer(playerId)
             sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, player)
         }
         if (!sessionAttributes[SessionAttributes.SESSION_ID]) {
-            GameStateService gameStateService = new GameStateService(dynamoDB)
-            GameState gameState = gameStateService.loadActiveGameState(playerId)
+            if (loadIspSession) {
+                gameState = gameStateService.loadGameStateById(player.alexaId, player.ispSessionId)
+            } else {
+                gameState = gameStateService.loadActiveGameState(playerId)
+            }
             if (gameState) {
                 sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
             }
@@ -85,6 +91,16 @@ class AlexaSdkHelper {
         newHandlerInput.attributesManager.sessionAttributes = sessionAttributes
 
         newHandlerInput
+    }
+
+    static void saveCurrentSession(Map<String, Object> sessionAttributes) {
+        GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
+        if (!gameState) {
+            return
+        }
+        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
+        GameStateService gameStateService = new GameStateService(dynamoDB)
+        gameStateService.saveGameState(gameState)
     }
 
 }

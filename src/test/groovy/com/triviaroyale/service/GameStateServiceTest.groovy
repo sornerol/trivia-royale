@@ -108,7 +108,6 @@ class GameStateServiceTest extends Specification {
         testGameStateRetrieved.sessionId == rangeKey
         testGameStateRetrieved.playersHealth.containsKey('112234')
         testGameStateRetrieved.playersPerformance['112234'] == [false, false, false, false, false]
-
     }
 
 }

@@ -21,6 +21,9 @@ class Player implements Cloneable {
     @DynamoDBAttribute(attributeName = 'quizCompletion')
     Map<String, String> quizCompletion
 
+    @DynamoDBAttribute
+    String ispSessionId
+
     @Override
     Object clone() throws CloneNotSupportedException {
         (Player)super.clone()

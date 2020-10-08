@@ -1,27 +1,26 @@
 package com.triviaroyale.requestrouter
 
-import static com.amazon.ask.request.Predicates.requestType
+import static com.amazon.ask.request.Predicates.intentName
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
-import com.amazon.ask.model.LaunchRequest
 import com.amazon.ask.model.Response
-import com.triviaroyale.handler.LaunchRequestHandler
+import com.triviaroyale.handler.WhatCanIBuyIntentHandler
 import com.triviaroyale.util.AlexaSdkHelper
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class LaunchRequestRouter implements RequestHandler {
+class WhatCanIBuyIntentRequestRouter implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(requestType(LaunchRequest))
+        input.matches(intentName('WhatCanIBuyIntent'))
     }
 
     @Override
-    Optional<Response> handle (HandlerInput input) {
+    Optional<Response> handle(HandlerInput input) {
         HandlerInput initializedInput = AlexaSdkHelper.initializeHandlerInput(input)
-        LaunchRequestHandler.handle(initializedInput)
+        WhatCanIBuyIntentHandler.handle(initializedInput)
     }
 
 }

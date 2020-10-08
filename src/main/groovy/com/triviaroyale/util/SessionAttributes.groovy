@@ -17,6 +17,7 @@ class SessionAttributes {
     public static final String LAST_RESPONSE = 'lastResponse'
     public static final String PLAYERS_HEALTH = 'playersHealth'
     public static final String PLAYERS_PERFORMANCE = 'playersPerformance'
+    public static final String SECOND_CHANCE_USED = 'secondChanceUsed'
 
     //Quiz information
     public static final String QUESTION_LIST = 'questionList'

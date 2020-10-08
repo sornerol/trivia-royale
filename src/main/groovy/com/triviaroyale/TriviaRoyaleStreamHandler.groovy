@@ -3,6 +3,7 @@ package com.triviaroyale
 import com.amazon.ask.Skill
 import com.amazon.ask.SkillStreamHandler
 import com.amazon.ask.Skills
+import com.triviaroyale.interceptor.TriviaRoyaleRequestInterceptor
 import com.triviaroyale.requestrouter.*
 import groovy.transform.CompileStatic
 
@@ -25,8 +26,11 @@ class TriviaRoyaleStreamHandler extends SkillStreamHandler {
                         new SessionEndedRequestRouter(),
                         new StartOverIntentRequestRouter(),
                         new YesIntentRequestRouter(),
-                        new FallbackIntentRequestRouter()
-                )
+                        new BuyResponseRequestRouter(),
+                        new WhatCanIBuyIntentRequestRouter(),
+                        new RefundSecondChanceIntentRequestRouter(),
+                        new FallbackIntentRequestRouter())
+                .addRequestInterceptor(new TriviaRoyaleRequestInterceptor())
                 .build()
     }
 

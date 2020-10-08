@@ -15,7 +15,7 @@ import groovy.util.logging.Log
 @Log
 class ResumeGameIntentHandler {
 
-    static Optional<Response> handle(HandlerInput input) {
+    static Optional<Response> handle(HandlerInput input, String preText = null) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
@@ -25,6 +25,9 @@ class ResumeGameIntentHandler {
 
         String responseText = "Question ${(sessionAttributes[SessionAttributes.QUESTION_NUMBER] as int) + 1}. " +
                 "${sessionAttributes[SessionAttributes.LAST_RESPONSE] as String}"
+        if (preText) {
+            responseText = "$preText $responseText"
+        }
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseText, repropmptText)
         log.fine(Constants.EXITING_LOG_MESSAGE)
