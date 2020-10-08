@@ -56,8 +56,12 @@ class NewGameIntentHandler {
         gameStateService.saveGameState(newGame)
 
         sessionAttributes[SessionAttributes.APP_STATE] = AppState.IN_GAME
+        PlayerService playerService = new PlayerService(dynamoDB)
+
         sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, newGame)
         sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
+        sessionAttributes = playerService.updatePlayerQuizCompletion(sessionAttributes)
+
         input.attributesManager.sessionAttributes = sessionAttributes
 
         String responseText = 'Question 1. ' + sessionAttributes[SessionAttributes.LAST_RESPONSE] as String

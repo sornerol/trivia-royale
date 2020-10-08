@@ -39,4 +39,22 @@ eliminated. The player with the highest health score at the end of the game is t
             '''Thank you for playing Trivia Royale. If you enjoyed playing, would you mind leaving a review in the
 Alexa Skills Store?'''
 
+    public static final String SECOND_CHANCE_OFFER = 'You can stay in the game with a Second Chance. A Second Chance ' +
+            "will reset your health to $Constants.STARTING_HEALTH, and you can continue playing. Would you like to " +
+            'learn more?'
+
+    public static final String SECOND_CHANCE_ACCEPTED = "Your health has been restored. Let's get back to the quiz."
+
+    public static final String HEALTH_BELOW_ZERO = 'Uh-oh, your health has dropped below zero.'
+
+    public static final String CONGRATULATIONS = 'Congratulations on your win!'
+
+    public static final String WHAT_CAN_I_BUY = 'You can buy a Second Chance to avoid elimination in a quiz. ' +
+            "A Second Chance resets your health to $Constants.STARTING_HEALTH and allows you to keep playing. " +
+            'I will offer you a second chance whenever your health drops below zero.'
+
+    public static final String NO_PRODUCTS_TO_BUY = "I don't have anything that you can buy. Sorry about that."
+
+    public static final String PRODUCT_NOT_FOUND = "Sorry, I couldn't find any products."
+
 }

@@ -29,7 +29,6 @@ deploy:
   script:
     - echo "*** $(date +%T) Deploying Lambda Function ***"
     - pipeline-scripts/deploy.sh $ENVIRONMENT
-
     - echo "*** $(date +%T) Deployment successful! ***"
 
   when: manual

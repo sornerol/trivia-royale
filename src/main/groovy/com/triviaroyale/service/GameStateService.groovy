@@ -4,11 +4,14 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.triviaroyale.data.GameState
+import com.triviaroyale.data.Player
 import com.triviaroyale.data.util.DynamoDBConstants
 import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.service.bean.AnswerValidationBean
+import com.triviaroyale.service.exception.GameStateNotFoundException
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Constants
+import com.triviaroyale.util.Messages
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -54,9 +57,11 @@ class GameStateService extends DynamoDBAccess {
             quizId = sessionAttributes[SessionAttributes.QUIZ_ID] as String
             questions = sessionAttributes[SessionAttributes.QUESTION_LIST] as List<String>
             currentQuestionIndex = sessionAttributes[SessionAttributes.QUESTION_NUMBER] as Integer
+            secondChanceUsed = sessionAttributes[SessionAttributes.SECOND_CHANCE_USED] as Boolean
             playersHealth = sessionAttributes[SessionAttributes.PLAYERS_HEALTH] as Map<String, Integer>
             playersPerformance = sessionAttributes[SessionAttributes.PLAYERS_PERFORMANCE] as Map<String, List<Boolean>>
         }
+
         session
     }
 
@@ -69,6 +74,7 @@ class GameStateService extends DynamoDBAccess {
             put(SessionAttributes.QUIZ_ID, gameState?.quizId)
             put(SessionAttributes.QUESTION_LIST, gameState?.questions)
             put(SessionAttributes.QUESTION_NUMBER, gameState?.currentQuestionIndex)
+            put(SessionAttributes.SECOND_CHANCE_USED, gameState?.secondChanceUsed)
             put(SessionAttributes.PLAYERS_HEALTH, gameState?.playersHealth)
             put(SessionAttributes.PLAYERS_PERFORMANCE, gameState?.playersPerformance)
         }
@@ -108,12 +114,10 @@ class GameStateService extends DynamoDBAccess {
                 " ${oldGameState.playersHealth.size()} players got that question right."
 
         newGameState.currentQuestionIndex++
-        if (!newGameState.playersHealth.containsKey(newGameState.playerId)) {
+        if (!isPlayerAlive(newGameState)) {
             newGameState.status = GameStateStatus.GAME_OVER
             validation.updatedAppState = AppState.NEW_GAME
-            int finalPlace = newGameState.playersHealth.size() + 1
-            validation.validationMessage +=
-                    " Uh-oh, you've been eliminated. You finished in ${PLACE[finalPlace]} place."
+            validation.validationMessage += " $Messages.HEALTH_BELOW_ZERO"
         } else if (newGameState.currentQuestionIndex >= Constants.NUMBER_OF_QUESTIONS) {
             newGameState.status = GameStateStatus.COMPLETED
             validation.updatedAppState = AppState.NEW_GAME
@@ -121,13 +125,13 @@ class GameStateService extends DynamoDBAccess {
             validation.validationMessage +=
                     " You completed the quiz. You finished in ${PLACE[finalPlace]} place."
             if (finalPlace == 1) {
-                validation.validationMessage += ' Congratulations on your win!'
+                validation.validationMessage += " $Messages.CONGRATULATIONS"
             }
         } else if (newGameState.playersHealth.size() == 1) {
             newGameState.status = GameStateStatus.COMPLETED
             validation.updatedAppState = AppState.NEW_GAME
             validation.validationMessage +=
-                    " Congratulations! You're the last player remaining."
+                    " You're the last player remaining. $Messages.CONGRATULATIONS"
         } else {
             validation.validationMessage += getPlayerStatusMessage(newGameState)
         }
@@ -139,11 +143,15 @@ class GameStateService extends DynamoDBAccess {
     }
 
     static String getPlayerStatusMessage(GameState gameState) {
-        int currentPlace = determinePlayersCurrentPlace(gameState)
-        " You're currently in ${PLACE[currentPlace]}. <break time=\"500ms\"/>" +
-                "Your current health is ${gameState.playersHealth[gameState.playerId]}." +
-                "<break time=\"500ms\"/> There are ${gameState.playersHealth.size()} players remaining." +
-                '<break time="500ms"/>'
+        if (isPlayerAlive(gameState)) {
+            int currentPlace = determinePlayersCurrentPlace(gameState)
+            return " You're currently in ${PLACE[currentPlace]}. <break time=\"500ms\"/>" +
+                    "Your current health is ${gameState.playersHealth[gameState.playerId]}." +
+                    "<break time=\"500ms\"/> There are ${gameState.playersHealth.size()} players remaining." +
+                    '<break time="500ms"/>'
+        }
+        int finalPlace = gameState.playersHealth.size() + 1
+        "You finished in ${PLACE[finalPlace]} place."
     }
 
     GameState loadActiveGameState(String alexaId) {
@@ -167,6 +175,23 @@ class GameStateService extends DynamoDBAccess {
         log.fine(Constants.EXITING_LOG_MESSAGE)
 
         retrievedGameState
+    }
+
+    GameState loadGameStateById(String alexaId, String sessionId) throws GameStateNotFoundException {
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
+
+        String hashKey = DynamoDBConstants.PLAYER_PREFIX + alexaId
+        String rangeKey = DynamoDBConstants.SESSION_PREFIX + sessionId
+        GameState gameState = mapper.load(GameState, hashKey, rangeKey)
+        if (! gameState) {
+            throw new GameStateNotFoundException("Could not find GameState $sessionId for player $alexaId")
+        }
+        gameState.playerId = gameState.playerId - DynamoDBConstants.PLAYER_PREFIX
+        gameState.sessionId = gameState.sessionId - DynamoDBConstants.SESSION_PREFIX
+
+        log.fine(Constants.EXITING_LOG_MESSAGE)
+
+        gameState
     }
 
     void saveGameState(GameState gameState) {
@@ -233,6 +258,10 @@ class GameStateService extends DynamoDBAccess {
         }
 
         playerCount
+    }
+
+    protected static boolean isPlayerAlive(GameState gameState) {
+        gameState.playersHealth.containsKey(gameState.playerId)
     }
 
 }

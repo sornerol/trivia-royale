@@ -30,6 +30,9 @@ class GameState implements Cloneable {
     int currentQuestionIndex
 
     @DynamoDBAttribute
+    Boolean secondChanceUsed
+
+    @DynamoDBAttribute
     Map<String, Integer> playersHealth
 
     @DynamoDBAttribute

@@ -1,12 +1,14 @@
 #!/bin/bash
 
+set -x
+
 MAX_PACKAGE_RETENTION=3
 
 ENVIRONMENT=$1
 source $(dirname "$0")/variables-$ENVIRONMENT.sh
 
 deployTime=$(date +%m%d%Y_%H%M%S)
-aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME \
+aws lambda update-function-code --function-name trivia-royale \
   --s3-bucket $S3_DEPLOY_BUCKET \
   --s3-key $PACKAGE_NAME
 
@@ -24,3 +26,5 @@ if [ "$PACKAGE_COUNT" -gt "$MAX_PACKAGE_RETENTION" ] ; then
     ((i++))
   done
 fi
+
+exit 0
