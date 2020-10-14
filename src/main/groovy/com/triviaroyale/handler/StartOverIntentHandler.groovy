@@ -15,11 +15,10 @@ class StartOverIntentHandler {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         sessionAttributes[SessionAttributes.APP_STATE] = AppState.START_OVER_REQUEST
-
         sessionAttributes[SessionAttributes.LAST_RESPONSE] = Messages.CONFIRM_START_OVER
 
         input.attributesManager.sessionAttributes = sessionAttributes
-        ResponseBuilder responseBuilder = AlexaSdkHelper.generateResponse(input,
+        ResponseBuilder responseBuilder = ResponseHelper.generateResponse(input,
                 Messages.CONFIRM_START_OVER,
                 Messages.CONFIRM_START_OVER)
         log.fine(Constants.EXITING_LOG_MESSAGE)

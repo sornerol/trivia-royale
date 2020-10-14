@@ -22,7 +22,7 @@ class FallbackRequestHandler {
         responseMessage += " ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
         String repromptMessage = responseMessage
 
-        ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseMessage, repromptMessage)
+        ResponseBuilder response = ResponseHelper.generateResponse(input, responseMessage, repromptMessage)
         log.fine(Constants.EXITING_LOG_MESSAGE)
 
         response.build()

@@ -9,8 +9,8 @@ import com.amazon.ask.model.services.monetization.InSkillProductsResponse
 import com.amazon.ask.model.services.monetization.MonetizationServiceClient
 import com.amazon.ask.request.RequestHelper
 import com.triviaroyale.handler.SecondChanceBuyResponseHandler
+import com.triviaroyale.handler.SecondChanceUpsellResponseHandler
 import com.triviaroyale.isp.IspUtil
-import com.triviaroyale.util.AlexaSdkHelper
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 
@@ -26,21 +26,21 @@ class BuyResponseRequestRouter implements ConnectionsResponseHandler {
     public static final String CODE = 'code'
     public static final String PRODUCT_ID = 'productId'
     public static final String NAME = 'name'
+    public static final String BUY = 'buy'
+    public static final String UPSELL = 'upsell'
 
     @Override
     boolean canHandle(HandlerInput input, ConnectionsResponse connectionsResponse) {
-        String name = input.requestEnvelopeJson.get(REQUEST).get(NAME).asText()
-        name.equalsIgnoreCase('buy') || name.equalsIgnoreCase('upsell')
+        String name = getRequestName(input)
+        name.equalsIgnoreCase(BUY) | name.equalsIgnoreCase(UPSELL)
     }
 
     @Override
     Optional<Response> handle(HandlerInput input, ConnectionsResponse connectionsResponse) {
-        HandlerInput initializedInput = AlexaSdkHelper.initializeHandlerInput(input, true)
-
-        RequestHelper requestHelper = RequestHelper.forHandlerInput(initializedInput)
+        RequestHelper requestHelper = RequestHelper.forHandlerInput(input)
         String locale = requestHelper.locale
-        MonetizationServiceClient client = initializedInput.serviceClientFactory.monetizationService
-        String productId = initializedInput.requestEnvelopeJson
+        MonetizationServiceClient client = input.serviceClientFactory.monetizationService
+        String productId = input.requestEnvelopeJson
                 .get(REQUEST)
                 .get(PAYLOAD)
                 .get(PRODUCT_ID)
@@ -56,18 +56,32 @@ class BuyResponseRequestRouter implements ConnectionsResponseHandler {
 
         //TODO: Refactor to be usable with other in-skill products
         InSkillProduct inSkillProduct = IspUtil.getInSkillProductById(response, productId)
-        String code = initializedInput.requestEnvelopeJson
+        String requestName = getRequestName(input)
+        if (requestName.equalsIgnoreCase(BUY)) {
+            return handleBuyResponse(input, connectionsResponse, inSkillProduct)
+        }
+        handleUpsellResponse(input, connectionsResponse, inSkillProduct)
+    }
+
+    protected static String getRequestName(HandlerInput input) {
+        input.requestEnvelopeJson.get(REQUEST).get(NAME).asText()
+    }
+
+    protected static Optional<Response> handleBuyResponse(HandlerInput input,
+                                                          ConnectionsResponse ignored,
+                                                          InSkillProduct inSkillProduct) {
+        String code = input.requestEnvelopeJson
                 .get(REQUEST)
                 .get(STATUS)
                 .get(CODE)
                 .asText()
 
         if (!inSkillProduct || code != SUCCESS_CODE) {
-            log.severe('Error detected in Connections.Response. See RequestEnvelope for details.')
-            return SecondChanceBuyResponseHandler.error(initializedInput)
+            log.severe('Buy error in Connections.Response. See RequestEnvelope for details.')
+            return SecondChanceBuyResponseHandler.error(input)
         }
 
-        String purchaseResult = initializedInput.requestEnvelopeJson
+        String purchaseResult = input.requestEnvelopeJson
                 .get(REQUEST)
                 .get(PAYLOAD)
                 .get(PURCHASE_RESULT)
@@ -75,12 +89,43 @@ class BuyResponseRequestRouter implements ConnectionsResponseHandler {
 
         switch (purchaseResult) {
             case 'ACCEPTED':
-                return SecondChanceBuyResponseHandler.accepted(initializedInput)
+                return SecondChanceBuyResponseHandler.accepted(input)
             case 'DECLINED':
-                return SecondChanceBuyResponseHandler.declined(initializedInput)
+                return SecondChanceBuyResponseHandler.declined(input)
             default:
-                log.severe('PurchaseResult was ERROR. See RequestEnvelope for details.')
-                return SecondChanceBuyResponseHandler.error(initializedInput)
+                log.severe('Buy purchaseResult was ERROR. See RequestEnvelope for details.')
+                return SecondChanceBuyResponseHandler.error(input)
+        }
+    }
+
+    protected static Optional<Response> handleUpsellResponse(HandlerInput input,
+                                                             ConnectionsResponse ignored,
+                                                             InSkillProduct inSkillProduct) {
+        String code = input.requestEnvelopeJson
+                .get(REQUEST)
+                .get(STATUS)
+                .get(CODE)
+                .asText()
+
+        if (!inSkillProduct || code != SUCCESS_CODE) {
+            log.severe('Upsell error in Connections.Response. See RequestEnvelope for details.')
+            return SecondChanceUpsellResponseHandler.error(input)
+        }
+
+        String purchaseResult = input.requestEnvelopeJson
+                .get(REQUEST)
+                .get(PAYLOAD)
+                .get(PURCHASE_RESULT)
+                .asText()
+
+        switch (purchaseResult) {
+            case 'ACCEPTED':
+                return SecondChanceUpsellResponseHandler.accepted(input)
+            case 'DECLINED':
+                return SecondChanceUpsellResponseHandler.declined(input)
+            default:
+                log.severe('Upsell purchaseResult was ERROR. See RequestEnvelope for details.')
+                return SecondChanceUpsellResponseHandler.error(input)
         }
     }
 

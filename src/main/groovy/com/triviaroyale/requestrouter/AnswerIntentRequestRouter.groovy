@@ -8,8 +8,8 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.triviaroyale.handler.AnswerQuestionIntentHandler
 import com.triviaroyale.handler.FallbackRequestHandler
-import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.AppState
+import com.triviaroyale.util.ResponseHelper
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -27,7 +27,7 @@ class AnswerIntentRequestRouter implements RequestHandler {
     Optional<Response> handle(HandlerInput input) {
         if (!input.attributesManager.sessionAttributes[SessionAttributes.APP_STATE]) {
             log.severe('Received intent for uninitialized session. Exiting...')
-            return AlexaSdkHelper.endSessionWithoutSpeech(input)
+            return ResponseHelper.endSessionWithoutSpeech(input)
         }
 
         if (input.matches(sessionAttribute(SessionAttributes.APP_STATE, AppState.IN_GAME.toString()))) {

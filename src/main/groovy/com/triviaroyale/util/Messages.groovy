@@ -22,7 +22,7 @@ eliminated. The player with the highest health score at the end of the game is t
     public static final String ASK_TO_RESUME_GAME =
             'You are currently in the middle of a game of Trivia Royale. Would you like to pick up where you left off?'
 
-    public static final String ASK_TO_PLAY_AFTER_HELP = 'Would you like to play Trivia Royale?'
+    public static final String ASK_TO_PLAY_TRIVIA_ROYALE = 'Would you like to play Trivia Royale?'
 
     public static final String CONFIRM_START_OVER = 'Are you sure you want to give up and start a new game?'
 
@@ -39,19 +39,22 @@ eliminated. The player with the highest health score at the end of the game is t
             '''Thank you for playing Trivia Royale. If you enjoyed playing, would you mind leaving a review in the
 Alexa Skills Store?'''
 
-    public static final String SECOND_CHANCE_OFFER = 'You can stay in the game with a Second Chance. A Second Chance ' +
-            "will reset your health to $Constants.STARTING_HEALTH, and you can continue playing. Would you like to " +
-            'learn more?'
+    public static final String SECOND_CHANCE_UPSELL_OFFER = 'You can stay in the game with a Second Chance. ' +
+            "A Second Chance will reset your health to $Constants.STARTING_HEALTH, and you can continue playing. " +
+            'Would you like to learn more?'
 
-    public static final String SECOND_CHANCE_ACCEPTED = "Your health has been restored. Let's get back to the quiz."
+    public static final String ASK_TO_USE_SECOND_CHANCE = 'You can stay in the game with a Second Chance. Would you ' +
+            'like to use one of your Second Chances to stay in the game?'
+
+    public static final String SECOND_CHANCE_USED = "Your health has been restored. Let's get back to the quiz."
 
     public static final String HEALTH_BELOW_ZERO = 'Uh-oh, your health has dropped below zero.'
 
     public static final String CONGRATULATIONS = 'Congratulations on your win!'
 
-    public static final String WHAT_CAN_I_BUY = 'You can buy a Second Chance to avoid elimination in a quiz. ' +
+    public static final String WHAT_CAN_I_BUY = 'You can buy Second Chances to avoid being eliminated in a quiz. ' +
             "A Second Chance resets your health to $Constants.STARTING_HEALTH and allows you to keep playing. " +
-            'I will offer you a second chance whenever your health drops below zero.'
+            'If you want to purchase Second Chances, just say Buy Second Chances.'
 
     public static final String NO_PRODUCTS_TO_BUY = "I don't have anything that you can buy. Sorry about that."
 

@@ -1,25 +1,24 @@
 package com.triviaroyale.requestrouter
 
-import static com.amazon.ask.request.Predicates.requestType
+import static com.amazon.ask.request.Predicates.intentName
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
-import com.amazon.ask.model.LaunchRequest
 import com.amazon.ask.model.Response
-import com.triviaroyale.handler.LaunchRequestHandler
+import com.triviaroyale.handler.SecondChanceInventoryIntentHandler
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class LaunchRequestRouter implements RequestHandler {
+class SecondChanceInventoryIntentRequestRouter implements RequestHandler {
 
     @Override
     boolean canHandle(HandlerInput input) {
-        input.matches(requestType(LaunchRequest))
+        input.matches(intentName('SecondChanceInventoryIntent'))
     }
 
     @Override
     Optional<Response> handle(HandlerInput input) {
-        LaunchRequestHandler.handle(input)
+        SecondChanceInventoryIntentHandler.handle(input)
     }
 
 }

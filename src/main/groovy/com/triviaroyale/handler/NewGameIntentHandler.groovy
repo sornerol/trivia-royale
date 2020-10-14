@@ -7,7 +7,6 @@ import com.amazon.ask.model.services.directive.Header
 import com.amazon.ask.model.services.directive.SendDirectiveRequest
 import com.amazon.ask.model.services.directive.SpeakDirective
 import com.amazon.ask.response.ResponseBuilder
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
@@ -29,20 +28,17 @@ class NewGameIntentHandler {
 
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
 
-        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
-        GameStateService gameStateService = new GameStateService(dynamoDB)
+        GameStateService gameStateService = new GameStateService(AmazonDynamoDBClientBuilder.defaultClient())
 
         if (sessionAttributes[SessionAttributes.APP_STATE] as AppState == AppState.START_OVER_REQUEST ||
                 sessionAttributes[SessionAttributes.APP_STATE] as AppState == AppState.RESUME_EXISTING_GAME) {
             abortExistingGame(sessionAttributes, gameStateService)
-            PlayerService playerService = new PlayerService(dynamoDB)
-            playerService.updatePlayerQuizCompletion(sessionAttributes)
         }
 
         //Play audio clip and let player know we're setting things up.
         announceGameSetup(input)
 
-        QuizService quizService = new QuizService(dynamoDB)
+        QuizService quizService = new QuizService(AmazonDynamoDBClientBuilder.defaultClient())
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
         Quiz quiz = quizService.loadNextAvailableQuizForPlayer(player) ?: quizService.generateNewQuiz(player.alexaId)
 
@@ -56,7 +52,7 @@ class NewGameIntentHandler {
         gameStateService.saveGameState(newGame)
 
         sessionAttributes[SessionAttributes.APP_STATE] = AppState.IN_GAME
-        PlayerService playerService = new PlayerService(dynamoDB)
+        PlayerService playerService = new PlayerService(AmazonDynamoDBClientBuilder.defaultClient())
 
         sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, newGame)
         sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
@@ -66,7 +62,7 @@ class NewGameIntentHandler {
 
         String responseText = 'Question 1. ' + sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
-        ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseText, repropmptText)
+        ResponseBuilder response = ResponseHelper.generateResponse(input, responseText, repropmptText)
         log.fine(Constants.EXITING_LOG_MESSAGE)
 
         response.build()

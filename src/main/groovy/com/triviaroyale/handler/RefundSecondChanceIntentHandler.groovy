@@ -7,12 +7,10 @@ import com.amazon.ask.model.services.monetization.InSkillProduct
 import com.amazon.ask.model.services.monetization.InSkillProductsResponse
 import com.amazon.ask.model.services.monetization.MonetizationServiceClient
 import com.amazon.ask.request.RequestHelper
-import com.amazon.ask.response.ResponseBuilder
 import com.triviaroyale.isp.IspUtil
 import com.triviaroyale.util.AlexaSdkHelper
-import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Messages
-import com.triviaroyale.util.SessionAttributes
+import com.triviaroyale.util.ResponseHelper
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -39,16 +37,7 @@ class RefundSecondChanceIntentHandler {
                     .build()
         }
 
-        if (!sessionAttributes[SessionAttributes.APP_STATE]) {
-            sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_PLAY_AFTER_HELP)
-            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.HELP_REQUEST)
-        }
-        String responseMessage = "$Messages.PRODUCT_NOT_FOUND ${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
-        String repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
-
-        ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseMessage, repromptMessage)
-
-        response.build()
+        ResponseHelper.informationalResponse(input, Messages.PRODUCT_NOT_FOUND)
     }
 
     static SendRequestDirective getCancelDirective(String productId) {

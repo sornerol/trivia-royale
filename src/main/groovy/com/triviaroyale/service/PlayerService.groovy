@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
 import com.triviaroyale.data.util.DynamoDBConstants
+import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
@@ -29,6 +30,8 @@ class PlayerService extends DynamoDBAccess {
             alexaId = sessionAttributes[SessionAttributes.PLAYER_ID] as String
             quizCompletion =
                     sessionAttributes[SessionAttributes.PLAYER_QUIZ_COMPLETION] as LinkedHashMap<String, String>
+            secondChancesPurchased = sessionAttributes[SessionAttributes.SECOND_CHANCES_PURCHASED] as int
+            secondChancesConsumed = sessionAttributes[SessionAttributes.SECOND_CHANCES_CONSUMED] as int
         }
         player
     }
@@ -38,6 +41,8 @@ class PlayerService extends DynamoDBAccess {
         sessionAttributes.with {
             put(SessionAttributes.PLAYER_ID, player?.alexaId)
             put(SessionAttributes.PLAYER_QUIZ_COMPLETION, player?.quizCompletion)
+            put(SessionAttributes.SECOND_CHANCES_PURCHASED, player?.secondChancesPurchased)
+            put(SessionAttributes.SECOND_CHANCES_CONSUMED, player?.secondChancesConsumed)
         }
 
         sessionAttributes
@@ -46,6 +51,11 @@ class PlayerService extends DynamoDBAccess {
     static boolean isNewPlayer(Player player) {
         player.quizCompletion.size() <= 1 &&
                 player.quizCompletion[Constants.GENERAL_CATEGORY] == CATEGORY_PROGRESS_INITIALIZER
+    }
+
+    static int numberOfSecondChancesAvailable(Map<String, Object> sessionAttributes) {
+        (int)sessionAttributes[SessionAttributes.SECOND_CHANCES_PURCHASED] -
+                (int)sessionAttributes[SessionAttributes.SECOND_CHANCES_CONSUMED]
     }
 
     Player loadPlayer(String alexaId) {
@@ -76,15 +86,19 @@ class PlayerService extends DynamoDBAccess {
         mapper.save(savedPlayer)
     }
 
-    Player setIspSessionId(Player player, String sessionId) {
-        player.ispSessionId = sessionId
+    Player setIspSessionId(Player player, Map<String, Object> sessionAttributes) {
+        player.ispSessionId = (String) sessionAttributes[SessionAttributes.SESSION_ID]
+        player.ispAppState = (AppState) sessionAttributes[SessionAttributes.APP_STATE]
         savePlayer(player)
-        log.info("Set ispSessionId for player $player.alexaId to $sessionId.")
+        log.info("Set ispSessionId for player $player.alexaId " +
+                "to $player.ispSessionId / ${player.ispAppState.toString()}.")
         player
     }
 
-    Player clearIspSessionId(Player player) {
-        setIspSessionId(player, null)
+    Player consumeSecondChance(Player player) {
+        player.secondChancesConsumed++
+        savePlayer(player)
+        player
     }
 
     Map<String, Object> updatePlayerQuizCompletion(Map<String, Object> sessionAttributes) {

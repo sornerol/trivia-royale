@@ -9,6 +9,8 @@ class SessionAttributes {
     //Player information
     public static final String PLAYER_ID = 'playerId'
     public static final String PLAYER_QUIZ_COMPLETION = 'quizCompletion'
+    public static final String SECOND_CHANCES_PURCHASED = 'secondChancesPurchased'
+    public static final String SECOND_CHANCES_CONSUMED = 'secondChancesConsumed'
 
     //Game state information
     public static final String GAME_STATE = 'gameState'
