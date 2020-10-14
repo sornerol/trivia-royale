@@ -18,7 +18,7 @@ class CancelAndStopIntentHandler {
         if (sessionAttributes[SessionAttributes.APP_STATE] as AppState == AppState.IN_GAME) {
             AlexaSdkHelper.saveCurrentSession(sessionAttributes)
         }
-        ResponseBuilder responseBuilder = AlexaSdkHelper.generateEndSessionResponse(input, Messages.EXIT_SKILL)
+        ResponseBuilder responseBuilder = ResponseHelper.generateEndSessionResponse(input, Messages.EXIT_SKILL)
 
         log.fine(Constants.EXITING_LOG_MESSAGE)
         responseBuilder.build()

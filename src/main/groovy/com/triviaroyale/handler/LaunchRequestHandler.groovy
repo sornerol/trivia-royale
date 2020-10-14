@@ -23,26 +23,23 @@ class LaunchRequestHandler {
         Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
         boolean isNewPlayer = PlayerService.isNewPlayer(player)
         String responseMessage = isNewPlayer ? Messages.WELCOME_NEW_PLAYER : Messages.WELCOME_EXISTING_PLAYER
-        String repromptMessage
 
         GameState gameState = GameStateService.getSessionFromAlexaSessionAttributes(sessionAttributes)
 
-        if (sessionAttributes[SessionAttributes.SESSION_ID]) {
-            log.info("Found active gameState ${gameState.sessionId}. Asking to resume.")
-            sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
-            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.RESUME_EXISTING_GAME)
-            responseMessage += " $Messages.ASK_TO_RESUME_GAME"
-            repromptMessage = Messages.ASK_TO_RESUME_GAME
-        } else {
-            sessionAttributes.put(SessionAttributes.APP_STATE, AppState.NEW_GAME)
-            responseMessage += " $Messages.ASK_TO_START_NEW_GAME"
-            repromptMessage = Messages.ASK_TO_START_NEW_GAME
+        if (!gameState) {
+            return ResponseHelper.askToStartNewGame(input, responseMessage)
         }
+
+        log.info("Found active gameState ${gameState.sessionId}. Asking to resume.")
+        sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, gameState)
+        sessionAttributes.put(SessionAttributes.APP_STATE, AppState.RESUME_EXISTING_GAME)
+        responseMessage += " $Messages.ASK_TO_RESUME_GAME"
+        String repromptMessage = Messages.ASK_TO_RESUME_GAME
 
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, responseMessage)
 
         input.attributesManager.sessionAttributes = sessionAttributes
-        ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseMessage, repromptMessage)
+        ResponseBuilder response = ResponseHelper.generateResponse(input, responseMessage, repromptMessage)
         log.fine(Constants.EXITING_LOG_MESSAGE)
 
         response.build()

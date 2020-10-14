@@ -114,6 +114,10 @@ class QuizService extends DynamoDBAccess {
     void addPerformanceToPool(GameState completedGame) {
         List<String> tokenizedQuizId = completedGame.quizId.tokenize(Constants.QUIZ_ID_DELIMITER)
         Quiz quiz = loadQuizByCategoryAndId(tokenizedQuizId[0], tokenizedQuizId[1])
+        if (!quiz) {
+            log.info("$completedGame.quizId no longer exists. Not saving player performance")
+            return
+        }
 
         log.info("Adding player performance for player ID $completedGame.playerId" +
                 " to quiz ID $completedGame.quizId")

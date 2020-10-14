@@ -7,7 +7,7 @@ import groovy.util.logging.Log
 
 @CompileStatic
 @Log
-class TriviaRoyaleRequestInterceptor implements RequestInterceptor {
+class LogRequestEnvelopeRequestInterceptor implements RequestInterceptor {
 
     @Override
     void process(HandlerInput input) {

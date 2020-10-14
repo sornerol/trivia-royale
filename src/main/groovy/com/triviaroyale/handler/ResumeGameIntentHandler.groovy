@@ -4,9 +4,9 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
 import com.triviaroyale.service.QuizService
-import com.triviaroyale.util.AlexaSdkHelper
 import com.triviaroyale.util.AppState
 import com.triviaroyale.util.Constants
+import com.triviaroyale.util.ResponseHelper
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -29,7 +29,7 @@ class ResumeGameIntentHandler {
             responseText = "$preText $responseText"
         }
         String repropmptText = sessionAttributes[SessionAttributes.LAST_RESPONSE] as String
-        ResponseBuilder response = AlexaSdkHelper.generateResponse(input, responseText, repropmptText)
+        ResponseBuilder response = ResponseHelper.generateResponse(input, responseText, repropmptText)
         log.fine(Constants.EXITING_LOG_MESSAGE)
 
         response.build()

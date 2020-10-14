@@ -3,7 +3,6 @@ package com.triviaroyale.handler
 import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.model.Response
 import com.amazon.ask.response.ResponseBuilder
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.triviaroyale.data.GameState
 import com.triviaroyale.data.Player
@@ -14,10 +13,7 @@ import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.service.QuizService
 import com.triviaroyale.service.bean.AnswerValidationBean
-import com.triviaroyale.util.AlexaSdkHelper
-import com.triviaroyale.util.Constants
-import com.triviaroyale.util.Messages
-import com.triviaroyale.util.SessionAttributes
+import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 
@@ -27,7 +23,6 @@ class AnswerQuestionIntentHandler {
 
     static Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
-        AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
 
         int playerAnswer
         try {
@@ -44,15 +39,19 @@ class AnswerQuestionIntentHandler {
         sessionAttributes = GameStateService.updateGameStateSessionAttributes(sessionAttributes, currentGameState)
 
         if (sessionAttributes[SessionAttributes.GAME_STATE] == GameStateStatus.GAME_OVER &&
-                (int) sessionAttributes[SessionAttributes.QUESTION_NUMBER] < Constants.NUMBER_OF_QUESTIONS &&
-                !(Boolean) sessionAttributes[SessionAttributes.SECOND_CHANCE_USED]) {
-            log.info("Attempting second chance offer for ${SessionAttributes.SESSION_ID}.")
+                shouldOfferSecondChance(sessionAttributes)) {
+            log.info("Offering second chance for Session ID ${SessionAttributes.SESSION_ID}.")
             input.attributesManager.sessionAttributes = sessionAttributes
-            Optional<Response> sellResponse = SecondChanceSeller.attemptSecondChanceSale(input, answerValidation)
+            Optional<Response> sellResponse
+            if (PlayerService.numberOfSecondChancesAvailable(sessionAttributes)) {
+                return askToUseSecondChance(input, answerValidation)
+            }
+
+            sellResponse = SecondChanceSeller.attemptSecondChanceSale(input, answerValidation)
             if (sellResponse) {
-                PlayerService playerService = new PlayerService(dynamoDB)
+                PlayerService playerService = new PlayerService(AmazonDynamoDBClientBuilder.defaultClient())
                 Player player = PlayerService.getPlayerFromSessionAttributes(sessionAttributes)
-                playerService.setIspSessionId(player, sessionAttributes[SessionAttributes.SESSION_ID] as String)
+                playerService.setIspSessionId(player, sessionAttributes)
                 AlexaSdkHelper.saveCurrentSession(sessionAttributes)
                 return sellResponse
             }
@@ -62,28 +61,38 @@ class AnswerQuestionIntentHandler {
         if (sessionAttributes[SessionAttributes.GAME_STATE] == GameStateStatus.GAME_OVER) {
             responseMessage += " ${GameStateService.getPlayerStatusMessage(currentGameState)}"
         }
-        String repromtMessage
-        if (sessionAttributes[SessionAttributes.GAME_STATE] == GameStateStatus.ACTIVE) {
-            sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
-            responseMessage += " Question ${currentGameState.currentQuestionIndex + 1}: " +
-                    "${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
-            repromtMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
-        } else {
-            QuizService quizService = new QuizService(dynamoDB)
-            GameStateService gameStateService = new GameStateService(dynamoDB)
-            gameStateService.saveGameState(currentGameState)
-
-            log.fine('Session attributes at end of game: ' + sessionAttributes.toString())
-            quizService.addPerformanceToPool(currentGameState)
-            responseMessage += " ${Messages.ASK_TO_START_NEW_GAME}"
-            repromtMessage = Messages.ASK_TO_START_NEW_GAME
-            sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_START_NEW_GAME)
+        String repromptMessage
+        if (sessionAttributes[SessionAttributes.GAME_STATE] != GameStateStatus.ACTIVE) {
+            input.attributesManager.sessionAttributes = sessionAttributes
+            GameStateHelper.finalizeGameState(currentGameState)
+            return ResponseHelper.askToStartNewGame(input, responseMessage)
         }
 
+        sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
+        responseMessage += " Question ${currentGameState.currentQuestionIndex + 1}: " +
+                "${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
+        repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
+
         input.attributesManager.sessionAttributes = sessionAttributes
-        ResponseBuilder responseBuilder = AlexaSdkHelper.generateResponse(input, responseMessage, repromtMessage)
+        ResponseBuilder responseBuilder = ResponseHelper.generateResponse(input, responseMessage, repromptMessage)
 
         responseBuilder.build()
+    }
+
+    protected static boolean shouldOfferSecondChance(Map<String, Object> sessionAttributes) {
+        (int) sessionAttributes[SessionAttributes.QUESTION_NUMBER] < Constants.NUMBER_OF_QUESTIONS &&
+                !(Boolean) sessionAttributes[SessionAttributes.SECOND_CHANCE_USED]
+    }
+
+    protected static Optional<Response> askToUseSecondChance(HandlerInput input, AnswerValidationBean validationBean) {
+        Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
+        sessionAttributes.put(SessionAttributes.APP_STATE, AppState.ASK_TO_USE_SECOND_CHANCE)
+        sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_USE_SECOND_CHANCE)
+        input.attributesManager.sessionAttributes = sessionAttributes
+
+        String responseMessage = "${validationBean.validationMessage} ${Messages.ASK_TO_USE_SECOND_CHANCE}"
+        String repromptMessage = Messages.ASK_TO_USE_SECOND_CHANCE
+        ResponseHelper.generateResponse(input, responseMessage, repromptMessage).build()
     }
 
 }

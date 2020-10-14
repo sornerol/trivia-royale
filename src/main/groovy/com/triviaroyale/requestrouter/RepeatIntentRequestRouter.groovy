@@ -6,7 +6,7 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.Response
 import com.triviaroyale.handler.RepeatIntentHandler
-import com.triviaroyale.util.AlexaSdkHelper
+import com.triviaroyale.util.ResponseHelper
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -21,10 +21,10 @@ class RepeatIntentRequestRouter implements RequestHandler {
     }
 
     @Override
-    Optional<Response> handle (HandlerInput input) {
+    Optional<Response> handle(HandlerInput input) {
         if (!input.attributesManager.sessionAttributes[SessionAttributes.APP_STATE]) {
             log.severe('Received intent for uninitialized session. Exiting...')
-            return AlexaSdkHelper.endSessionWithoutSpeech(input)
+            return ResponseHelper.endSessionWithoutSpeech(input)
         }
 
         RepeatIntentHandler.handle(input)
