@@ -20,6 +20,8 @@ class Constants {
     public static final int INCORRECT_HEALTH_ADJUSTMENT = 5
 
     public static final String GENERAL_CATEGORY = 'GENERAL'
+    public static final String CATEGORY_PROGRESS_INITIALIZER = '!'
+
     public static final String S3_QUESTION_BUCKET = 'triviaroyale'
 
     public static final String QUIZ_ID_DELIMITER = '|'

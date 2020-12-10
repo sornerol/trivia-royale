@@ -5,9 +5,9 @@ import com.amazonaws.auth.AnonymousAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
+import com.triviaroyale.data.Question
 import com.triviaroyale.util.Constants
 import io.findify.s3mock.S3Mock
-import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -48,6 +48,15 @@ class QuestionServiceTest extends Specification {
         then:
         questionPool.size() == 20
         println(questionPool.toListString())
+    }
+
+    def 'fetchQuestion'() {
+        when:
+        Question question = sut.fetchQuestion('CATEGORY1/1.json')
+        then:
+        question.questionText == 'Who let the dogs out?'
+        question.correctAnswer == 'Who'
+        question.otherAnswers.size() == 3
     }
 
     def "FetchRandomQuestionsForCategory"() {
