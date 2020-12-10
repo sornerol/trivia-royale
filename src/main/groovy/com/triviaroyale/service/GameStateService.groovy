@@ -183,7 +183,7 @@ class GameStateService extends DynamoDBAccess {
         String hashKey = DynamoDBConstants.PLAYER_PREFIX + alexaId
         String rangeKey = DynamoDBConstants.SESSION_PREFIX + sessionId
         GameState gameState = mapper.load(GameState, hashKey, rangeKey)
-        if (! gameState) {
+        if (!gameState) {
             throw new GameStateNotFoundException("Could not find GameState $sessionId for player $alexaId")
         }
         gameState.playerId = gameState.playerId - DynamoDBConstants.PLAYER_PREFIX

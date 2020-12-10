@@ -14,8 +14,6 @@ import groovy.util.logging.Log
 @Log
 class PlayerService extends DynamoDBAccess {
 
-    public static final String CATEGORY_PROGRESS_INITIALIZER = '!'
-
     PlayerService(AmazonDynamoDB dynamoDB) {
         super(dynamoDB)
     }
@@ -50,7 +48,7 @@ class PlayerService extends DynamoDBAccess {
 
     static boolean isNewPlayer(Player player) {
         player.quizCompletion.size() <= 1 &&
-                player.quizCompletion[Constants.GENERAL_CATEGORY] == CATEGORY_PROGRESS_INITIALIZER
+                player.quizCompletion[Constants.GENERAL_CATEGORY] == Constants.CATEGORY_PROGRESS_INITIALIZER
     }
 
     static int numberOfSecondChancesAvailable(Map<String, Object> sessionAttributes) {
@@ -73,7 +71,7 @@ class PlayerService extends DynamoDBAccess {
         newPlayer.with {
             alexaId = playerId
             quizCompletion = [:]
-            quizCompletion.put(Constants.GENERAL_CATEGORY, CATEGORY_PROGRESS_INITIALIZER)
+            quizCompletion.put(Constants.GENERAL_CATEGORY, Constants.CATEGORY_PROGRESS_INITIALIZER)
         }
         savePlayer(newPlayer)
 

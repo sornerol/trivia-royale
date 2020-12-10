@@ -3,7 +3,9 @@ package com.triviaroyale.data
 import spock.lang.Specification
 
 class QuestionTest extends Specification {
-    public static final String TEST_QUESTION_JSON = '{"questionText":"Who let the dogs out?","correctAnswer":"Who","otherAnswers":["You","No one","Your mama"]}'
+
+    public static final String TEST_QUESTION_JSON =
+            '{"questionText":"Who let the dogs out?","correctAnswer":"Who","otherAnswers":["You","No one","Your mama"]}'
     public static final String TEST_QUESTION_TEXT = 'Who let the dogs out?'
     public static final String TEST_QUESTION_ANSWER = 'Who'
     public static final List<String> TEST_QUESTION_OTHER_ANSWERS = ['You', 'No one', 'Your mama']
@@ -36,4 +38,5 @@ class QuestionTest extends Specification {
         json.contains(TEST_QUESTION_ANSWER)
         json.contains(TEST_QUESTION_OTHER_ANSWERS[0])
     }
+
 }

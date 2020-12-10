@@ -8,6 +8,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 class QuizTest extends Specification {
+
     @Shared
     AmazonDynamoDB dynamoDB
     @Shared
@@ -18,7 +19,7 @@ class QuizTest extends Specification {
     def setupSpec() {
         dynamoDB = DynamoDBEmbedded.create().amazonDynamoDB()
         dbService = new DynamoDBService(dynamoDB)
-        dbService.buildTestEnvironment()
+        dbService.initializeTestEnvironment()
         mapper = new DynamoDBMapper(dynamoDB)
     }
 
@@ -44,4 +45,5 @@ class QuizTest extends Specification {
 //        when:
 //        then:
 //    }
+
 }

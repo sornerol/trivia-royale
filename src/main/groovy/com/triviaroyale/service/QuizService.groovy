@@ -33,7 +33,7 @@ class QuizService extends DynamoDBAccess {
     }
 
     static String getQuizIdAsString(Quiz quiz) {
-        String quizId = quiz.category + '|' + quiz.uniqueId
+        String quizId = quiz.category + Constants.QUIZ_ID_DELIMITER + quiz.uniqueId
         quizId
     }
 
