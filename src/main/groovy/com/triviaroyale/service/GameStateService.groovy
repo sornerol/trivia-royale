@@ -154,6 +154,14 @@ class GameStateService extends DynamoDBAccess {
         "You finished in ${PLACE[finalPlace]} place."
     }
 
+    static int determinePlayersCurrentPlace(GameState gameState) {
+        List<Integer> healthValues = gameState.playersHealth.values() as List<Integer>
+        int playersHealth = gameState.playersHealth[gameState.playerId]
+        Collections.sort(healthValues, Collections.reverseOrder())
+        log.fine(healthValues.toString())
+        healthValues.indexOf(playersHealth) + 1
+    }
+
     GameState loadActiveGameState(String alexaId) {
         log.fine(Constants.ENTERING_LOG_MESSAGE)
 
@@ -239,14 +247,6 @@ class GameStateService extends DynamoDBAccess {
 
         log.info("Player's health after eliminations: ${gameState.playersHealth.toString()}")
         gameState
-    }
-
-    protected static int determinePlayersCurrentPlace(GameState gameState) {
-        List<Integer> healthValues = gameState.playersHealth.values() as List<Integer>
-        int playersHealth = gameState.playersHealth[gameState.playerId]
-        Collections.sort(healthValues, Collections.reverseOrder())
-        log.fine(healthValues.toString())
-        healthValues.indexOf(playersHealth) + 1
     }
 
     protected static int numberOfPlayersWithAnswerType(GameState gameState, boolean answerType) {

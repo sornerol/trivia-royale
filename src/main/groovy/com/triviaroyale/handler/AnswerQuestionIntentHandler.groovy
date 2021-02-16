@@ -10,12 +10,14 @@ import com.triviaroyale.data.util.GameStateStatus
 import com.triviaroyale.handler.exception.InvalidSlotException
 import com.triviaroyale.isp.SecondChanceSeller
 import com.triviaroyale.service.GameStateService
+import com.triviaroyale.service.LeaderboardService
 import com.triviaroyale.service.PlayerService
 import com.triviaroyale.service.QuizService
 import com.triviaroyale.service.bean.AnswerValidationBean
 import com.triviaroyale.util.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
+import redis.clients.jedis.Jedis
 
 @CompileStatic
 @Log
@@ -61,17 +63,21 @@ class AnswerQuestionIntentHandler {
         if (sessionAttributes[SessionAttributes.GAME_STATE] == GameStateStatus.GAME_OVER) {
             responseMessage += " ${GameStateService.getPlayerStatusMessage(currentGameState)}"
         }
-        String repromptMessage
+
         if (sessionAttributes[SessionAttributes.GAME_STATE] != GameStateStatus.ACTIVE) {
             input.attributesManager.sessionAttributes = sessionAttributes
             GameStateHelper.finalizeGameState(currentGameState)
+            if (sessionAttributes[SessionAttributes.GAME_STATE] == GameStateStatus.COMPLETED) {
+                String rankMessage = addLeaderboardPointsAndGetRankMessage(answerValidation)
+                responseMessage += " ${rankMessage}"
+            }
             return ResponseHelper.askToStartNewGame(input, responseMessage)
         }
 
         sessionAttributes = QuizService.updateSessionAttributesWithCurrentQuestion(sessionAttributes)
         responseMessage += " Question ${currentGameState.currentQuestionIndex + 1}: " +
                 "${sessionAttributes[SessionAttributes.LAST_RESPONSE]}"
-        repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
+        String repromptMessage = sessionAttributes[SessionAttributes.LAST_RESPONSE]
 
         input.attributesManager.sessionAttributes = sessionAttributes
         ResponseBuilder responseBuilder = ResponseHelper.generateResponse(input, responseMessage, repromptMessage)
@@ -79,12 +85,12 @@ class AnswerQuestionIntentHandler {
         responseBuilder.build()
     }
 
-    protected static boolean shouldOfferSecondChance(Map<String, Object> sessionAttributes) {
+    private static boolean shouldOfferSecondChance(Map<String, Object> sessionAttributes) {
         (int) sessionAttributes[SessionAttributes.QUESTION_NUMBER] < Constants.NUMBER_OF_QUESTIONS &&
                 !(Boolean) sessionAttributes[SessionAttributes.SECOND_CHANCE_USED]
     }
 
-    protected static Optional<Response> askToUseSecondChance(HandlerInput input, AnswerValidationBean validationBean) {
+    private static Optional<Response> askToUseSecondChance(HandlerInput input, AnswerValidationBean validationBean) {
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         sessionAttributes.put(SessionAttributes.APP_STATE, AppState.ASK_TO_USE_SECOND_CHANCE)
         sessionAttributes.put(SessionAttributes.LAST_RESPONSE, Messages.ASK_TO_USE_SECOND_CHANCE)
@@ -93,6 +99,30 @@ class AnswerQuestionIntentHandler {
         String responseMessage = "${validationBean.validationMessage} ${Messages.ASK_TO_USE_SECOND_CHANCE}"
         String repromptMessage = Messages.ASK_TO_USE_SECOND_CHANCE
         ResponseHelper.generateResponse(input, responseMessage, repromptMessage).build()
+    }
+
+    private static String addLeaderboardPointsAndGetRankMessage(AnswerValidationBean validationBean) {
+        int playerPlace = GameStateService.determinePlayersCurrentPlace(validationBean.updatedGameState)
+        int pointsToAdd = LeaderboardService.PLACE_REWARDS[playerPlace]
+        String returnMessage = "You earned ${pointsToAdd} leaderboard points."
+        int currentPlace
+        try {
+            LeaderboardService leaderboardService = new LeaderboardService(new Jedis(Constants.REDIS_URL))
+            currentPlace = leaderboardService.addPoints(validationBean.updatedGameState.playerId, pointsToAdd)
+        } catch (e) {
+            log.severe("LEADERBOARD: Error while adding points: ${e.message}")
+            log.severe("LEADERBOARD: Manual entry needed -- Player ID: ${validationBean.updatedGameState.playerId} " +
+                    "| Points: ${pointsToAdd} | Season: ${LeaderboardService.currentSeasonKey}")
+            currentPlace = 0
+        }
+
+        if (currentPlace) {
+            returnMessage += " Your current leaderboard rank is ${currentPlace}."
+        } else {
+            returnMessage += " I'm having trouble connecting to the leaderboard service. Don't worry; your points " +
+                    'are safe, and I will add them when the leaderboard service becomes available.'
+        }
+        returnMessage
     }
 
 }
