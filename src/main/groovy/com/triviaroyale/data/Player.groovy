@@ -37,6 +37,9 @@ class Player implements Cloneable {
     @DynamoDBAttribute
     AppState ispAppState
 
+    @DynamoDBAttribute
+    String activeLeaderboard
+
     @Override
     Object clone() throws CloneNotSupportedException {
         (Player) super.clone()

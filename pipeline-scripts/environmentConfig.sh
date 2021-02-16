@@ -6,6 +6,10 @@
 
 ENVIRONMENT=$1
 if [ "$ENVIRONMENT" = "DEV" ] ; then
-  echo "Changing DynamoDB Table to dev table"
+  echo "Making code changes for dev environment"
   sed -i 's/TriviaRoyale/TriviaRoyaleDevelopment/' src/main/groovy/com/triviaroyale/data/util/DynamoDBConstants.groovy
+  sed -i "s/LEADERBOARD_KEY_PREFIX = .*/LEADERBOARD_KEY_PREFIX = 'LB_DEV_'/" src/main/groovy/com/triviaroyale/service/LeaderboardService.groovy
 fi
+
+cp src/main/resources/$ENVIRONMENT.logging.properties src/main/resources/logging.properties
+rm -f src/main/resources/*.logging.properties

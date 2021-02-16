@@ -30,6 +30,7 @@ class PlayerService extends DynamoDBAccess {
                     sessionAttributes[SessionAttributes.PLAYER_QUIZ_COMPLETION] as LinkedHashMap<String, String>
             secondChancesPurchased = sessionAttributes[SessionAttributes.SECOND_CHANCES_PURCHASED] as int
             secondChancesConsumed = sessionAttributes[SessionAttributes.SECOND_CHANCES_CONSUMED] as int
+            activeLeaderboard = sessionAttributes[SessionAttributes.ACTIVE_LEADERBOARD] as String
         }
         player
     }
@@ -41,6 +42,7 @@ class PlayerService extends DynamoDBAccess {
             put(SessionAttributes.PLAYER_QUIZ_COMPLETION, player?.quizCompletion)
             put(SessionAttributes.SECOND_CHANCES_PURCHASED, player?.secondChancesPurchased)
             put(SessionAttributes.SECOND_CHANCES_CONSUMED, player?.secondChancesConsumed)
+            put(SessionAttributes.ACTIVE_LEADERBOARD, player?.activeLeaderboard)
         }
 
         sessionAttributes
@@ -57,6 +59,7 @@ class PlayerService extends DynamoDBAccess {
     }
 
     Player loadPlayer(String alexaId) {
+        log.fine("Using table ${DynamoDBConstants.TABLE_NAME}.")
         String hashKey = DynamoDBConstants.PLAYER_PREFIX + alexaId
         Player player = mapper.load(Player, hashKey, DynamoDBConstants.METADATA)
         if (player) {

@@ -12,6 +12,7 @@ import com.triviaroyale.data.Player
 import com.triviaroyale.isp.IspUtil
 import com.triviaroyale.service.GameStateService
 import com.triviaroyale.service.PlayerService
+import com.triviaroyale.util.Constants
 import com.triviaroyale.util.SessionAttributes
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -22,6 +23,8 @@ class InitializeSessionRequestInterceptor implements RequestInterceptor {
 
     @Override
     void process(HandlerInput input) {
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
+
         Map<String, Object> sessionAttributes = input.attributesManager.sessionAttributes
         RequestHelper requestHelper = RequestHelper.forHandlerInput(input)
         String playerId = requestHelper.userId.get()
@@ -62,17 +65,21 @@ class InitializeSessionRequestInterceptor implements RequestInterceptor {
         }
         sessionAttributes = PlayerService.updatePlayerSessionAttributes(sessionAttributes, inventoryRefreshedPlayer)
         input.attributesManager.sessionAttributes = sessionAttributes
+        log.fine(Constants.EXITING_LOG_MESSAGE)
     }
 
     protected static Player loadPlayerFromDatabase(String playerId) {
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
         log.info("Loading player ID $playerId from database.")
         PlayerService playerService = new PlayerService(AmazonDynamoDBClientBuilder.defaultClient())
         Player player = playerService.loadPlayer(playerId) ?: playerService.initializeNewPlayer(playerId)
 
+        log.fine(Constants.EXITING_LOG_MESSAGE)
         player
     }
 
     protected static Player refreshIspInventory(HandlerInput input, Player player) {
+        log.fine(Constants.ENTERING_LOG_MESSAGE)
         RequestHelper requestHelper = RequestHelper.forHandlerInput(input)
         String locale = requestHelper.locale
         MonetizationServiceClient client = input.serviceClientFactory.monetizationService
@@ -95,6 +102,7 @@ class InitializeSessionRequestInterceptor implements RequestInterceptor {
         if (refreshedPlayer.secondChancesConsumed > refreshedPlayer.secondChancesPurchased) {
             refreshedPlayer.secondChancesConsumed = refreshedPlayer.secondChancesPurchased
         }
+        log.fine(Constants.EXITING_LOG_MESSAGE)
 
         refreshedPlayer
     }

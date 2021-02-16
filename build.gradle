@@ -7,6 +7,7 @@ def DYNAMODB_VERSION = '1.13.2'
 def JUNIT_VERSION = '5.5.2'
 def SPOCK_VERSION = '1.2-groovy-2.5'
 def S3_MOCK_VERSION = '0.2.5'
+def JEDIS_VERSION = '3.4.0'
 
 jar {
     manifest {
@@ -73,6 +74,7 @@ dependencies {
     compile "org.codehaus.groovy:groovy:$GROOVY_VERSION"
     compile "org.codehaus.groovy:groovy-json:$GROOVY_VERSION"
     compile "com.amazon.alexa:ask-sdk:$ALEXA_SDK_VERSION"
+    compile "redis.clients:jedis:$JEDIS_VERSION"
 
     testCompile "org.codehaus.groovy:groovy:$GROOVY_VERSION"
     testCompile "org.codehaus.groovy:groovy-json:$GROOVY_VERSION"

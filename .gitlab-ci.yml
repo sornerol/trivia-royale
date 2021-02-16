@@ -8,7 +8,7 @@ before_script:
 build:
   stage: build
   script:
-    - pipeline-scripts/setDynamoDbTableName.sh $ENVIRONMENT
+    - pipeline-scripts/environmentConfig.sh $ENVIRONMENT
     - gradle --stop
     - echo "*** $(date +%T) Building Trivia Royale ***"
     - gradle clean buildZip

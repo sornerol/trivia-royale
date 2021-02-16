@@ -5,16 +5,15 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Messages {
 
-    public static final String WELCOME_NEW_PLAYER = 'Welcome to Trivia Royale! Test your brain power against other \
-players in this battle royale style trivia game.'
+    public static final String WELCOME_NEW_PLAYER = '''Welcome to Trivia Royale! Test your brain power against other
+ players in this battle royale style trivia game.'''
 
     public static final String WELCOME_EXISTING_PLAYER = 'Welcome back to Trivia Royale!'
 
-    public static final String HELP_MESSAGE =
-            "Test your brain power against ${Constants.NUMBER_OF_PLAYERS - 1} other players in a multiple choice \
-trivia quiz. The rules are simple: Correct answers allow you to steal health points from players with incorrect \
-answers. As the quiz progresses, wrong answers affect your health more. If your health drops to zero, you will be \
-eliminated. The player with the highest health score at the end of the game is the winner."
+    public static final String HELP_MESSAGE = """Test your brain power against ${Constants.NUMBER_OF_PLAYERS - 1} other
+ players in a multiple choice trivia quiz. The rules are simple: Correct answers allow you to steal health points from
+ players with incorrect answers. As the quiz progresses, wrong answers affect your health more. If your health drops to
+ zero, you will be eliminated. The player with the highest health score at the end of the game is the winner."""
 
     public static final String ASK_TO_START_NEW_GAME =
             'A new round of Trivia Royale is about to start. Would you like to play?'
@@ -37,14 +36,14 @@ eliminated. The player with the highest health score at the end of the game is t
 
     public static final String EXIT_SKILL =
             '''Thank you for playing Trivia Royale. If you enjoyed playing, would you mind leaving a review in the
-Alexa Skills Store?'''
+ Alexa Skills Store?'''
 
-    public static final String SECOND_CHANCE_UPSELL_OFFER = 'You can stay in the game with a Second Chance. ' +
-            "A Second Chance will reset your health to $Constants.STARTING_HEALTH, and you can continue playing. " +
-            'Would you like to learn more?'
+    public static final String SECOND_CHANCE_UPSELL_OFFER = """You can stay in the game with a Second Chance. A Second
+ Chance will reset your health to $Constants.STARTING_HEALTH, and you can continue playing. Would you like to learn
+ more?"""
 
-    public static final String ASK_TO_USE_SECOND_CHANCE = 'You can stay in the game with a Second Chance. Would you ' +
-            'like to use one of your Second Chances to stay in the game?'
+    public static final String ASK_TO_USE_SECOND_CHANCE = '''You can stay in the game with a Second Chance. Would you
+ like to use one of your Second Chances to stay in the game?'''
 
     public static final String SECOND_CHANCE_USED = "Your health has been restored. Let's get back to the quiz."
 
@@ -52,12 +51,15 @@ Alexa Skills Store?'''
 
     public static final String CONGRATULATIONS = 'Congratulations on your win!'
 
-    public static final String WHAT_CAN_I_BUY = 'You can buy Second Chances to avoid being eliminated in a quiz. ' +
-            "A Second Chance resets your health to $Constants.STARTING_HEALTH and allows you to keep playing. " +
-            'If you want to purchase Second Chances, just say Buy Second Chances.'
+    public static final String WHAT_CAN_I_BUY = """You can buy Second Chances to avoid being eliminated in a quiz. A
+ Second Chance resets your health to $Constants.STARTING_HEALTH and allows you to keep playing. If you want to purchase
+ Second Chances, just say Buy Second Chances."""
 
     public static final String NO_PRODUCTS_TO_BUY = "I don't have anything that you can buy. Sorry about that."
 
     public static final String PRODUCT_NOT_FOUND = "Sorry, I couldn't find any products."
+
+    public static final String NEW_SEASON_STARTED = '''A new season of Trivia Royale has started. Earn leaderboard
+ points by completing quizzes. Can you finish on top?'''
 
 }

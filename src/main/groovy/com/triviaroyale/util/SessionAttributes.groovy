@@ -11,6 +11,7 @@ class SessionAttributes {
     public static final String PLAYER_QUIZ_COMPLETION = 'quizCompletion'
     public static final String SECOND_CHANCES_PURCHASED = 'secondChancesPurchased'
     public static final String SECOND_CHANCES_CONSUMED = 'secondChancesConsumed'
+    public static final String ACTIVE_LEADERBOARD = 'activeLeaderboard'
 
     //Game state information
     public static final String GAME_STATE = 'gameState'
